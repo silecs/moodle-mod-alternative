@@ -30,12 +30,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'alternative';
+$string['modulename'] = 'Alternative';
 $string['modulenameplural'] = 'alternatives';
-$string['modulename_help'] = 'Use the alternative module for... | The alternative module allows...';
-$string['alternativefieldset'] = 'Custom example fieldset';
-$string['alternativename'] = 'alternative name';
-$string['alternativename_help'] = 'This is the content of the help tooltip associated with the alternativename field. Markdown syntax is supported.';
+$string['modulename_help'] = 'The alternative module allows users to register one or several choices in a given list.';
+
+$string['alternativename'] = 'Activity name';
+$string['changeallowed'] = 'Change allowed';
+$string['changeallowed_help'] = 'If not checked, the user will not be able to change his choice.
+Teachers, and all roles that have the capability `alternatives:forceregistration`, will be able to change the choice of anyone.';
+$string['teammin'] = 'Min team size';
+
 $string['alternative'] = 'alternative';
-$string['pluginadministration'] = 'alternative administration';
+$string['pluginadministration'] = 'Alternative administration';
 $string['pluginname'] = 'alternative';
