@@ -16,13 +16,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Internal library of functions for module alternatives
+ * Internal library of functions for module alternative
  *
- * All the alternatives specific functions, needed to implement the module
+ * All the alternative specific functions, needed to implement the module
  * logic, should go here. Never include this file from your lib.php!
  *
  * @package    mod
- * @subpackage alternatives
+ * @subpackage alternative
  * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,6 +35,6 @@ defined('MOODLE_INTERNAL') || die();
  * @param array $things
  * @return object
  */
-//function alternatives_do_something_useful(array $things) {
+//function alternative_do_something_useful(array $things) {
 //    return new stdClass();
 //}

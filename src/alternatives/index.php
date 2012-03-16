@@ -22,12 +22,12 @@
  * if you like, and it can span multiple lines.
  *
  * @package    mod
- * @subpackage alternatives
+ * @subpackage alternative
  * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/// Replace alternatives with the name of your module and remove this line
+/// Replace alternative with the name of your module and remove this line
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
@@ -38,19 +38,19 @@ $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 
 require_course_login($course);
 
-add_to_log($course->id, 'alternatives', 'view all', 'index.php?id='.$course->id, '');
+add_to_log($course->id, 'alternative', 'view all', 'index.php?id='.$course->id, '');
 
 $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
 
-$PAGE->set_url('/mod/alternatives/index.php', array('id' => $id));
+$PAGE->set_url('/mod/alternative/index.php', array('id' => $id));
 $PAGE->set_title(format_string($course->fullname));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($coursecontext);
 
 echo $OUTPUT->header();
 
-if (! $alternativess = get_all_instances_in_course('newmodule', $course)) {
-    notice(get_string('noalternativess', 'newmodule'), new moodle_url('/course/view.php', array('id' => $course->id)));
+if (! $alternatives = get_all_instances_in_course('alternative', $course)) {
+    notice(get_string('noalternatives', 'alternative'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
 if ($course->format == 'weeks') {
@@ -64,25 +64,25 @@ if ($course->format == 'weeks') {
     $table->align = array('left', 'left', 'left');
 }
 
-foreach ($alternativess as $newmodule) {
-    if (!$alternatives->visible) {
+foreach ($alternatives as $alternative) {
+    if (!$alternative->visible) {
         $link = html_writer::link(
-            new moodle_url('/mod/alternatives.php', array('id' => $newmodule->coursemodule)),
-            format_string($alternatives->name, true),
+            new moodle_url('/mod/alternative.php', array('id' => $alternative->coursemodule)),
+            format_string($alternative->name, true),
             array('class' => 'dimmed'));
     } else {
         $link = html_writer::link(
-            new moodle_url('/mod/alternatives.php', array('id' => $newmodule->coursemodule)),
-            format_string($alternatives->name, true));
+            new moodle_url('/mod/alternative.php', array('id' => $alternative->coursemodule)),
+            format_string($alternative->name, true));
     }
 
     if ($course->format == 'weeks' or $course->format == 'topics') {
-        $table->data[] = array($alternatives->section, $link);
+        $table->data[] = array($alternative->section, $link);
     } else {
         $table->data[] = array($link);
     }
 }
 
-echo $OUTPUT->heading(get_string('modulenameplural', 'alternatives'), 2);
+echo $OUTPUT->heading(get_string('modulenameplural', 'alternative'), 2);
 echo html_writer::table($table);
 echo $OUTPUT->footer();

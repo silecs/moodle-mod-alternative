@@ -16,16 +16,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of interface functions and constants for module alternatives
+ * Library of interface functions and constants for module alternative
  *
  * All the core Moodle functions, neeeded to allow the module to work
  * integrated in Moodle should be placed here.
- * All the alternatives specific functions, needed to implement all the module
+ * All the alternative specific functions, needed to implement all the module
  * logic, should go to locallib.php. This will help to save some memory when
  * Moodle is performing actions across all modules.
  *
  * @package    mod
- * @subpackage alternatives
+ * @subpackage alternative
  * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -46,7 +46,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed true if the feature is supported, null if unknown
  */
-function alternatives_supports($feature) {
+function alternative_supports($feature) {
     switch($feature) {
         case FEATURE_MOD_INTRO:         return true;
         default:                        return null;
@@ -54,51 +54,51 @@ function alternatives_supports($feature) {
 }
 
 /**
- * Saves a new instance of the alternatives into the database
+ * Saves a new instance of the alternative into the database
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @param object $alternatives An object from the form in mod_form.php
- * @param mod_alternatives_mod_form $mform
- * @return int The id of the newly inserted alternatives record
+ * @param object $alternative An object from the form in mod_form.php
+ * @param mod_alternative_mod_form $mform
+ * @return int The id of the newly inserted alternative record
  */
-function alternatives_add_instance(stdClass $newmodule, mod_newmodule_mod_form $mform = null) {
+function alternative_add_instance(stdClass $alternative, mod_alternative_mod_form $mform = null) {
     global $DB;
 
-    $alternatives->timecreated = time();
+    $alternative->timecreated = time();
 
     # You may have to add extra stuff in here #
 
-    return $DB->insert_record('alternatives', $newmodule);
+    return $DB->insert_record('alternative', $alternative);
 }
 
 /**
- * Updates an instance of the alternatives in the database
+ * Updates an instance of the alternative in the database
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @param object $alternatives An object from the form in mod_form.php
- * @param mod_alternatives_mod_form $mform
+ * @param object $alternative An object from the form in mod_form.php
+ * @param mod_alternative_mod_form $mform
  * @return boolean Success/Fail
  */
-function alternatives_update_instance(stdClass $newmodule, mod_newmodule_mod_form $mform = null) {
+function alternative_update_instance(stdClass $alternative, mod_alternative_mod_form $mform = null) {
     global $DB;
 
-    $alternatives->timemodified = time();
-    $alternatives->id = $newmodule->instance;
+    $alternative->timemodified = time();
+    $alternative->id = $alternative->instance;
 
     # You may have to add extra stuff in here #
 
-    return $DB->update_record('alternatives', $newmodule);
+    return $DB->update_record('alternative', $alternative);
 }
 
 /**
- * Removes an instance of the alternatives from the database
+ * Removes an instance of the alternative from the database
  *
  * Given an ID of an instance of this module,
  * this function will permanently delete the instance
@@ -107,16 +107,16 @@ function alternatives_update_instance(stdClass $newmodule, mod_newmodule_mod_for
  * @param int $id Id of the module instance
  * @return boolean Success/Failure
  */
-function alternatives_delete_instance($id) {
+function alternative_delete_instance($id) {
     global $DB;
 
-    if (! $alternatives = $DB->get_record('newmodule', array('id' => $id))) {
+    if (! $alternative = $DB->get_record('alternative', array('id' => $id))) {
         return false;
     }
 
     # Delete any dependent records here #
 
-    $DB->delete_records('alternatives', array('id' => $newmodule->id));
+    $DB->delete_records('alternative', array('id' => $alternative->id));
 
     return true;
 }
@@ -130,7 +130,7 @@ function alternatives_delete_instance($id) {
  *
  * @return stdClass|null
  */
-function alternatives_user_outline($course, $user, $mod, $newmodule) {
+function alternative_user_outline($course, $user, $mod, $alternative) {
 
     $return = new stdClass();
     $return->time = 0;
@@ -145,20 +145,20 @@ function alternatives_user_outline($course, $user, $mod, $newmodule) {
  * @param stdClass $course the current course record
  * @param stdClass $user the record of the user we are generating report for
  * @param cm_info $mod course module info
- * @param stdClass $alternatives the module instance record
+ * @param stdClass $alternative the module instance record
  * @return void, is supposed to echp directly
  */
-function alternatives_user_complete($course, $user, $mod, $newmodule) {
+function alternative_user_complete($course, $user, $mod, $alternative) {
 }
 
 /**
  * Given a course and a time, this module should find recent activity
- * that has occurred in alternatives activities and print it out.
+ * that has occurred in alternative activities and print it out.
  * Return true if there was output, or false is there was none.
  *
  * @return boolean
  */
-function alternatives_print_recent_activity($course, $viewfullnames, $timestart) {
+function alternative_print_recent_activity($course, $viewfullnames, $timestart) {
     return false;  //  True if anything was printed, otherwise false
 }
 
@@ -167,7 +167,7 @@ function alternatives_print_recent_activity($course, $viewfullnames, $timestart)
  *
  * This callback function is supposed to populate the passed array with
  * custom activity records. These records are then rendered into HTML via
- * {@link alternatives_print_recent_mod_activity()}.
+ * {@link alternative_print_recent_mod_activity()}.
  *
  * @param array $activities sequentially indexed array of objects with the 'cmid' property
  * @param int $index the index in the $activities to use for the next record
@@ -178,15 +178,15 @@ function alternatives_print_recent_activity($course, $viewfullnames, $timestart)
  * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
  * @return void adds items into $activities and increases $index
  */
-function alternatives_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
+function alternative_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
 }
 
 /**
- * Prints single activity item prepared by {@see alternatives_get_recent_mod_activity()}
+ * Prints single activity item prepared by {@see alternative_get_recent_mod_activity()}
 
  * @return void
  */
-function alternatives_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
+function alternative_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
 }
 
 /**
@@ -197,23 +197,23 @@ function alternatives_print_recent_mod_activity($activity, $courseid, $detail, $
  * @return boolean
  * @todo Finish documenting this function
  **/
-function alternatives_cron () {
+function alternative_cron () {
     return true;
 }
 
 /**
- * Returns an array of users who are participanting in this alternatives
+ * Returns an array of users who are participanting in this alternative
  *
  * Must return an array of users who are participants for a given instance
- * of alternatives. Must include every user involved in the instance,
+ * of alternative. Must include every user involved in the instance,
  * independient of his role (student, teacher, admin...). The returned
  * objects must contain at least id property.
  * See other modules as example.
  *
- * @param int $alternativesid ID of an instance of this module
+ * @param int $alternativeid ID of an instance of this module
  * @return boolean|array false if no participants, array of objects otherwise
  */
-function alternatives_get_participants($newmoduleid) {
+function alternative_get_participants($alternativeid) {
     return false;
 }
 
@@ -223,7 +223,7 @@ function alternatives_get_participants($newmoduleid) {
  * @example return array('moodle/site:accessallgroups');
  * @return array
  */
-function alternatives_get_extra_capabilities() {
+function alternative_get_extra_capabilities() {
     return array();
 }
 
@@ -232,21 +232,21 @@ function alternatives_get_extra_capabilities() {
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Is a given scale used by the instance of alternatives?
+ * Is a given scale used by the instance of alternative?
  *
- * This function returns if a scale is being used by one alternatives
+ * This function returns if a scale is being used by one alternative
  * if it has support for grading and scales. Commented code should be
  * modified if necessary. See forum, glossary or journal modules
  * as reference.
  *
- * @param int $alternativesid ID of an instance of this module
- * @return bool true if the scale is used by the given alternatives instance
+ * @param int $alternativeid ID of an instance of this module
+ * @return bool true if the scale is used by the given alternative instance
  */
-function alternatives_scale_used($newmoduleid, $scaleid) {
+function alternative_scale_used($alternativeid, $scaleid) {
     global $DB;
 
     /** @example */
-    if ($scaleid and $DB->record_exists('alternatives', array('id' => $newmoduleid, 'grade' => -$scaleid))) {
+    if ($scaleid and $DB->record_exists('alternative', array('id' => $alternativeid, 'grade' => -$scaleid))) {
         return true;
     } else {
         return false;
@@ -254,18 +254,18 @@ function alternatives_scale_used($newmoduleid, $scaleid) {
 }
 
 /**
- * Checks if scale is being used by any instance of alternatives.
+ * Checks if scale is being used by any instance of alternative.
  *
  * This is used to find out if scale used anywhere.
  *
  * @param $scaleid int
- * @return boolean true if the scale is used by any alternatives instance
+ * @return boolean true if the scale is used by any alternative instance
  */
-function alternatives_scale_used_anywhere($scaleid) {
+function alternative_scale_used_anywhere($scaleid) {
     global $DB;
 
     /** @example */
-    if ($scaleid and $DB->record_exists('alternatives', array('grade' => -$scaleid))) {
+    if ($scaleid and $DB->record_exists('alternative', array('grade' => -$scaleid))) {
         return true;
     } else {
         return false;
@@ -273,44 +273,44 @@ function alternatives_scale_used_anywhere($scaleid) {
 }
 
 /**
- * Creates or updates grade item for the give alternatives instance
+ * Creates or updates grade item for the give alternative instance
  *
  * Needed by grade_update_mod_grades() in lib/gradelib.php
  *
- * @param stdClass $alternatives instance object with extra cmidnumber and modname property
+ * @param stdClass $alternative instance object with extra cmidnumber and modname property
  * @return void
  */
-function alternatives_grade_item_update(stdClass $newmodule) {
+function alternative_grade_item_update(stdClass $alternative) {
     global $CFG;
     require_once($CFG->libdir.'/gradelib.php');
 
     /** @example */
     $item = array();
-    $item['itemname'] = clean_param($alternatives->name, PARAM_NOTAGS);
+    $item['itemname'] = clean_param($alternative->name, PARAM_NOTAGS);
     $item['gradetype'] = GRADE_TYPE_VALUE;
-    $item['grademax']  = $alternatives->grade;
+    $item['grademax']  = $alternative->grade;
     $item['grademin']  = 0;
 
-    grade_update('mod/alternatives', $newmodule->course, 'mod', 'newmodule', $newmodule->id, 0, null, $item);
+    grade_update('mod/alternative', $alternative->course, 'mod', 'alternative', $alternative->id, 0, null, $item);
 }
 
 /**
- * Update alternatives grades in the gradebook
+ * Update alternative grades in the gradebook
  *
  * Needed by grade_update_mod_grades() in lib/gradelib.php
  *
- * @param stdClass $alternatives instance object with extra cmidnumber and modname property
+ * @param stdClass $alternative instance object with extra cmidnumber and modname property
  * @param int $userid update grade of specific user only, 0 means all participants
  * @return void
  */
-function alternatives_update_grades(stdClass $newmodule, $userid = 0) {
+function alternative_update_grades(stdClass $alternative, $userid = 0) {
     global $CFG, $DB;
     require_once($CFG->libdir.'/gradelib.php');
 
     /** @example */
     $grades = array(); // populate array of grade objects indexed by userid
 
-    grade_update('mod/alternatives', $newmodule->course, 'mod', 'newmodule', $newmodule->id, 0, $grades);
+    grade_update('mod/alternative', $alternative->course, 'mod', 'alternative', $alternative->id, 0, $grades);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -328,12 +328,12 @@ function alternatives_update_grades(stdClass $newmodule, $userid = 0) {
  * @param stdClass $context
  * @return array of [(string)filearea] => (string)description
  */
-function alternatives_get_file_areas($course, $cm, $context) {
+function alternative_get_file_areas($course, $cm, $context) {
     return array();
 }
 
 /**
- * Serves the files from the alternatives file areas
+ * Serves the files from the alternative file areas
  *
  * @param stdClass $course
  * @param stdClass $cm
@@ -343,7 +343,7 @@ function alternatives_get_file_areas($course, $cm, $context) {
  * @param bool $forcedownload
  * @return void this should never return to the caller
  */
-function alternatives_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload) {
+function alternative_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload) {
     global $DB, $CFG;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -360,26 +360,26 @@ function alternatives_pluginfile($course, $cm, $context, $filearea, array $args,
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Extends the global navigation tree by adding alternatives nodes if there is a relevant content
+ * Extends the global navigation tree by adding alternative nodes if there is a relevant content
  *
  * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
  *
- * @param navigation_node $navref An object representing the navigation tree node of the alternatives module instance
+ * @param navigation_node $navref An object representing the navigation tree node of the alternative module instance
  * @param stdClass $course
  * @param stdClass $module
  * @param cm_info $cm
  */
-function alternatives_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
+function alternative_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
 }
 
 /**
- * Extends the settings navigation with the alternatives settings
+ * Extends the settings navigation with the alternative settings
  *
- * This function is called when the context for the page is a alternatives module. This is not called by AJAX
+ * This function is called when the context for the page is a alternative module. This is not called by AJAX
  * so it is safe to rely on the $PAGE.
  *
  * @param settings_navigation $settingsnav {@link settings_navigation}
- * @param navigation_node $alternativesnode {@link navigation_node}
+ * @param navigation_node $alternativenode {@link navigation_node}
  */
-function alternatives_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $newmodulenode=null) {
+function alternative_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $alternativenode=null) {
 }

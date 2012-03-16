@@ -17,25 +17,25 @@
 
 
 /**
- * English strings for alternatives
+ * English strings for alternative
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
  * @package    mod
- * @subpackage alternatives
+ * @subpackage alternative
  * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'alternatives';
-$string['modulenameplural'] = 'alternativess';
-$string['modulename_help'] = 'Use the alternatives module for... | The newmodule module allows...';
-$string['alternativesfieldset'] = 'Custom example fieldset';
-$string['alternativesname'] = 'newmodule name';
-$string['alternativesname_help'] = 'This is the content of the help tooltip associated with the newmodulename field. Markdown syntax is supported.';
-$string['alternatives'] = 'newmodule';
-$string['pluginadministration'] = 'alternatives administration';
-$string['pluginname'] = 'alternatives';
+$string['modulename'] = 'alternative';
+$string['modulenameplural'] = 'alternatives';
+$string['modulename_help'] = 'Use the alternative module for... | The alternative module allows...';
+$string['alternativefieldset'] = 'Custom example fieldset';
+$string['alternativename'] = 'alternative name';
+$string['alternativename_help'] = 'This is the content of the help tooltip associated with the alternativename field. Markdown syntax is supported.';
+$string['alternative'] = 'alternative';
+$string['pluginadministration'] = 'alternative administration';
+$string['pluginname'] = 'alternative';
