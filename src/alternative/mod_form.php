@@ -34,10 +34,19 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
  */
 class mod_alternative_mod_form extends moodleform_mod {
 
+    public static $publicreg_types;
+
     /**
      * Defines forms elements
      */
     public function definition() {
+        if (empty(self::$publicreg_types)) {
+            self::$publicreg_types = array(
+                ALTERNATIVE_PUBLIREG_HIDDEN => get_string('hidden', 'alternative'),
+                ALTERNATIVE_PUBLIREG_PUBLIC => get_string('public', 'alternative'),
+                ALTERNATIVE_PUBLIREG_GROUP => get_string('publicinsamegroup', 'alternative'),
+            );
+        }
 
         $mform = $this->_form;
 
@@ -54,18 +63,34 @@ class mod_alternative_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'alternativename', 'alternative');
 
         // Adding the standard "intro" and "introformat" fields
         $this->add_intro_editor();
 
         //-------------------------------------------------------------------------------
-        // Adding the rest of alternative settings, spreeading all them into this fieldset
-        // or adding more fieldsets ('header' elements) if needed for better logic
-        $mform->addElement('static', 'label1', 'alternativesetting1', 'Your alternative fields go here. Replace me!');
+        $mform->addElement('checkbox', 'changeallowed', get_string('changeallowed', 'alternative'));
+        $mform->setDefault('changeallowed', 1);
+        $mform->addHelpButton('changeallowed', 'changeallowed', 'alternative');
 
-        $mform->addElement('header', 'alternativefieldset', get_string('alternativefieldset', 'alternative'));
-        $mform->addElement('static', 'label2', 'alternativesetting2', 'Your alternative fields go here. Replace me!');
+        $mform->addElement('select', 'publicreg', get_string('publicreg', 'alternative'), self::$publicreg_types);
+        $mform->setDefault('publicreg', ALTERNATIVE_PUBLIREG_PUBLIC);
+        $mform->addHelpButton('publicreg', 'publicreg', 'alternative');
+
+        $mform->addElement('header', 'alternativefieldset1', get_string('fieldsetteam', 'alternative'));
+        $mform->addElement('checkbox', 'teamenable', get_string('enable'));
+        $mform->addElement('text', 'teammin', get_string('teammin', 'alternative'), array('size'=>'4'));
+        $mform->disabledIf('teammin', 'teamenable');
+        $mform->addElement('text', 'teammax', get_string('teammax', 'alternative'), array('size'=>'4'));
+        $mform->disabledIf('teammax', 'teamenable');
+        $mform->addHelpButton('teamenable', 'teamenable', 'alternative');
+
+        $mform->addElement('header', 'alternativefieldset2', get_string('fieldsetmultiple', 'alternative'));
+        $mform->addElement('checkbox', 'multipleenable', get_string('enable'));
+        $mform->addElement('text', 'multiplemin', get_string('multiplemin', 'alternative'), array('size'=>'4'));
+        $mform->disabledIf('multiplemin', 'multipleenable');
+        $mform->addElement('text', 'multiplemax', get_string('multiplemax', 'alternative'), array('size'=>'4'));
+        $mform->disabledIf('multiplemax', 'multipleenable');
+        $mform->addHelpButton('multipleenable', 'multipleenable', 'alternative');
 
         //-------------------------------------------------------------------------------
         // add standard elements, common to all modules
