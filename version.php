@@ -1,13 +1,11 @@
 <?php
 
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
+// This module is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,
+// This module is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -24,14 +22,14 @@
  *
  * @package    mod
  * @subpackage alternative
- * @copyright  2011 Your Name
+ * @copyright  2012 Silecs
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $module->version   = 0;               // If version == 0 then module will not be installed
-//$module->version   = 2010032200;      // The current module version (Date: YYYYMMDDXX)
+$module->version   = 2012031601;      // The current module version (Date: YYYYMMDDXX)
 $module->requires  = 2010031900;      // Requires this Moodle version
 $module->cron      = 0;               // Period for cron to check this module (secs)
 $module->component = 'mod_alternative'; // To check on upgrade, that module sits in correct place
