@@ -30,6 +30,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+define('ALTERNATIVE_PUBLIREG_HIDDEN', 0);
+define('ALTERNATIVE_PUBLIREG_PUBLIC', 1);
+define('ALTERNATIVE_PUBLIREG_GROUP', 2);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Moodle core API                                                            //
@@ -45,6 +48,7 @@ defined('MOODLE_INTERNAL') || die();
 function alternative_supports($feature) {
     switch($feature) {
         case FEATURE_MOD_INTRO:         return true;
+        case FEATURE_GRADE_HAS_GRADE:   return false;
         default:                        return null;
     }
 }
