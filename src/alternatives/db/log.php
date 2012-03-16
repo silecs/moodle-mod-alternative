@@ -23,7 +23,7 @@
  * in the previous 1.9 NEWMODULE.
  *
  * @package    mod
- * @subpackage newmodule
+ * @subpackage alternatives
  * @copyright  2011 Your Name <your@email.adress>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,8 +33,8 @@ defined('MOODLE_INTERNAL') || die();
 global $DB;
 
 $logs = array(
-    array('module'=>'newmodule', 'action'=>'add', 'mtable'=>'newmodule', 'field'=>'name'),
-    array('module'=>'newmodule', 'action'=>'update', 'mtable'=>'newmodule', 'field'=>'name'),
-    array('module'=>'newmodule', 'action'=>'view', 'mtable'=>'newmodule', 'field'=>'name'),
-    array('module'=>'newmodule', 'action'=>'view all', 'mtable'=>'newmodule', 'field'=>'name')
+    array('module'=>'alternatives', 'action'=>'add', 'mtable'=>'newmodule', 'field'=>'name'),
+    array('module'=>'alternatives', 'action'=>'update', 'mtable'=>'newmodule', 'field'=>'name'),
+    array('module'=>'alternatives', 'action'=>'view', 'mtable'=>'newmodule', 'field'=>'name'),
+    array('module'=>'alternatives', 'action'=>'view all', 'mtable'=>'newmodule', 'field'=>'name')
 );
