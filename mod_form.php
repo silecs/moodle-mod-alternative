@@ -79,18 +79,50 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->addElement('header', 'alternativefieldset1', get_string('fieldsetteam', 'alternative'));
         $mform->addElement('checkbox', 'teamenable', get_string('enable'));
         $mform->addElement('text', 'teammin', get_string('teammin', 'alternative'), array('size'=>'4'));
+        $mform->setType('teammin', PARAM_INT);
         $mform->disabledIf('teammin', 'teamenable');
         $mform->addElement('text', 'teammax', get_string('teammax', 'alternative'), array('size'=>'4'));
+        $mform->setType('teammax', PARAM_INT);
         $mform->disabledIf('teammax', 'teamenable');
         $mform->addHelpButton('teamenable', 'teamenable', 'alternative');
 
         $mform->addElement('header', 'alternativefieldset2', get_string('fieldsetmultiple', 'alternative'));
         $mform->addElement('checkbox', 'multipleenable', get_string('enable'));
         $mform->addElement('text', 'multiplemin', get_string('multiplemin', 'alternative'), array('size'=>'4'));
+        $mform->setType('multiplemin', PARAM_INT);
         $mform->disabledIf('multiplemin', 'multipleenable');
         $mform->addElement('text', 'multiplemax', get_string('multiplemax', 'alternative'), array('size'=>'4'));
+        $mform->setType('multiplemax', PARAM_INT);
         $mform->disabledIf('multiplemax', 'multipleenable');
         $mform->addHelpButton('multipleenable', 'multipleenable', 'alternative');
+
+        //-------------------------------------------------------------------------------
+        $repeatarray = array();
+        $repeatarray[] = &MoodleQuickForm::createElement('header', '', get_string('option', 'alternative').' {no}');
+        $repeatarray[] = &MoodleQuickForm::createElement('text', 'optionname', get_string('optionname', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('editor', 'optionintro', get_string('optionintro', 'alternative'), null, array('maxfiles'=>EDITOR_UNLIMITED_FILES, 'noclean'=>true)); // , 'context'=>$this->context
+        $repeatarray[] = &MoodleQuickForm::createElement('text', 'optiondatecomment', get_string('datecomment', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('text', 'optionplacesavail', get_string('placesavail', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('checkbox', 'optiongroupdependent', get_string('groupdependent', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('hidden', 'optionid', 0);
+
+        if ($this->_instance){
+            $repeatno = 1 + $DB->count_records('alternative_option', array('alternativeid' => $this->_instance));
+        } else {
+            $repeatno = 2;
+        }
+
+        $repeateloptions = array();
+        $repeateloptions['optionplacesavail']['default'] = 0;
+        $repeateloptions['optionplacesavail']['rule'] = 'numeric';
+
+        $repeateloptions['option']['helpbutton'] = array('alternativeoptions', 'alternative');
+        $mform->setType('option', PARAM_CLEANHTML);
+
+        $mform->setType('optionid', PARAM_INT);
+
+        $this->repeat_elements($repeatarray, $repeatno,
+                    $repeateloptions, 'option_repeats', 'option_add_fields', 2);
 
         //-------------------------------------------------------------------------------
         // add standard elements, common to all modules
