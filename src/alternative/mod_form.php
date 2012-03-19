@@ -100,7 +100,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $repeatarray = array();
         $repeatarray[] = &MoodleQuickForm::createElement('header', '', get_string('option', 'alternative').' {no}');
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[name]', get_string('optionname', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('editor', 'option[intro]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean'=>true));
+        $repeatarray[] = &MoodleQuickForm::createElement('editor', 'option[introeditor]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => 0, 'noclean'=>true));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[datecomment]', get_string('datecomment', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[placesavail]', get_string('placesavail', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('checkbox', 'option[groupdependent]', get_string('groupdependent', 'alternative'));
@@ -120,7 +120,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->addHelpButton('option[datecomment][0]', 'datecomment', 'alternative');
         $mform->addHelpButton('option[groupdependent][0]', 'groupdependent', 'alternative');
         for ($i = 0 ; $i < $repeatno ; $i++) {
-            $mform->setType("option[intro][$i]", PARAM_RAW);
+            $mform->setType("option[introeditor][$i]", PARAM_RAW);
             $mform->setDefault("option[placesavail][$i]", 0);
             $mform->addRule("option[placesavail][$i]", null, 'numeric');
             $mform->setType("option[placesavail][$i]", PARAM_INT);
@@ -133,5 +133,20 @@ class mod_alternative_mod_form extends moodleform_mod {
         //-------------------------------------------------------------------------------
         // add standard buttons, common to all modules
         $this->add_action_buttons();
+    }
+
+    function get_data() {
+        $data = parent::get_data();
+        if (!$data) {
+            return false;
+        }
+        $data->option['intro'] = array();
+        $data->option['introformat'] = array();
+        foreach ($data->option['introeditor'] as $key => $intro) {
+            $data->option['intro'][$key] = $intro['text'];
+            $data->option['introformat'][$key] = $intro['format'];
+            unset($data->option['introeditor'][$key]);
+        }
+        return $data;
     }
 }
