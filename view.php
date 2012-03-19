@@ -25,11 +25,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(dirname(dirname($_SERVER["SCRIPT_FILENAME"]))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // alternative instance ID - it should be named as the first character of the module
+$a  = optional_param('n', 0, PARAM_INT);  // alternative instance ID - it should be named as the first character of the module
 
 if ($id) {
     $cm         = get_coursemodule_from_id('alternative', $id, 0, false, MUST_EXIST);
@@ -63,12 +63,18 @@ $PAGE->set_context($context);
 // Output starts here
 echo $OUTPUT->header();
 
+echo $OUTPUT->heading($alternative->name);
 if ($alternative->intro) { // Conditions to show the intro can change to look for own settings or whatever
     echo $OUTPUT->box(format_module_intro('alternative', $alternative, $cm->id), 'generalbox mod_introbox', 'alternativeintro');
 }
 
-// Replace the following lines with you own code
-echo $OUTPUT->heading('Yay! It works!');
+echo $OUTPUT->heading("Options");
+echo "<dl>";
+$options = $DB->get_records('alternative_option', array('alternativeid' => $alternative->id));
+foreach ($options as $option) {
+    echo "<dt>{$option->name}</dt><dd>" . format_module_intro('alternative', $option, $cm->id) . "</dd>";
+}
+echo "</dl>";
 
 // Finish the page
 echo $OUTPUT->footer();

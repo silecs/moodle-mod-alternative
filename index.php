@@ -46,6 +46,7 @@ if (! $alternatives = get_all_instances_in_course('alternative', $course)) {
     notice(get_string('noalternatives', 'alternative'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
+$table = new stdClass();
 if ($course->format == 'weeks') {
     $table->head  = array(get_string('week'), get_string('name'));
     $table->align = array('center', 'left');
