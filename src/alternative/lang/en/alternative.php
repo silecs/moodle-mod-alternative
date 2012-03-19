@@ -38,7 +38,42 @@ $string['alternativename'] = 'Activity name';
 $string['changeallowed'] = 'Change allowed';
 $string['changeallowed_help'] = 'If not checked, the user will not be able to change his choice.
 Teachers, and all roles that have the capability `alternatives:forceregistration`, will be able to change the choice of anyone.';
+
+$string["fieldsetteam"] = "Settings for teams";
+$string['teamenable'] = 'Enable team settings';
+$string['teamenable_help'] = 'Set the minimum and maximum sizes of teams.';
 $string['teammin'] = 'Min team size';
+$string['teammax'] = 'Max team size';
+
+$string["fieldsetmultiple"] = "Settings for multiple registrations";
+$string['multipleenable'] = 'Enable these settings';
+$string['multipleenable_help'] = 'Each user has to register several options, between the minimum and maximum values.';
+$string["multiplemax"] = "User min registrations";
+$string["multiplemin"] = "User max registrations";
+
+$string["public"] = "Public";
+$string["publicinsamegroup"] = "Public in the same group";
+$string["publicreg"] = "Public registrations";
+$string["private"] = "Private";
+$string["publicreg_help"] = "The registrations can be:<dl>
+<dt>public</dt> <dd>shown to everyone,</dd>
+<dt>public in the same group</dt> <dd>users see registrations of users that share at least a groupn</dd>
+<dt>private</dt> <dd>shown only to power-users (teachers, etc).</dd>
+</dl>";
+
+$string["option"] = "Option";
+$string["optionname"] = "Title";
+$string['alternativeoptions'] = 'Options for this alternative';
+$string['alternativeoptions_help'] = 'Each alternative shows the user several options.
+These options are described in this form.
+If the title is not set, the option will not be created (but will be deleted if it existed).
+You can add new option with the button after these field sets.';
+$string["optionintro"] = "Description";
+$string["datecomment"] = "Date";
+$string["datecomment_help"] = "This field can contain any text, but it is meant for a date or a date interval.";
+$string["placesavail"] = "Available places";
+$string["groupdependent"] = "Group dependent";
+$string["groupdependent_help"] = "If this box is checked, the text show to each user will depend on his group.";
 
 $string['alternative'] = 'alternative';
 $string['pluginadministration'] = 'Alternative administration';
