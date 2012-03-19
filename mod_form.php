@@ -42,7 +42,7 @@ class mod_alternative_mod_form extends moodleform_mod {
     public function definition() {
         if (empty(self::$publicreg_types)) {
             self::$publicreg_types = array(
-                ALTERNATIVE_PUBLIREG_HIDDEN => get_string('hidden', 'alternative'),
+                ALTERNATIVE_PUBLIREG_PRIVATE => get_string('private', 'alternative'),
                 ALTERNATIVE_PUBLIREG_PUBLIC => get_string('public', 'alternative'),
                 ALTERNATIVE_PUBLIREG_GROUP => get_string('publicinsamegroup', 'alternative'),
             );
@@ -99,12 +99,12 @@ class mod_alternative_mod_form extends moodleform_mod {
         //-------------------------------------------------------------------------------
         $repeatarray = array();
         $repeatarray[] = &MoodleQuickForm::createElement('header', '', get_string('option', 'alternative').' {no}');
-        $repeatarray[] = &MoodleQuickForm::createElement('text', 'optionname', get_string('optionname', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('editor', 'optionintro', get_string('optionintro', 'alternative'), null, array('maxfiles'=>EDITOR_UNLIMITED_FILES, 'noclean'=>true)); // , 'context'=>$this->context
-        $repeatarray[] = &MoodleQuickForm::createElement('text', 'optiondatecomment', get_string('datecomment', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('text', 'optionplacesavail', get_string('placesavail', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('checkbox', 'optiongroupdependent', get_string('groupdependent', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('hidden', 'optionid', 0);
+        $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[name]', get_string('optionname', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('editor', 'option[intro]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean'=>true));
+        $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[datecomment]', get_string('datecomment', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[placesavail]', get_string('placesavail', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('checkbox', 'option[groupdependent]', get_string('groupdependent', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('hidden', 'option[id]', 0);
 
         if ($this->_instance){
             $repeatno = 1 + $DB->count_records('alternative_option', array('alternativeid' => $this->_instance));
@@ -113,16 +113,19 @@ class mod_alternative_mod_form extends moodleform_mod {
         }
 
         $repeateloptions = array();
-        $repeateloptions['optionplacesavail']['default'] = 0;
-        $repeateloptions['optionplacesavail']['rule'] = 'numeric';
 
-        $repeateloptions['option']['helpbutton'] = array('alternativeoptions', 'alternative');
-        $mform->setType('option', PARAM_CLEANHTML);
+        $this->repeat_elements($repeatarray, $repeatno, $repeateloptions, 'option_repeats', 'option_add_fields', 2);
 
-        $mform->setType('optionid', PARAM_INT);
-
-        $this->repeat_elements($repeatarray, $repeatno,
-                    $repeateloptions, 'option_repeats', 'option_add_fields', 2);
+        $mform->addHelpButton('option[name][0]', 'alternativeoptions', 'alternative');
+        $mform->addHelpButton('option[datecomment][0]', 'datecomment', 'alternative');
+        $mform->addHelpButton('option[groupdependent][0]', 'groupdependent', 'alternative');
+        for ($i = 0 ; $i < $repeatno ; $i++) {
+            $mform->setType("option[intro][$i]", PARAM_RAW);
+            $mform->setDefault("option[placesavail][$i]", 0);
+            $mform->addRule("option[placesavail][$i]", null, 'numeric');
+            $mform->setType("option[placesavail][$i]", PARAM_INT);
+            $mform->setType("option[id][$i]", PARAM_INT);
+        }
 
         //-------------------------------------------------------------------------------
         // add standard elements, common to all modules
