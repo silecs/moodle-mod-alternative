@@ -100,13 +100,14 @@ class mod_alternative_mod_form extends moodleform_mod {
         $repeatarray = array();
         $repeatarray[] = &MoodleQuickForm::createElement('header', '', get_string('option', 'alternative').' {no}');
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[name]', get_string('optionname', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('editor', 'option[introeditor]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => 0, 'noclean'=>true));
+        $repeatarray[] = &MoodleQuickForm::createElement('editor', 'option[introeditor]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => 0));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[datecomment]', get_string('datecomment', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[placesavail]', get_string('placesavail', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('checkbox', 'option[groupdependent]', get_string('groupdependent', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('hidden', 'option[id]', 0);
 
         if ($this->_instance){
+            global $DB;
             $repeatno = 1 + $DB->count_records('alternative_option', array('alternativeid' => $this->_instance));
         } else {
             $repeatno = 2;
@@ -145,8 +146,37 @@ class mod_alternative_mod_form extends moodleform_mod {
         foreach ($data->option['introeditor'] as $key => $intro) {
             $data->option['intro'][$key] = $intro['text'];
             $data->option['introformat'][$key] = $intro['format'];
-            unset($data->option['introeditor'][$key]);
         }
+        unset($data->option['introeditor']);
         return $data;
+    }
+
+    /**
+     * Called by moodleform_mod::set_data() as a pre-hook.
+     *
+     * @global type $DB
+     * @param type $default_values
+     * @return type
+     */
+    function data_preprocessing(&$default_values){
+        global $DB;
+        if (empty($this->_instance)) {
+            return;
+        }
+        $options = $DB->get_records('alternative_option',array('alternativeid' => $this->_instance));
+        if ($options) {
+            $fields = array('name', 'datecomment', 'placesavail', 'groupdependent', 'id');
+            $rank = 0;
+            foreach ($options as $key => $option){
+                foreach ($fields as $field) {
+                    $default_values["option[$field][$rank]"] = $option->$field;
+                }
+                $default_values["option[introeditor][$rank]"] = array(
+                    "text" => $option->intro,
+                    "format" => $option->introformat,
+                );
+                $rank++;
+            }
+        }
     }
 }
