@@ -47,8 +47,16 @@ define('ALTERNATIVE_PUBLIREG_GROUP', 2);
  */
 function alternative_supports($feature) {
     switch($feature) {
-        case FEATURE_MOD_INTRO:         return true;
-        case FEATURE_GRADE_HAS_GRADE:   return false;
+        //case FEATURE_GROUPS:                  return true;
+        //case FEATURE_GROUPINGS:               return true;
+        //case FEATURE_GROUPMEMBERSONLY:        return true;
+        case FEATURE_MOD_INTRO:               return true;
+        //case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
+        //case FEATURE_COMPLETION_HAS_RULES:    return true;
+        case FEATURE_GRADE_HAS_GRADE:         return false;
+        case FEATURE_GRADE_OUTCOMES:          return false;
+        //case FEATURE_BACKUP_MOODLE2:          return true;
+        //case FEATURE_SHOW_DESCRIPTION:        return true;
         default:                        return null;
     }
 }
@@ -70,9 +78,41 @@ function alternative_add_instance(stdClass $alternative, mod_alternative_mod_for
 
     $alternative->timecreated = time();
 
-    # You may have to add extra stuff in here #
+    if (empty($alternative->teamenable)) {
+        $alternative->teammin = 0;
+        $alternative->teammax = 0;
+    }
+    if (empty($alternative->multipleenable)) {
+        $alternative->multiplemin = 0;
+        $alternative->multiplemax = 0;
+    }
 
-    return $DB->insert_record('alternative', $alternative);
+    //var_dump($alternative); die();
+    $alternative->id = $DB->insert_record("alternative", $alternative);
+
+    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'groupdependent', 'id');
+    foreach ($alternative->option['name'] as $key => $name) {
+        if (!empty($name) && trim($name) !== '') {
+            $option = new stdClass();
+            $option->alternativeid = $alternative->id;
+            foreach ($fields as $field) {
+                if (isset($alternative->option[$field][$key])) {
+                    if (is_string($alternative->option[$field][$key])) {
+                        $option->$field = trim($alternative->option[$field][$key]);
+                    } else {
+                        $option->$field = $alternative->option[$field][$key];
+                    }
+                }
+            }
+            if (empty($option->id)) {
+                $option->timecreated = time();
+            }
+            $option->timemodified = time();
+            $DB->insert_record("alternative_option", $option);
+        }
+    }
+
+    return $alternative->id;
 }
 
 /**
@@ -92,7 +132,40 @@ function alternative_update_instance(stdClass $alternative, mod_alternative_mod_
     $alternative->timemodified = time();
     $alternative->id = $alternative->instance;
 
-    # You may have to add extra stuff in here #
+    if (empty($alternative->teamenable)) {
+        $alternative->teammin = 0;
+        $alternative->teammax = 0;
+    }
+    if (empty($alternative->multipleenable)) {
+        $alternative->multiplemin = 0;
+        $alternative->multiplemax = 0;
+    }
+
+    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'groupdependent', 'id');
+    foreach ($alternative->option['name'] as $key => $name) {
+        $exists_in_db = !empty($alternative->option['id'][$key]);
+        if (!empty($name) && trim($name) !== '') {
+            $option = new stdClass();
+            $option->alternativeid = $alternative->id;
+            foreach ($fields as $field) {
+                if (isset($alternative->option[$field][$key])) {
+                    $option->$field = trim($alternative->option[$field][$key]);
+                }
+            }
+            if (empty($option->id)) {
+                $option->timecreated = time();
+            }
+            $option->timemodified = time();
+            if ($exists_in_db) {
+                $DB->update_record("alternative_option", $option);
+            } else {
+                $DB->insert_record("alternative_option", $option);
+            }
+        } else if ($exists_in_db) {
+            $optionid = (int) $alternative->option['id'][$key];
+            $DB->delete_records("alternative_options", array("id" => $optionid));
+        }
+    }
 
     return $DB->update_record('alternative', $alternative);
 }
