@@ -87,7 +87,7 @@ if ($instructions) {
     echo "<ul>" . $OUTPUT->box($instructions, 'generalbox', 'alternativeinstructions') . "</ul>";
 }
 
-$form = alternative_options_form($alternative, $USER);
+$form = alternative_options_form($alternative, $USER->id);
 $form->display();
 
 echo "<dl>";
