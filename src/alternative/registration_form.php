@@ -45,20 +45,25 @@ class mod_alternative_registration_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
-        /// @todo adapter la syntaxe aux boutons radios
-        //$input = $this->_customdata['alternative']->multiplemin ? 'checkbox' : 'radio';
-        $input = 'checkbox';
+        $input = $this->_customdata['alternative']->multiplemin ? 'checkbox' : 'radio';
 
         foreach ($this->_customdata['options'] as $id => $option) {
             $mform->addElement('header', 'fieldset{$id}', $option->name);
-            $mform->addElement($input, "option[{$id}]", '', ' ' . $option->name);
-            $mform->setDefault("option[{$id}]", $option->registrationid);
+            if ($input === 'checkbox') {
+                $mform->addElement($input, "option[{$id}]", '', ' ' . $option->name, $id);
+                $mform->setDefault("option[{$id}]", $option->registrationid);
+            } else {
+                $mform->addElement($input, "option[]", '', ' ' . $option->name, $id);
+                if ($option->registrationid) {
+                    $mform->setDefault("option[]", $id);
+                }
+            }
             $mform->addElement('static', "optionintro[{$id}]", 'Description', format_text($option->intro, $option->introformat));
             if ($option->datecomment) {
                 $mform->addElement('static', 'datecomment', 'Date', $option->datecomment);
             }
             if ($option->placesavail) {
-                $mform->addElement('static', 'places', 'Places', "TODO");
+                $mform->addElement('static', 'places', 'Places', $option->placesavail . " (TODO)");
             }
             /**
              * @todo places dispo. Calcul différent si par équipe, avec un COUNT(DISTINCT teamleader)
