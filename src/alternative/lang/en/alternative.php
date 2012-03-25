@@ -48,8 +48,8 @@ $string['teammax'] = 'Max team size';
 $string["fieldsetmultiple"] = "Settings for multiple registrations";
 $string['multipleenable'] = 'Enable these settings';
 $string['multipleenable_help'] = 'Each user has to register several options, between the minimum and maximum values.';
-$string["multiplemax"] = "User min registrations";
-$string["multiplemin"] = "User max registrations";
+$string["multiplemin"] = "User min registrations";
+$string["multiplemax"] = "User max registrations";
 
 $string["public"] = "Public";
 $string["publicinsamegroup"] = "Public in the same group";
@@ -78,3 +78,9 @@ $string["groupdependent_help"] = "If this box is checked, the text show to each 
 $string['alternative'] = 'alternative';
 $string['pluginadministration'] = 'Alternative administration';
 $string['pluginname'] = 'alternative';
+
+$string['instructionsgeneral'] = "";
+$string['instructionsteam'] = 'You can register as a team. A team must have between {$a->teammin} and {$a->teammax} members.
+As you registered other members of your team, you will be the team leader.';
+$string['instructionsmultiple'] = 'You must choose between {$a->multiplemin} and {$a->multiplemax} options.';
+$string['instructionsmultiplenomax'] = 'You must choose at least {$a->multiplemin} options.';
