@@ -78,3 +78,24 @@ function alternative_options_occupied_places($alternative, $ignore_teams=false) 
         . 'WHERE alternativeid = ? GROUP BY optionid';
     return $DB->get_records_sql_menu($sql, array($alternative->id));
 }
+
+function alternative_table_registrations($alternative) {
+    global $DB;
+    $table = array();
+
+    return $table;
+}
+
+function alternative_table_users_reg($alternative) {
+    global $DB;
+    $table = array();
+
+    return $table;
+}
+
+function alternative_table_users_not_reg($alternative, $context) {
+    global $DB;
+    $table = array();
+
+    return $table;
+}
