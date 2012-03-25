@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/alternative/db" VERSION="20120316" COMMENT="XMLDB file for Moodle mod/alternative"
+<XMLDB PATH="mod/alternative/db" VERSION="20120325" COMMENT="XMLDB file for Moodle mod/alternative"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -68,17 +68,18 @@
     <TABLE NAME="alternative_registration" COMMENT="Records links between users and options" PREVIOUS="alternative_groupoption">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="optionid"/>
-        <FIELD NAME="optionid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on alternative_option.id" PREVIOUS="id" NEXT="userid"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on user.id" PREVIOUS="optionid" NEXT="teamleaderid"/>
-        <FIELD NAME="teamleaderid" TYPE="int" LENGTH="20" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on user.id" PREVIOUS="userid" NEXT="timecreated"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="teamleaderid" NEXT="timemodified"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
+        <FIELD NAME="optionid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on alternative_option.id" PREVIOUS="id" NEXT="alternativeid"/>
+        <FIELD NAME="alternativeid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Redundant field to avoid a join on alternative_option." PREVIOUS="optionid" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on user.id" PREVIOUS="alternativeid" NEXT="teamleaderid"/>
+        <FIELD NAME="teamleaderid" TYPE="int" LENGTH="20" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on user.id" PREVIOUS="userid" NEXT="timemodified"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="teamleaderid"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="option_fk"/>
         <KEY NAME="option_fk" TYPE="foreign" FIELDS="optionid" REFTABLE="alternative_option" REFFIELDS="id" PREVIOUS="primary" NEXT="user_fk"/>
         <KEY NAME="user_fk" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" PREVIOUS="option_fk" NEXT="teamleader_fk"/>
-        <KEY NAME="teamleader_fk" TYPE="foreign" FIELDS="teamleaderid" REFTABLE="user" REFFIELDS="id" PREVIOUS="user_fk"/>
+        <KEY NAME="teamleader_fk" TYPE="foreign" FIELDS="teamleaderid" REFTABLE="user" REFFIELDS="id" PREVIOUS="user_fk" NEXT="alternative_fk"/>
+        <KEY NAME="alternative_fk" TYPE="foreign" FIELDS="alternativeid" REFTABLE="alternative" REFFIELDS="id" PREVIOUS="teamleader_fk"/>
       </KEYS>
     </TABLE>
   </TABLES>
