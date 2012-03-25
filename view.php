@@ -69,6 +69,23 @@ if ($alternative->intro) { // Conditions to show the intro can change to look fo
 }
 
 echo $OUTPUT->heading("Options");
+$instructions = get_string('instructionsgeneral', 'alternative');
+if ($instructions) {
+    $instructions .= "<li>" . $instructions . "</li>";
+}
+if ($alternative->teammin) {
+    $instructions .= "<li>" . get_string('instructionsteam', 'alternative', $alternative) . "</li>";
+}
+if ($alternative->multiplemin) {
+    if (!$alternative->multiplemax) {
+        $instructions .= "<li>" . get_string('instructionsmultiplenomax', 'alternative', $alternative) . "</li>";
+    } else {
+        $instructions .= "<li>" . get_string('instructionsmultiple', 'alternative', $alternative) . "</li>";
+    }
+}
+if ($instructions) {
+    echo "<ul>" . $OUTPUT->box($instructions, 'generalbox', 'alternativeinstructions') . "</ul>";
+}
 echo "<dl>";
 $options = $DB->get_records('alternative_option', array('alternativeid' => $alternative->id));
 foreach ($options as $option) {
