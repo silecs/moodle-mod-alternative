@@ -27,12 +27,32 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+
+require dirname(__FILE__) . '/lib.php';
+require dirname(__FILE__) . '/registration_form.php';
+
+////////////////////////////////////////////////////////////////////////////////
+// Custom functions                                                           //
+////////////////////////////////////////////////////////////////////////////////
+
 /**
- * Does something really useful with the passed things
+ * Returns the form from which one can choose options.
  *
- * @param array $things
- * @return object
+ * @global type $DB
+ * @param type $alternative
+ * @param type $user
+ * @return \mod_alternative_registration_form
  */
-//function alternative_do_something_useful(array $things) {
-//    return new stdClass();
-//}
+function alternative_options_form($alternative, $user) {
+    global $DB;
+    $sql = 'SELECT alternative_option.*, alternative_registration.id AS registrationid '
+        . 'FROM alternative_option '
+        . 'LEFT OUTER JOIN alternative_registration '
+        . 'ON (alternative_option.id = alternative_registration.optionid AND alternative_registration.userid = ?) '
+        . 'WHERE alternativeid = ?';
+    $options = $DB->get_records_sql($sql, array($user->id, $alternative->id));
+    return new mod_alternative_registration_form(
+        null,
+        array('alternative' => $alternative, 'options' => $options)
+    );
+}
