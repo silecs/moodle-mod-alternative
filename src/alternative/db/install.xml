@@ -49,8 +49,9 @@
     <TABLE NAME="alternative_groupoption" COMMENT="Completes alternative_option if its groupdependent=1" PREVIOUS="alternative_option" NEXT="alternative_registration">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="optionid"/>
-        <FIELD NAME="optionid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on alternative_option.id" PREVIOUS="id" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on group.id" PREVIOUS="optionid" NEXT="hidden"/>
+        <FIELD NAME="optionid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on alternative_option.id" PREVIOUS="id" NEXT="alternativeid"/>
+        <FIELD NAME="alternativeid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Redundant field to avoid a join on alternative_option." PREVIOUS="optionid" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on group.id" PREVIOUS="alternativeid" NEXT="hidden"/>
         <FIELD NAME="hidden" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if users from this group cannot access this option" PREVIOUS="groupid" NEXT="intro"/>
         <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Description of this option" PREVIOUS="hidden" NEXT="introformat"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="datecomment"/>
@@ -61,8 +62,9 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="option_fk"/>
-        <KEY NAME="option_fk" TYPE="foreign" FIELDS="optionid" REFTABLE="alternative_option" REFFIELDS="id" PREVIOUS="primary" NEXT="group_fk"/>
-        <KEY NAME="group_fk" TYPE="foreign" FIELDS="groupid" REFTABLE="group" REFFIELDS="id" PREVIOUS="option_fk"/>
+        <KEY NAME="option_fk" TYPE="foreign" FIELDS="optionid" REFTABLE="alternative_option" REFFIELDS="id" PREVIOUS="primary" NEXT="alternative_fk"/>
+        <KEY NAME="alternative_fk" TYPE="foreign" FIELDS="alternativeid" REFTABLE="alternative" REFFIELDS="id" PREVIOUS="option_fk" NEXT="group_fk"/>
+        <KEY NAME="group_fk" TYPE="foreign" FIELDS="groupid" REFTABLE="group" REFFIELDS="id" PREVIOUS="alternative_fk"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="alternative_registration" COMMENT="Records links between users and options" PREVIOUS="alternative_groupoption">
