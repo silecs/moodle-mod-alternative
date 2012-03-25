@@ -45,6 +45,7 @@ class mod_alternative_registration_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
+        $mform->addElement('hidden', 'a', $this->_customdata['alternative']->id);
         $input = $this->_customdata['alternative']->multiplemin ? 'checkbox' : 'radio';
 
         foreach ($this->_customdata['options'] as $id => $option) {
@@ -53,9 +54,9 @@ class mod_alternative_registration_form extends moodleform {
                 $mform->addElement($input, "option[{$id}]", '', ' ' . $option->name, $id);
                 $mform->setDefault("option[{$id}]", $option->registrationid);
             } else {
-                $mform->addElement($input, "option[]", '', ' ' . $option->name, $id);
+                $mform->addElement($input, "option", '', ' ' . $option->name, $id);
                 if ($option->registrationid) {
-                    $mform->setDefault("option[]", $id);
+                    $mform->setDefault("option", $id);
                 }
             }
             $mform->addElement('static', "optionintro[{$id}]", 'Description', format_text($option->intro, $option->introformat));
@@ -71,5 +72,34 @@ class mod_alternative_registration_form extends moodleform {
         }
         //-------------------------------------------------------------------------------
         $this->add_action_buttons();
+    }
+
+    public function save_to_db($userid) {
+        global $DB;
+
+        $data = $this->get_data();
+        if (empty($data) or empty($data->option)) {
+            return false;
+        }
+        if (!is_array($data->option)) {
+            $data->option = array((int) $data->option => 1);
+        }
+
+        // clean old registration
+        $aid = $this->_customdata['alternative']->id;
+        $DB->delete_records('alternative_registration', array('alternativeid' => $aid, 'userid' => $userid));
+
+        $ok = true;
+        foreach ($data->option as $id => $val) {
+            $id = (int) $id;
+            if ($id) {
+                $reg = array(
+                    'optionid' => $id, 'alternativeid' => $aid,
+                    'userid' => $userid, 'teamleader' => null, 'timemodified' => time()
+                );
+                $ok = $ok && $DB->insert_record('alternative_registration', $reg);
+            }
+        }
+        return $ok;
     }
 }
