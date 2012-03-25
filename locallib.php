@@ -38,19 +38,19 @@ require dirname(__FILE__) . '/registration_form.php';
 /**
  * Returns the form from which one can choose options.
  *
- * @global type $DB
- * @param type $alternative
- * @param type $user
+ * @global \moodle_db $DB
+ * @param object $alternative
+ * @param int $userid
  * @return \mod_alternative_registration_form
  */
-function alternative_options_form($alternative, $user) {
+function alternative_options_form($alternative, $userid) {
     global $DB;
     $sql = 'SELECT alternative_option.*, alternative_registration.id AS registrationid '
         . 'FROM alternative_option '
         . 'LEFT OUTER JOIN alternative_registration '
         . 'ON (alternative_option.id = alternative_registration.optionid AND alternative_registration.userid = ?) '
         . 'WHERE alternativeid = ?';
-    $options = $DB->get_records_sql($sql, array($user->id, $alternative->id));
+    $options = $DB->get_records_sql($sql, array($userid, $alternative->id));
     return new mod_alternative_registration_form(
         null,
         array('alternative' => $alternative, 'options' => $options)
