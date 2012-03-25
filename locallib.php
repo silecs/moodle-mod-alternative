@@ -45,11 +45,11 @@ require dirname(__FILE__) . '/registration_form.php';
  */
 function alternative_options_form($alternative, $userid) {
     global $DB;
-    $sql = 'SELECT alternative_option.*, alternative_registration.id AS registrationid '
-        . 'FROM alternative_option '
-        . 'LEFT OUTER JOIN alternative_registration '
-        . 'ON (alternative_option.id = alternative_registration.optionid AND alternative_registration.userid = ?) '
-        . 'WHERE alternativeid = ?';
+    $sql = 'SELECT ao.*, ar.id AS registrationid '
+        . 'FROM {alternative_option} AS ao '
+        . 'LEFT OUTER JOIN {alternative_registration} AS ar '
+        . 'ON (ao.id = ar.optionid AND ar.userid = ?) '
+        . 'WHERE ao.alternativeid = ?';
     $options = $DB->get_records_sql($sql, array($userid, $alternative->id));
     return new mod_alternative_registration_form(
         null,
