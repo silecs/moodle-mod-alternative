@@ -86,6 +86,10 @@ if ($alternative->multiplemin) {
 if ($instructions) {
     echo "<ul>" . $OUTPUT->box($instructions, 'generalbox', 'alternativeinstructions') . "</ul>";
 }
+
+$form = alternative_options_form($alternative, $USER);
+$form->display();
+
 echo "<dl>";
 $options = $DB->get_records('alternative_option', array('alternativeid' => $alternative->id));
 foreach ($options as $option) {

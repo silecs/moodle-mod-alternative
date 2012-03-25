@@ -34,6 +34,8 @@ define('ALTERNATIVE_PUBLIREG_PRIVATE', 0);
 define('ALTERNATIVE_PUBLIREG_PUBLIC', 1);
 define('ALTERNATIVE_PUBLIREG_GROUP', 2);
 
+require dirname(__FILE__) . '/registration_form.php';
+
 ////////////////////////////////////////////////////////////////////////////////
 // Moodle core API                                                            //
 ////////////////////////////////////////////////////////////////////////////////
@@ -455,4 +457,23 @@ function alternative_extend_navigation(navigation_node $navref, stdclass $course
  * @param navigation_node $alternativenode {@link navigation_node}
  */
 function alternative_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $alternativenode=null) {
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Custom functions                                                           //
+////////////////////////////////////////////////////////////////////////////////
+
+function alternative_options_form($alternative, $user) {
+    global $DB;
+    $sql = 'SELECT alternative_option.*, alternative_registration.id AS registrationid '
+        . 'FROM alternative_option '
+        . 'LEFT OUTER JOIN alternative_registration '
+        . 'ON (alternative_option.id = alternative_registration.optionid AND alternative_registration.userid = ?) '
+        . 'WHERE alternativeid = ?';
+    $options = $DB->get_records_sql($sql, array($user->id, $alternative->id));
+    return new mod_alternative_registration_form(
+        null,
+        array('alternative' => $alternative, 'options' => $options)
+    );
 }
