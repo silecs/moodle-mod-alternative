@@ -29,14 +29,14 @@ require_once(dirname(dirname(dirname($_SERVER["SCRIPT_FILENAME"]))).'/config.php
 require_once(dirname(__FILE__) . "/locallib.php");
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$a  = optional_param('n', 0, PARAM_INT);  // alternative instance ID - it should be named as the first character of the module
+$a  = optional_param('a', 0, PARAM_INT);  // alternative instance ID
 
 if ($id) {
     $cm         = get_coursemodule_from_id('alternative', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $alternative  = $DB->get_record('alternative', array('id' => $cm->instance), '*', MUST_EXIST);
-} elseif ($n) {
-    $alternative  = $DB->get_record('alternative', array('id' => $n), '*', MUST_EXIST);
+} elseif ($a) {
+    $alternative  = $DB->get_record('alternative', array('id' => $a), '*', MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $alternative->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance('alternative', $alternative->id, $course->id, false, MUST_EXIST);
 } else {
@@ -60,8 +60,24 @@ $PAGE->set_context($context);
 //$PAGE->set_focuscontrol('some-html-id');
 //$PAGE->add_body_class('alternative-'.$somevar);
 
-// Output starts here
-echo $OUTPUT->header();
+$form = alternative_options_form($alternative, $USER->id);
+
+if (!$form->is_cancelled() and $form->is_submitted() and $form->is_validated()) {
+    if (!is_enrolled($context, NULL, 'mod/alternative:choose') or !confirm_sesskey()) {
+        echo $OUTPUT->notification(get_string('registrationforbidden', 'alternative'), 'notifyfailure');
+    } else {
+        if ($form->save_to_db($USER->id)) {
+            echo $OUTPUT->header();
+            echo $OUTPUT->notification(get_string('registrationsaved', 'alternative'), 'notifysuccess');
+            add_to_log($course->id, "alternative", "update registration", "view.php?id=$cm->id", $alternative->id, $cm->id);
+        } else {
+            echo $OUTPUT->header();
+            echo $OUTPUT->notification(get_string('registrationnotsaved', 'alternative'), 'notifyfailure');
+        }
+    }
+} else {
+    echo $OUTPUT->header();
+}
 
 echo $OUTPUT->heading($alternative->name);
 if ($alternative->intro) { // Conditions to show the intro can change to look for own settings or whatever
@@ -87,7 +103,6 @@ if ($instructions) {
     echo "<ul>" . $OUTPUT->box($instructions, 'generalbox', 'alternativeinstructions') . "</ul>";
 }
 
-$form = alternative_options_form($alternative, $USER->id);
 $form->display();
 
 echo "<dl>";
