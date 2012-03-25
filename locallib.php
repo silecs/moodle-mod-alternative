@@ -56,3 +56,25 @@ function alternative_options_form($alternative, $userid) {
         array('alternative' => $alternative, 'options' => $options)
     );
 }
+
+/**
+ * Returns an assoc array: optionid => occupied_places.
+ *
+ * If team reg is enable, each team count for one place.
+ *
+ * @global \moodle_db $DB
+ * @param object $alternative
+ * @param boolean $ignore_teams (opt) Force to ignore teams and count users.
+ * @return array assoc array: optionid => occupied_places.
+ */
+function alternative_options_occupied_places($alternative, $ignore_teams=false) {
+    global $DB;
+    if ($alternative->teammin and !$ignore_teams) {
+        $countable = "DISTINCT teamleaderid";
+    } else {
+        $countable = "*";
+    }
+    $sql = "SELECT optionid, count($countable) FROM {alternative_registration} "
+        . 'WHERE alternativeid = ? GROUP BY optionid';
+    return $DB->get_records_sql_menu($sql, array($alternative->id));
+}

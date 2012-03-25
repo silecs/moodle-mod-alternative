@@ -38,6 +38,13 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
  * Module instance settings form
  */
 class mod_alternative_registration_form extends moodleform {
+    public function __construct($action=null, $customdata=null) {
+        if (!isset($customdata['alternative']->id)) {
+            print_error('invalidform');
+        }
+        $customdata['occupied'] = alternative_options_occupied_places($customdata['alternative']);
+        parent::moodleform($action, $customdata);
+    }
 
     /**
      * Defines forms elements
@@ -47,6 +54,8 @@ class mod_alternative_registration_form extends moodleform {
 
         $mform->addElement('hidden', 'a', $this->_customdata['alternative']->id);
         $input = $this->_customdata['alternative']->multiplemin ? 'checkbox' : 'radio';
+
+        $occupied = $this->_customdata['occupied'];
 
         foreach ($this->_customdata['options'] as $id => $option) {
             $mform->addElement('header', 'fieldset{$id}', $option->name);
@@ -64,11 +73,9 @@ class mod_alternative_registration_form extends moodleform {
                 $mform->addElement('static', 'datecomment', 'Date', $option->datecomment);
             }
             if ($option->placesavail) {
-                $mform->addElement('static', 'places', 'Places', $option->placesavail . " (TODO)");
+                $avail = $option->placesavail - (empty($occupied[$id]) ? 0 : $occupied[$id]);
+                $mform->addElement('static', 'places', 'Places', $avail);
             }
-            /**
-             * @todo places dispo. Calcul différent si par équipe, avec un COUNT(DISTINCT teamleader)
-             */
         }
         //-------------------------------------------------------------------------------
         $this->add_action_buttons();
@@ -95,7 +102,7 @@ class mod_alternative_registration_form extends moodleform {
             if ($id) {
                 $reg = array(
                     'optionid' => $id, 'alternativeid' => $aid,
-                    'userid' => $userid, 'teamleader' => null, 'timemodified' => time()
+                    'userid' => $userid, 'teamleaderid' => null, 'timemodified' => time()
                 );
                 $ok = $ok && $DB->insert_record('alternative_registration', $reg);
             }
