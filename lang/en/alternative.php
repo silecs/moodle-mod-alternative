@@ -85,3 +85,5 @@ As you registered other members of your team, you will be the team leader.';
 $string['instructionsmultiple'] = 'You must choose between {$a->multiplemin} and {$a->multiplemax} options.';
 $string['instructionsmultiplenomax'] = 'You must choose at least {$a->multiplemin} options.';
 $string['registrationsaved'] = 'Your registration choice was saved.';
+
+$string['userinfo'] = 'Has registered to {$a} options.';

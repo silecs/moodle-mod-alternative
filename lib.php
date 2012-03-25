@@ -187,8 +187,9 @@ function alternative_delete_instance($id) {
         return false;
     }
 
-    # Delete any dependent records here #
-
+    $DB->delete_records('alternative_registration', array('alternativeid' => $alternative->id));
+    $DB->delete_records('alternative_groupoption', array('alternativeid' => $alternative->id));
+    $DB->delete_records('alternative_option', array('alternativeid' => $alternative->id));
     $DB->delete_records('alternative', array('id' => $alternative->id));
 
     return true;
@@ -204,10 +205,16 @@ function alternative_delete_instance($id) {
  * @return stdClass|null
  */
 function alternative_user_outline($course, $user, $mod, $alternative) {
-
+    global $DB;
     $return = new stdClass();
     $return->time = 0;
     $return->info = '';
+    $c = $DB->count_records('alternative_registration', array('alternativeid' => $aid, 'userid' => $userid));
+    if ($c) {
+        $return->info = get_string('userinfo', 'alternative', $c);
+        $r = $DB->get_record('alternative_registration', array('alternativeid' => $aid, 'userid' => $userid));
+        $return->time = $r->timemodified;
+    }
     return $return;
 }
 
@@ -222,6 +229,7 @@ function alternative_user_outline($course, $user, $mod, $alternative) {
  * @return void, is supposed to echp directly
  */
 function alternative_user_complete($course, $user, $mod, $alternative) {
+    /** @todo complete alternative_user_complete() */
 }
 
 /**
@@ -287,6 +295,7 @@ function alternative_cron () {
  * @return boolean|array false if no participants, array of objects otherwise
  */
 function alternative_get_participants($alternativeid) {
+    /** @todo complete alternative_get_participants() */
     return false;
 }
 
@@ -316,14 +325,7 @@ function alternative_get_extra_capabilities() {
  * @return bool true if the scale is used by the given alternative instance
  */
 function alternative_scale_used($alternativeid, $scaleid) {
-    global $DB;
-
-    /** @example */
-    if ($scaleid and $DB->record_exists('alternative', array('id' => $alternativeid, 'grade' => -$scaleid))) {
-        return true;
-    } else {
-        return false;
-    }
+    return false;
 }
 
 /**
@@ -335,14 +337,7 @@ function alternative_scale_used($alternativeid, $scaleid) {
  * @return boolean true if the scale is used by any alternative instance
  */
 function alternative_scale_used_anywhere($scaleid) {
-    global $DB;
-
-    /** @example */
-    if ($scaleid and $DB->record_exists('alternative', array('grade' => -$scaleid))) {
-        return true;
-    } else {
-        return false;
-    }
+    return false;
 }
 
 /**
@@ -354,17 +349,7 @@ function alternative_scale_used_anywhere($scaleid) {
  * @return void
  */
 function alternative_grade_item_update(stdClass $alternative) {
-    global $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
-
-    /** @example */
-    $item = array();
-    $item['itemname'] = clean_param($alternative->name, PARAM_NOTAGS);
-    $item['gradetype'] = GRADE_TYPE_VALUE;
-    $item['grademax']  = $alternative->grade;
-    $item['grademin']  = 0;
-
-    grade_update('mod/alternative', $alternative->course, 'mod', 'alternative', $alternative->id, 0, null, $item);
+    return false;
 }
 
 /**
@@ -377,13 +362,7 @@ function alternative_grade_item_update(stdClass $alternative) {
  * @return void
  */
 function alternative_update_grades(stdClass $alternative, $userid = 0) {
-    global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
-
-    /** @example */
-    $grades = array(); // populate array of grade objects indexed by userid
-
-    grade_update('mod/alternative', $alternative->course, 'mod', 'alternative', $alternative->id, 0, $grades);
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -417,14 +396,6 @@ function alternative_get_file_areas($course, $cm, $context) {
  * @return void this should never return to the caller
  */
 function alternative_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload) {
-    global $DB, $CFG;
-
-    if ($context->contextlevel != CONTEXT_MODULE) {
-        send_file_not_found();
-    }
-
-    require_login($course, true, $cm);
-
     send_file_not_found();
 }
 
