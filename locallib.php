@@ -36,6 +36,28 @@ require dirname(__FILE__) . '/registration_form.php';
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Gets a full alternative record, with included options.
+ *
+ * @param int $id
+ * @return object The object or null.
+ */
+function alternative_get_alternative($id, $withoptions=true) {
+    global $DB;
+    $alternative = $DB->get_record("alternative", array("id" => $id));
+    if ($alternative && $withoptions) {
+        $options = $DB->get_records("alternative_option", array("alternativeid" => $id), "id");
+        if ($options) {
+            foreach ($options as $option) {
+                $alternative->option[$option->id] = $option;
+            }
+        }
+    } else {
+        $alternative = null;
+    }
+    return $alternative;
+}
+
+/**
  * Returns the form from which one can choose options.
  *
  * @global \moodle_db $DB
