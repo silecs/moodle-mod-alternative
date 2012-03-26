@@ -88,3 +88,10 @@ $string['instructionsmultiplenomax'] = 'You must choose at least {$a->multiplemi
 $string['registrationsaved'] = 'Your registration choice was saved.';
 
 $string['userinfo'] = 'Has registered to {$a} options.';
+
+$string['viewallregistrations'] = 'View registrations';
+$string['viewallusersreg'] = 'View users registrated';
+$string['viewallusersnotreg'] = 'View users not registrated';
+$string['registrations'] = 'Registrations';
+$string['usersreg'] = 'Registered users';
+$string['usersnotreg'] = 'Not registered users';
