@@ -68,7 +68,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $this->add_intro_editor();
 
         //-------------------------------------------------------------------------------
-        $mform->addElement('checkbox', 'changeallowed', get_string('changeallowed', 'alternative'));
+        $mform->addElement('advcheckbox', 'changeallowed', get_string('changeallowed', 'alternative'));
         $mform->setDefault('changeallowed', 1);
         $mform->addHelpButton('changeallowed', 'changeallowed', 'alternative');
 
@@ -103,7 +103,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $repeatarray[] = &MoodleQuickForm::createElement('editor', 'option[introeditor]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => 0));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[datecomment]', get_string('datecomment', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[placesavail]', get_string('placesavail', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('checkbox', 'option[groupdependent]', get_string('groupdependent', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('advcheckbox', 'option[groupdependent]', get_string('groupdependent', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('hidden', 'option[id]', 0);
 
         if ($this->_instance){
