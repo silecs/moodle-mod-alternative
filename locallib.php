@@ -130,23 +130,48 @@ function alternative_print_instructions($alternative) {
     }
 }
 
+/**
+ * @todo code this function!
+ *
+ * @global \moodle_db $DB
+ * @param object $alternative
+ * @return \html_table
+ */
 function alternative_table_registrations($alternative) {
     global $DB;
-    $table = array();
-
-    return $table;
+    $t = new html_table();
+    $t->head = array('dummy1', 'dummy2');
+    $t->data = array(array('X', 'Y'));
+    return $t;
 }
 
+/**
+ * @todo code this function!
+ *
+ * @global \moodle_db $DB
+ * @param object $alternative
+ * @return \html_table
+ */
 function alternative_table_users_reg($alternative) {
     global $DB;
-    $table = array();
-
-    return $table;
+    $t = new html_table();
+    $t->head = array('dummy1', 'dummy2');
+    $t->data = array(array('X', 'Y'));
+    return $t;
 }
 
+/**
+ * @todo code this function!
+ *
+ * @global \moodle_db $DB
+ * @param object $alternative
+ * @param int $context
+ * @return \html_table
+ */
 function alternative_table_users_not_reg($alternative, $context) {
     global $DB;
-    $table = array();
-
-    return $table;
+    $t = new html_table();
+    $t->head = array('dummy1', 'dummy2');
+    $t->data = array(array('X', 'Y'));
+    return $t;
 }

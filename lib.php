@@ -426,4 +426,19 @@ function alternative_extend_navigation(navigation_node $navref, stdclass $course
  * @param navigation_node $alternativenode {@link navigation_node}
  */
 function alternative_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $alternativenode=null) {
+    global $PAGE;
+    if (has_capability('mod/alternative:viewregistrations', $PAGE->cm->context)) {
+        $alternativenode->add(
+            get_string("viewallregistrations", "alternative"),
+            new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id))
+        );
+        $alternativenode->add(
+            get_string("viewallusersreg", "alternative"),
+            new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id, 'table' => 'users-reg'))
+        );
+        $alternativenode->add(
+            get_string("viewallusersnotreg", "alternative"),
+            new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id, 'table' => 'users-not-reg'))
+        );
+    }
 }
