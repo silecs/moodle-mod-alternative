@@ -90,6 +90,9 @@ function alternative_print_instructions($alternative) {
     if ($instructions) {
         $instructions .= "<li>" . $instructions . "</li>";
     }
+    if (!$alternative->changeallowed) {
+        $instructions .= "<li>" . get_string('instructionsnochange', 'alternative', $alternative) . "</li>";
+    }
     if ($alternative->teammin) {
         $instructions .= "<li>" . get_string('instructionsteam', 'alternative', $alternative) . "</li>";
     }
