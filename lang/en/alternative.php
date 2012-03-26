@@ -79,7 +79,8 @@ $string['alternative'] = 'alternative';
 $string['pluginadministration'] = 'Alternative administration';
 $string['pluginname'] = 'alternative';
 
-$string['instructionsgeneral'] = "";
+$string['instructionsgeneral'] = '';
+$string['instructionsnochange'] = 'Once a choice is saved, changing it will not be allowed.';
 $string['instructionsteam'] = 'You can register as a team. A team must have between {$a->teammin} and {$a->teammax} members.
 As you registered other members of your team, you will be the team leader.';
 $string['instructionsmultiple'] = 'You must choose between {$a->multiplemin} and {$a->multiplemax} options.';
