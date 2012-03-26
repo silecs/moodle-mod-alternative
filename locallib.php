@@ -50,6 +50,7 @@ function alternative_get_alternative($id, $withoptions=true) {
             foreach ($options as $option) {
                 $alternative->option[$option->id] = $option;
             }
+            /** @todo add a field 'placesoccupied' and simplify code elsewhere */
         }
     } else {
         $alternative = null;
@@ -130,48 +131,23 @@ function alternative_print_instructions($alternative) {
     }
 }
 
-/**
- * @todo code this function!
- *
- * @global \moodle_db $DB
- * @param object $alternative
- * @return \html_table
- */
 function alternative_table_registrations($alternative) {
     global $DB;
-    $t = new html_table();
-    $t->head = array('dummy1', 'dummy2');
-    $t->data = array(array('X', 'Y'));
-    return $t;
+    $table = array();
+
+    return $table;
 }
 
-/**
- * @todo code this function!
- *
- * @global \moodle_db $DB
- * @param object $alternative
- * @return \html_table
- */
 function alternative_table_users_reg($alternative) {
     global $DB;
-    $t = new html_table();
-    $t->head = array('dummy1', 'dummy2');
-    $t->data = array(array('X', 'Y'));
-    return $t;
+    $table = array();
+
+    return $table;
 }
 
-/**
- * @todo code this function!
- *
- * @global \moodle_db $DB
- * @param object $alternative
- * @param int $context
- * @return \html_table
- */
 function alternative_table_users_not_reg($alternative, $context) {
     global $DB;
-    $t = new html_table();
-    $t->head = array('dummy1', 'dummy2');
-    $t->data = array(array('X', 'Y'));
-    return $t;
+    $table = array();
+
+    return $table;
 }
