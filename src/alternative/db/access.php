@@ -43,7 +43,7 @@ $capabilities = array(
         )
     ),
     'mod/alternative:viewregistrations' => array(
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
             'guest' => CAP_PROHIBIT,
