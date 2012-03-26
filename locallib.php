@@ -79,6 +79,32 @@ function alternative_options_occupied_places($alternative, $ignore_teams=false) 
     return $DB->get_records_sql_menu($sql, array($alternative->id));
 }
 
+/**
+ * Prints the HTML for the instructions to display above options.
+ *
+ * @param type $alternative
+ */
+function alternative_print_instructions($alternative) {
+    global $OUTPUT;
+    $instructions = get_string('instructionsgeneral', 'alternative');
+    if ($instructions) {
+        $instructions .= "<li>" . $instructions . "</li>";
+    }
+    if ($alternative->teammin) {
+        $instructions .= "<li>" . get_string('instructionsteam', 'alternative', $alternative) . "</li>";
+    }
+    if ($alternative->multiplemin) {
+        if (!$alternative->multiplemax) {
+            $instructions .= "<li>" . get_string('instructionsmultiplenomax', 'alternative', $alternative) . "</li>";
+        } else {
+            $instructions .= "<li>" . get_string('instructionsmultiple', 'alternative', $alternative) . "</li>";
+        }
+    }
+    if ($instructions) {
+        echo $OUTPUT->box("<ul>" . $instructions . "</ul>", 'generalbox', 'alternativeinstructions');
+    }
+}
+
 function alternative_table_registrations($alternative) {
     global $DB;
     $table = array();
