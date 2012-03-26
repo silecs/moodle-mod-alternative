@@ -103,6 +103,10 @@ if ($instructions) {
     echo "<ul>" . $OUTPUT->box($instructions, 'generalbox', 'alternativeinstructions') . "</ul>";
 }
 
+if (!$alternative->changeallowed && $form->is_registered()
+    && !has_capability('mod/alternative:forceregistrations', $context)) {
+    $form->freeze();
+}
 $form->display();
 
 echo "<dl>";
