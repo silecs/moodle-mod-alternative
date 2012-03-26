@@ -31,6 +31,12 @@ require_once(dirname(__FILE__) . "/locallib.php");
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $a  = optional_param('a', 0, PARAM_INT);  // alternative instance ID
 
+/**
+ * @todo use alternative_get_alternative() and simplify the code here and in the form.
+ * @todo if the user has the capability 'force...', allow him to choose a registered user
+ * @todo by group display
+ */
+
 if ($id) {
     $cm         = get_coursemodule_from_id('alternative', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);

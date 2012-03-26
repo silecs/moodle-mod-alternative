@@ -30,6 +30,10 @@ require_once(dirname(__FILE__) . "/locallib.php");
 
 $id = required_param('id', PARAM_INT);
 $table = optional_param('table', 'registrations', PARAM_ALPHA);
+/**
+ * @todo handle a 'download' param
+ * @todo allow partial access if $alternative->publicreg
+ */
 
 $cm = get_coursemodule_from_id('alternative', $id);
 if (!$cm) {
