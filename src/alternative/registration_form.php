@@ -38,6 +38,8 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
  * Module instance settings form
  */
 class mod_alternative_registration_form extends moodleform {
+    private $user_has_registered = false;
+
     public function __construct($action=null, $customdata=null) {
         if (!isset($customdata['alternative']->id)) {
             print_error('invalidform');
@@ -76,9 +78,20 @@ class mod_alternative_registration_form extends moodleform {
                 $avail = $option->placesavail - (empty($occupied[$id]) ? 0 : $occupied[$id]);
                 $mform->addElement('static', 'places', 'Places', $avail);
             }
+            if ($option->registrationid) {
+                $this->user_has_registered = true;
+            }
         }
         //-------------------------------------------------------------------------------
         $this->add_action_buttons();
+    }
+
+    public function freeze() {
+        $this->_form->freeze();
+    }
+
+    public function is_registered() {
+        return $this->user_has_registered;
     }
 
     public function save_to_db($userid) {
@@ -106,6 +119,9 @@ class mod_alternative_registration_form extends moodleform {
                 );
                 $ok = $ok && $DB->insert_record('alternative_registration', $reg);
             }
+        }
+        if ($ok) {
+            $this->user_has_registered = true;
         }
         return $ok;
     }
