@@ -140,8 +140,9 @@ function alternative_print_instructions($alternative) {
  */
 function alternative_table_registrations($alternative) {
     global $DB;
+    var_dump($alternative);
     $t = new html_table();
-    $t->head = array('dummy1', 'dummy2');
+    $t->head = array('dummy12', 'dummy24');
     $t->data = array(array('X', 'Y'));
     return $t;
 }
