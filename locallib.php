@@ -140,10 +140,22 @@ function alternative_print_instructions($alternative) {
  */
 function alternative_table_registrations($alternative) {
     global $DB;
-    var_dump($alternative);
+    // var_dump($alternative);
+    $sql = "SELECT u.firstname, u.lastname, ao.name, ar.timemodified "
+         . "FROM {user} AS u "
+         . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
+         . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
+         . "WHERE ao.alternativeid = " . $alternative->id ;
+    echo $sql ;
+    $result = $DB->get_records_sql($sql);
     $t = new html_table();
-    $t->head = array('dummy12', 'dummy24');
-    $t->data = array(array('X', 'Y'));
+    $t->head = array('Lastname', 'Firstname', 'Date');
+    $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
+
+    foreach ($result as $line) {
+        $t->data[] = array($line->lastname, $line->firstname, userdate($line->timemodified), $line->name);
+    }
+
     return $t;
 }
 
