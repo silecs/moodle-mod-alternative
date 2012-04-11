@@ -54,14 +54,15 @@ if (!$alternative = alternative_get_alternative($cm->instance)) {
 
 add_to_log($course->id, 'alternative', 'view', "report.php?id={$id}&table={$table}", $alternative->name, $cm->id);
 
+//die("->".$table."<-");
 switch ($table) {
-    case 'users-reg':
+    case 'usersreg': // FIXME users-reg
         $heading = get_string('usersreg', 'alternative');
-        $report = alternative_table_registrations($alternative);
+        $report = alternative_table_users_reg($alternative);
         break;
-    case 'users-not-reg':
+    case 'usersnotreg': //FIXME users-not-reg
         $heading = get_string('usersnotreg', 'alternative');
-        $report = alternative_table_registrations($alternative);
+        $report = alternative_table_users_not_reg($alternative);
         break;
     case 'registrations':
     default:
