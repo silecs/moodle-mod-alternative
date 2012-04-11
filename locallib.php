@@ -132,8 +132,6 @@ function alternative_print_instructions($alternative) {
 }
 
 /**
- * @todo code this function!
- *
  * @global \moodle_db $DB
  * @param object $alternative
  * @return \html_table
@@ -168,8 +166,6 @@ function alternative_table_registrations($alternative) {
 }
 
 /**
- * @todo code this function!
- *
  * @global \moodle_db $DB
  * @param object $alternative
  * @return \html_table
@@ -177,18 +173,21 @@ function alternative_table_registrations($alternative) {
 function alternative_table_users_reg($alternative) {
     global $DB;
     $t = new html_table();
-    $sql = "SELECT u.firstname, u.lastname, ao.name, ar.timemodified "
+    $sql = "SELECT u.firstname, u.lastname, ao.name, ar.timemodified, CONCAT(tl.firstname, ' ',tl.lastname) AS leader "
          . "FROM {user} AS u "
          . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
          . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
-         . "WHERE ao.alternativeid = " . $alternative->id ;
-    $result = $DB->get_records_sql($sql);
+         . "LEFT JOIN {user} AS tl ON (ar.teamleaderid = tl.id) "
+         . "WHERE ao.alternativeid = ?" 
+         . "ORDER BY u.lastname ASC" ;
+    $result = $DB->get_records_sql($sql, array($alternative->id ));
     $t = new html_table();
     $t->head = array('Lastname', 'Firstname', 'Date');
     $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
+    $t->head[] = 'Leader' ;
 
     foreach ($result as $line) {
-        $t->data[] = array($line->lastname, $line->firstname, userdate($line->timemodified), $line->name);
+        $t->data[] = array($line->lastname, $line->firstname, userdate($line->timemodified, "%d/%m"), $line->name, $line->leader);
     }
 
     return $t;
