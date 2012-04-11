@@ -141,19 +141,27 @@ function alternative_print_instructions($alternative) {
 function alternative_table_registrations($alternative) {
     global $DB;
     // var_dump($alternative);
-    $sql = "SELECT u.firstname, u.lastname, ao.name, ar.timemodified "
-         . "FROM {user} AS u "
-         . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
-         . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
-         . "WHERE ao.alternativeid = " . $alternative->id ;
-    echo $sql ;
-    $result = $DB->get_records_sql($sql);
+    $sql = "SELECT ao.name, ao.placesavail, "
+         . "GROUP_CONCAT(CONCAT(u.firstname, ' ',u.lastname)) AS regusers, COUNT(u.id) AS regs "
+         . "FROM {alternative_option} AS ao "
+         . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
+         . "LEFT JOIN {user} AS u ON (ar.userid = u.id) "
+         . "WHERE ao.alternativeid = ? " 
+         . "GROUP BY ao.id";
+    $result = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
-    $t->head = array('Lastname', 'Firstname', 'Date');
-    $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
+    $t->head = array('Option', 'Places', 'Registrations', 'Remains', 'Students');
 
     foreach ($result as $line) {
-        $t->data[] = array($line->lastname, $line->firstname, userdate($line->timemodified), $line->name);
+        if ($line->placesavail > 0) { //limited places
+            $t_avail = $line->placesavail;
+            $t_remains = ($line->placesavail - $line->regs);
+        }
+        else { //unlimited places
+            $t_avail = '∞';
+            $t_remains = '∞';
+        }
+        $t->data[] = array($line->name, $t_avail, $line->regs, $t_remains, $line->regusers);
     }
 
     return $t;
@@ -169,8 +177,20 @@ function alternative_table_registrations($alternative) {
 function alternative_table_users_reg($alternative) {
     global $DB;
     $t = new html_table();
-    $t->head = array('dummy1', 'dummy2');
-    $t->data = array(array('X', 'Y'));
+    $sql = "SELECT u.firstname, u.lastname, ao.name, ar.timemodified "
+         . "FROM {user} AS u "
+         . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
+         . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
+         . "WHERE ao.alternativeid = " . $alternative->id ;
+    $result = $DB->get_records_sql($sql);
+    $t = new html_table();
+    $t->head = array('Lastname', 'Firstname', 'Date');
+    $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
+
+    foreach ($result as $line) {
+        $t->data[] = array($line->lastname, $line->firstname, userdate($line->timemodified), $line->name);
+    }
+
     return $t;
 }
 
