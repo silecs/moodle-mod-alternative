@@ -90,8 +90,8 @@ $string['registrationsaved'] = 'Your registration choice was saved.';
 $string['userinfo'] = 'Has registered to {$a} options.';
 
 $string['viewallregistrations'] = 'View registrations';
-$string['viewallusersreg'] = 'View users registrated';
-$string['viewallusersnotreg'] = 'View users not registrated';
+$string['viewallusersreg'] = 'View registered users';
+$string['viewallusersnotreg'] = 'View unregistered users';
 $string['registrations'] = 'Registrations';
 $string['usersreg'] = 'Registered users';
-$string['usersnotreg'] = 'Not registered users';
+$string['usersnotreg'] = 'Unregistered users';
