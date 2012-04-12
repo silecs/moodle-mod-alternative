@@ -223,4 +223,3 @@ function alternative_table_users_not_reg($alternative, $context) {
 
     return $t;
 }                                                                                                                       
-                                             
