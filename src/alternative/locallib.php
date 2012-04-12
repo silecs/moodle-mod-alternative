@@ -139,7 +139,6 @@ function alternative_print_instructions($alternative) {
  */
 function alternative_table_registrations($alternative) {
     global $DB;
-    // var_dump($alternative);
     $sql = "SELECT ao.name, ao.placesavail, "
          . "GROUP_CONCAT(CONCAT(u.firstname, ' ',u.lastname)) AS regusers, COUNT(u.id) AS regs "
          . "FROM {alternative_option} AS ao "
@@ -199,20 +198,21 @@ function alternative_table_users_reg($alternative) {
 /**
  * @global \moodle_db $DB
  * @param object $alternative
- * @param int $context
  * @return \html_table
  */
-function alternative_table_users_not_reg($alternative, $context) {
+function alternative_table_users_not_reg($alternative) {
     global $DB;
-    //var_dump($alternative);
 
-    $context = $DB->get_record('context', array('contextlevel'=>50, 'instanceid'=>$alternative->course));
+    $context = $DB->get_record('context', array('contextlevel'=>CONTEXT_COURSE, 'instanceid'=>$alternative->course));
+    /** @todo : context could be a function parameter ; would it be more robust ?
+     */
     $sql = "SELECT u.firstname, u.lastname "
          . "FROM {user} AS u "
          . "JOIN {role_assignments} AS ra ON (ra.roleid=5 AND ra.userid=u.id AND ra.contextid=?) "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
          . "WHERE ar.id IS NULL";
-         //@fixme : roleid=5 is hard-coded ; should it be otherwise ?
+    /** @todo : roleid=5 is hard-coded ; should it be otherwise ?
+     */
     $result = $DB->get_records_sql($sql, array($context->id ));
 
     $t = new html_table();
