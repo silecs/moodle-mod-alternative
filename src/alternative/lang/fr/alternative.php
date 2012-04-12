@@ -82,13 +82,13 @@ $string['pluginname'] = "alternative";
 $string['instructionsgeneral'] = "";
 $string['instructionsnochange'] = "Une fois que le choix est enregistré, aucune modification n'est autorisée.";
 $string['instructionsteam'] = "Vous pouvez vous inscrire en tant qu'équipe. 
-Une équipe doit avoir entre {$a->teammin} et {$a->teammax} membres.
+Une équipe doit avoir entre {\$a->teammin} et {\$a->teammax} membres.
 Si vous inscrivez d'autres membres, vous serez indiqué comme chef d'équipe.";
 $string['instructionsmultiple'] = "Vous devez choisir entre {$a->multiplemin} et {$a->multiplemax} options.";
 $string['instructionsmultiplenomax'] = "Vous devez choisir au moins {$a->multiplemin} options.";
 $string['registrationsaved'] = "Vos inscriptions ont été enregistrées.";
 
-$string['userinfo'] = "S'est inscrit à {$a} options.";
+$string['userinfo'] = "S'est inscrit à {\$a} options.";
 
 $string['viewallregistrations'] = "Voir les inscriptions";
 $string['viewallusersreg'] = "Voir les utilisateurs inscrits";
