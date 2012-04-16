@@ -431,15 +431,15 @@ function alternative_extend_settings_navigation(settings_navigation $settingsnav
     if (has_capability('mod/alternative:viewregistrations', $PAGE->cm->context)) {
         $alternativenode->add(
             get_string("viewallregistrations", "alternative"),
-            new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id))
+            new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id, 'table' => 'registrations'))
         );
         $alternativenode->add(
             get_string("viewallusersreg", "alternative"),
-            new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id, 'table' => 'users-reg'))
+            new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id, 'table' => 'usersReg'))
         );
         $alternativenode->add(
             get_string("viewallusersnotreg", "alternative"),
-            new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id, 'table' => 'users-not-reg'))
+            new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id, 'table' => 'usersNotReg'))
         );
     }
 }

@@ -29,6 +29,7 @@ require_once(dirname(dirname(dirname($_SERVER["SCRIPT_FILENAME"]))).'/config.php
 require_once(dirname(__FILE__) . "/locallib.php");
 
 $id = required_param('id', PARAM_INT);
+$csv = optional_param('csv', 0, PARAM_INT);
 $table = optional_param('table', 'registrations', PARAM_ALPHA);
 /**
  * @todo handle a 'download' param
@@ -56,11 +57,11 @@ add_to_log($course->id, 'alternative', 'view', "report.php?id={$id}&table={$tabl
 
 //die("->".$table."<-");
 switch ($table) {
-    case 'usersreg': // FIXME users-reg
+    case 'usersReg': // FIXME users-reg
         $heading = get_string('usersreg', 'alternative');
         $report = alternative_table_users_reg($alternative);
         break;
-    case 'usersnotreg': //FIXME users-not-reg
+    case 'usersNotReg': //FIXME users-not-reg
         $heading = get_string('usersnotreg', 'alternative');
         $report = alternative_table_users_not_reg($alternative);
         break;
@@ -71,24 +72,33 @@ switch ($table) {
         break;
 }
 
-/// Print the page header
+if ( $csv == 1 ) {
+    header('Content-type: text/csv; charset=utf-8');
+    echo alternative_table_to_csv($report);
+}
+else {
+    /// Print the page header
+    $PAGE->set_url('/mod/alternative/report.php', array('id' => $id, 'table' => $table));
+    $PAGE->set_title(format_string($alternative->name));
+    $PAGE->set_heading(format_string($course->fullname));
+    $PAGE->set_context($context);
 
-$PAGE->set_url('/mod/alternative/report.php', array('id' => $id, 'table' => $table));
-$PAGE->set_title(format_string($alternative->name));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($context);
+    // other things you may want to set - remove if not needed
+    //$PAGE->set_cacheable(false);
+    //$PAGE->set_focuscontrol('some-html-id');
+    //$PAGE->add_body_class('alternative-'.$somevar);
 
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('alternative-'.$somevar);
+    // begin the page
+    echo $OUTPUT->header();
 
-// begin the page
-echo $OUTPUT->header();
+    echo $OUTPUT->heading($alternative->name);
+    echo $OUTPUT->heading($heading);
+    echo html_writer::table($report);
 
-echo $OUTPUT->heading($alternative->name);
-echo $OUTPUT->heading($heading);
-echo html_writer::table($report);
+    $csvurl = new moodle_url('report.php', array('id'=>$id, 'table'=>$table, 'csv'=>1));
+    echo '<div class="sitelink"><a href="' . $csvurl->out(TRUE) . '">Export CSV</a></div>';
+    // class="sitelink" (link) or "homelink" (button)
 
-// Finish the page
-echo $OUTPUT->footer();
+    // Finish the page
+    echo $OUTPUT->footer();
+}
