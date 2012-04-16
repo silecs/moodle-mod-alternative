@@ -144,7 +144,7 @@ function alternative_table_registrations($alternative) {
          . "FROM {alternative_option} AS ao "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
          . "LEFT JOIN {user} AS u ON (ar.userid = u.id) "
-         . "WHERE ao.alternativeid = ? " 
+         . "WHERE ao.alternativeid = ? "
          . "GROUP BY ao.id";
     $result = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
@@ -179,7 +179,7 @@ function alternative_table_users_reg($alternative) {
          . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
          . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
          . "LEFT JOIN {user} AS tl ON (ar.teamleaderid = tl.id) "
-         . "WHERE ao.alternativeid = ?" 
+         . "WHERE ao.alternativeid = ?"
          . "ORDER BY u.lastname ASC" ;
     $result = $DB->get_records_sql($sql, array($alternative->id ));
     $t = new html_table();
@@ -223,4 +223,23 @@ function alternative_table_users_not_reg($alternative) {
     }
 
     return $t;
-}                                                                                                                       
+}
+
+
+/**
+ * @param object \hrml_table $table
+ * @return string csv file content
+ *
+ */
+function alternative_table_to_csv($table) {
+    $fcsv = fopen('php://temp/maxmemory:'. (1*1024*1024), 'r+');
+
+    fputcsv($fcsv, $table->head);
+    foreach ($table->data as $line) {
+        fputcsv($fcsv, $line);
+    }
+    rewind($fcsv);
+    $content = stream_get_contents($fcsv);
+    fclose($fcsv);
+    return $content;
+}

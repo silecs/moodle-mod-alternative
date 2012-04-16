@@ -19,7 +19,7 @@ Configuration
 
 ### Accès sous conditions
 
-Pour pouvoir que l'accès à une activité puisse être restreint à une période donnée,
+Pour que l'accès à une activité puisse être restreint à une période donnée,
 il faut activer le paramètre "enableavailability" sur la page "Administration du site >
 Fonctions avancées".
 
