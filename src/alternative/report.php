@@ -31,8 +31,8 @@ require_once(dirname(__FILE__) . "/locallib.php");
 $id = required_param('id', PARAM_INT);
 $csv = optional_param('csv', 0, PARAM_INT);
 $table = optional_param('table', 'registrations', PARAM_ALPHA);
+
 /**
- * @todo handle a 'download' param
  * @todo allow partial access if $alternative->publicreg
  */
 
@@ -55,7 +55,6 @@ if (!$alternative = alternative_get_alternative($cm->instance)) {
 
 add_to_log($course->id, 'alternative', 'view', "report.php?id={$id}&table={$table}", $alternative->name, $cm->id);
 
-//die("->".$table."<-");
 switch ($table) {
     case 'usersReg': // FIXME users-reg
         $heading = get_string('usersreg', 'alternative');
@@ -72,7 +71,7 @@ switch ($table) {
         break;
 }
 
-if ( $csv == 1 ) {
+if ($csv == 1) {
     header('Content-type: text/csv; charset=utf-8');
     echo alternative_table_to_csv($report);
 }
@@ -82,11 +81,6 @@ else {
     $PAGE->set_title(format_string($alternative->name));
     $PAGE->set_heading(format_string($course->fullname));
     $PAGE->set_context($context);
-
-    // other things you may want to set - remove if not needed
-    //$PAGE->set_cacheable(false);
-    //$PAGE->set_focuscontrol('some-html-id');
-    //$PAGE->add_body_class('alternative-'.$somevar);
 
     // begin the page
     echo $OUTPUT->header();

@@ -181,14 +181,20 @@ function alternative_table_users_reg($alternative) {
          . "LEFT JOIN {user} AS tl ON (ar.teamleaderid = tl.id) "
          . "WHERE ao.alternativeid = ?"
          . "ORDER BY u.lastname ASC" ;
-    $result = $DB->get_records_sql($sql, array($alternative->id ));
+    $result = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
     $t->head = array('Lastname', 'Firstname', 'Date');
     $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
     $t->head[] = 'Leader' ;
 
     foreach ($result as $line) {
-        $t->data[] = array($line->lastname, $line->firstname, userdate($line->timemodified, "%d/%m"), $line->name, $line->leader);
+        $t->data[] = array(
+            $line->lastname,
+            $line->firstname,
+            userdate($line->timemodified, "%d/%m"),
+            $line->name,
+            $line->leader
+        );
     }
 
     return $t;
@@ -213,7 +219,7 @@ function alternative_table_users_not_reg($alternative) {
          . "WHERE ar.id IS NULL";
     /** @todo : roleid=5 is hard-coded ; should it be otherwise ?
      */
-    $result = $DB->get_records_sql($sql, array($context->id ));
+    $result = $DB->get_records_sql($sql, array($context->id));
 
     $t = new html_table();
     $t->head = array('Lastname', 'Firstname', 'Register');
