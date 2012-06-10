@@ -55,8 +55,8 @@ class mod_alternative_registration_form extends moodleform {
         $mform = $this->_form;
 
         $mform->addElement('hidden', 'a', $this->_customdata['alternative']->id);
-        $input = $this->_customdata['alternative']->multiplemin ? 'checkbox' : 'radio';
 
+        $input = $this->_customdata['alternative']->multiplemin ? 'checkbox' : 'radio';
         $occupied = $this->_customdata['occupied'];
 
         foreach ($this->_customdata['options'] as $id => $option) {
@@ -136,10 +136,10 @@ class mod_alternative_registration_form extends moodleform {
      */
     function validation($data, $files) {
         /**
-         * @todo placesavail && occupied
-         * @todo team
-         * @todo multiple
-         * @todo changeallowed
+         * @todo validate placesavail && occupied
+         * @todo validate team
+         * @todo validate multiple
+         * @todo validate changeallowed
          */
         return array();
     }
