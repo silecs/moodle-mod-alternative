@@ -56,6 +56,18 @@ class mod_alternative_registration_form extends moodleform {
 
         $mform->addElement('hidden', 'a', $this->_customdata['alternative']->id);
 
+        // register another user
+        $context = get_context_instance(CONTEXT_COURSE, $this->_customdata['alternative']->course);
+        if (has_capability('mod/alternative:forceregistrations', $context)) {
+            $mform->addElement('header', 'fieldset[user]', get_string("chooseuser", 'alternative'));
+            $mform->targetselector = new select_team_members(
+                'targetuser',
+                array('alternative' => $this->_customdata['alternative'], 'multiselect' => false)
+            );
+            $mform->addElement('html', $mform->targetselector->display(true));
+        }
+
+        // team members
         if ($this->_customdata['alternative']->teammax > 1) {
             $mform->addElement('header', 'fieldset[team]', get_string("chooseteammembers", 'alternative'));
             $mform->membersselector = new select_team_members(
@@ -114,10 +126,19 @@ class mod_alternative_registration_form extends moodleform {
             $data->option = array((int) $data->option => 1);
         }
 
+        // register another user
+        $context = get_context_instance(CONTEXT_COURSE, $this->_customdata['alternative']->course);
+        if (has_capability('mod/alternative:forceregistrations', $context)) {
+            $userTmp = $this->_form->targetselector->get_selected_users();
+            $userTmp = reset($userTmp);
+            $userid = $userTmp->id;
+            unset($userTmp);
+        }
+
         // clean old registration
         $aid = $this->_customdata['alternative']->id;
         if ($this->_customdata['alternative']->teammax > 1) {
-            $DB->delete_records('alternative_registration', array('alternativeid' => $aid, 'teamleader' => $userid));
+            $DB->delete_records('alternative_registration', array('alternativeid' => $aid, 'teamleaderid' => $userid));
         } else {
             $DB->delete_records('alternative_registration', array('alternativeid' => $aid, 'userid' => $userid));
         }
@@ -128,7 +149,7 @@ class mod_alternative_registration_form extends moodleform {
             'userid' => $userid, 'teamleaderid' => null, 'timemodified' => time()
         );
         if ($this->_customdata['alternative']->teammax > 1) {
-            $regEmpty['teammleader'] = $userid;
+            $regEmpty['teamleaderid'] = $userid;
         }
         foreach ($data->option as $id => $val) {
             $id = (int) $id;
