@@ -117,7 +117,7 @@ class mod_alternative_registration_form extends moodleform {
         // clean old registration
         $aid = $this->_customdata['alternative']->id;
         if ($this->_customdata['alternative']->teammax > 1) {
-            $DB->delete_records('alternative_registration', array('alternativeid' => $aid, 'teamleaderid' => $userid));
+            $DB->delete_records('alternative_registration', array('alternativeid' => $aid, 'teamleader' => $userid));
         } else {
             $DB->delete_records('alternative_registration', array('alternativeid' => $aid, 'userid' => $userid));
         }
@@ -128,7 +128,7 @@ class mod_alternative_registration_form extends moodleform {
             'userid' => $userid, 'teamleaderid' => null, 'timemodified' => time()
         );
         if ($this->_customdata['alternative']->teammax > 1) {
-            $regEmpty['teammleaderid'] = $userid;
+            $regEmpty['teammleader'] = $userid;
         }
         foreach ($data->option as $id => $val) {
             $id = (int) $id;
