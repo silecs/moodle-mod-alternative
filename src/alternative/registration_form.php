@@ -56,11 +56,20 @@ class mod_alternative_registration_form extends moodleform {
 
         $mform->addElement('hidden', 'a', $this->_customdata['alternative']->id);
 
+        if ($this->_customdata['alternative']->teammax > 1) {
+            $mform->addElement('header', 'fieldset[team]', get_string("chooseteammembers", 'alternative'));
+            $mform->membersselector = new select_team_members(
+                'teammembers',
+                array('alternative' => $this->_customdata['alternative'])
+            );
+            $mform->addElement('html', $mform->membersselector->display(true));
+        }
+
         $input = $this->_customdata['alternative']->multiplemin ? 'checkbox' : 'radio';
         $occupied = $this->_customdata['occupied'];
 
         foreach ($this->_customdata['options'] as $id => $option) {
-            $mform->addElement('header', 'fieldset{$id}', $option->name);
+            $mform->addElement('header', 'fieldset[$id]', $option->name);
             if ($input === 'checkbox') {
                 $mform->addElement($input, "option[{$id}]", '', ' ' . $option->name, $id);
                 $mform->setDefault("option[{$id}]", $option->registrationid);
@@ -107,16 +116,32 @@ class mod_alternative_registration_form extends moodleform {
 
         // clean old registration
         $aid = $this->_customdata['alternative']->id;
-        $DB->delete_records('alternative_registration', array('alternativeid' => $aid, 'userid' => $userid));
+        if ($this->_customdata['alternative']->teammax > 1) {
+            $DB->delete_records('alternative_registration', array('alternativeid' => $aid, 'teamleaderid' => $userid));
+        } else {
+            $DB->delete_records('alternative_registration', array('alternativeid' => $aid, 'userid' => $userid));
+        }
 
         $ok = true;
+        $regEmpty = array(
+            'alternativeid' => $aid,
+            'userid' => $userid, 'teamleaderid' => null, 'timemodified' => time()
+        );
+        if ($this->_customdata['alternative']->teammax > 1) {
+            $regEmpty['teammleaderid'] = $userid;
+        }
         foreach ($data->option as $id => $val) {
             $id = (int) $id;
+            $reg = $regEmpty;
             if ($id) {
-                $reg = array(
-                    'optionid' => $id, 'alternativeid' => $aid,
-                    'userid' => $userid, 'teamleaderid' => null, 'timemodified' => time()
-                );
+                $reg['optionid'] = $id;
+                if ($this->_customdata['alternative']->teammax > 1) {
+                    foreach ($this->_form->membersselector->get_selected_users() as $member) {
+                        $regMember = $reg;
+                        $regMember['userid'] = $member->id;
+                        $ok = $ok && $DB->insert_record('alternative_registration', $regMember);
+                    }
+                }
                 $ok = $ok && $DB->insert_record('alternative_registration', $reg);
             }
         }

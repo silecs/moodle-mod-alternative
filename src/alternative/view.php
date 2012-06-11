@@ -61,15 +61,11 @@ $PAGE->set_title(format_string($alternative->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-// other things you may want to set - remove if not needed
-//$PAGE->set_cacheable(false);
-//$PAGE->set_focuscontrol('some-html-id');
-//$PAGE->add_body_class('alternative-'.$somevar);
-
 $form = alternative_options_form($alternative, $USER->id);
 
 if (!$form->is_cancelled() and $form->is_submitted() and $form->is_validated()) {
     if (!is_enrolled($context, NULL, 'mod/alternative:choose') or !confirm_sesskey()) {
+        echo $OUTPUT->header();
         echo $OUTPUT->notification(get_string('registrationforbidden', 'alternative'), 'notifyfailure');
     } else {
         if ($form->save_to_db($USER->id)) {
