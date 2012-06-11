@@ -51,6 +51,7 @@ if ($id) {
 
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
 
 add_to_log($course->id, 'alternative', 'view', "view.php?id={$cm->id}", $alternative->name, $cm->id);
 
@@ -64,7 +65,11 @@ $PAGE->set_context($context);
 $form = alternative_options_form($alternative, $USER->id);
 
 if (!$form->is_cancelled() and $form->is_submitted() and $form->is_validated()) {
-    if (!is_enrolled($context, NULL, 'mod/alternative:choose') or !confirm_sesskey()) {
+    if (
+        (!is_enrolled($context, NULL, 'mod/alternative:choose')
+        && !has_capability('mod/alternative:forceregistrations', $coursecontext))
+        || !confirm_sesskey()
+    ) {
         echo $OUTPUT->header();
         echo $OUTPUT->notification(get_string('registrationforbidden', 'alternative'), 'notifyfailure');
     } else {
@@ -89,8 +94,11 @@ if ($alternative->intro) { // Conditions to show the intro can change to look fo
 echo $OUTPUT->heading("Options");
 alternative_print_instructions($alternative);
 
-if (!$alternative->changeallowed && $form->is_registered()
-    && !has_capability('mod/alternative:forceregistrations', $context)) {
+if (
+    !$alternative->changeallowed
+    && $form->is_registered()
+    && !has_capability('mod/alternative:forceregistrations', $coursecontext)
+) {
     $form->freeze();
 }
 $form->display();

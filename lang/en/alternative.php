@@ -79,6 +79,7 @@ $string['alternative'] = 'alternative';
 $string['pluginadministration'] = 'Alternative administration';
 $string['pluginname'] = 'alternative';
 
+$string['chooseuser'] = 'Please choose the user to register';
 $string['instructionsgeneral'] = '';
 $string['instructionsnochange'] = 'Once a choice is saved, changing it will not be allowed.';
 $string['instructionsteam'] = 'You can register as a team. A team must have between {$a->teammin} and {$a->teammax} members.
