@@ -39,6 +39,10 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
  */
 class mod_alternative_registration_form extends moodleform {
     private $user_has_registered = false;
+    /**
+     * @var int null unless the registration applies to a selected user.
+     */
+    private $userid;
 
     public function __construct($action=null, $customdata=null) {
         if (!isset($customdata['alternative']->id)) {
@@ -59,7 +63,7 @@ class mod_alternative_registration_form extends moodleform {
         // register another user
         $context = get_context_instance(CONTEXT_COURSE, $this->_customdata['alternative']->course);
         if (has_capability('mod/alternative:forceregistrations', $context)) {
-            $mform->addElement('header', 'fieldset[user]', get_string("chooseuser", 'alternative'));
+            $mform->addElement('header', 'fieldset_user', get_string("chooseuser", 'alternative'));
             $mform->targetselector = new select_team_members(
                 'targetuser',
                 array('alternative' => $this->_customdata['alternative'], 'multiselect' => false)
@@ -69,7 +73,7 @@ class mod_alternative_registration_form extends moodleform {
 
         // team members
         if ($this->_customdata['alternative']->teammax > 1) {
-            $mform->addElement('header', 'fieldset[team]', get_string("chooseteammembers", 'alternative'));
+            $mform->addElement('header', 'fieldset_team', get_string("chooseteammembers", 'alternative'));
             $mform->membersselector = new select_team_members(
                 'teammembers',
                 array('alternative' => $this->_customdata['alternative'])
@@ -127,12 +131,8 @@ class mod_alternative_registration_form extends moodleform {
         }
 
         // register another user
-        $context = get_context_instance(CONTEXT_COURSE, $this->_customdata['alternative']->course);
-        if (has_capability('mod/alternative:forceregistrations', $context)) {
-            $userTmp = $this->_form->targetselector->get_selected_users();
-            $userTmp = reset($userTmp);
-            $userid = $userTmp->id;
-            unset($userTmp);
+        if (!empty($this->userid)) {
+            $userid = $this->userid;
         }
 
         // clean old registration
@@ -183,10 +183,55 @@ class mod_alternative_registration_form extends moodleform {
     function validation($data, $files) {
         /**
          * @todo validate placesavail && occupied
-         * @todo validate team
          * @todo validate multiple
          * @todo validate changeallowed
+         * @todo how to display error messages on "users selections"?
          */
-        return array();
+        $errors = parent::validation($data, $files);
+
+        // register another user
+        $context = get_context_instance(CONTEXT_COURSE, $this->_customdata['alternative']->course);
+        if (has_capability('mod/alternative:forceregistrations', $context)) {
+            $userTmp = $this->_form->targetselector->get_selected_users();
+            if (empty($userTmp)) {
+                $errors['fieldset_user'] = get_string('noselectedusers', 'alternative');
+            } else {
+                $userTmp = reset($userTmp);
+                $this->userid = $userTmp->id;
+                unset($userTmp);
+            }
+        }
+
+        // validate team size
+        if ($this->_customdata['alternative']->teammax > 1) {
+            $users = $this->_form->membersselector->get_selected_users();
+            if (
+                count($users) < $this->_customdata['alternative']->teammin
+                || count($users) > $this->_customdata['alternative']->teammax
+            ) {
+                $errors['fieldset_team'] = get_string('wrongteamsize', 'alternative');
+            }
+            if (!empty($this->userid)) {
+                foreach ($users as $user) {
+                    if ($this->userid == $user->id) {
+                        $errors['fieldset_team'] = get_string('teamleadernotamember', 'alternative');
+                    }
+                }
+            }
+        }
+
+        // validate options
+        if (empty($data->option)) {
+            $options = $this->_customdata['options'];
+            $optionid = reset($options)->id;
+            $errors["option[{$optionid}]"] = get_string('noselectedoption', 'alternative');
+        } else {
+            foreach ($data->option as $optionid => $val) {
+                if (!in_array($optionid, $this->_customdata['options'])) {
+                    $errors["option[{$optionid}]"] = "Wrong ID";
+                }
+            }
+        }
+        return $errors;
     }
 }
