@@ -86,6 +86,7 @@ As you registered other members of your team, you will be the team leader.';
 $string['instructionsmultiple'] = 'You must choose between {$a->multiplemin} and {$a->multiplemax} options.';
 $string['instructionsmultiplenomax'] = 'You must choose at least {$a->multiplemin} options.';
 $string['registrationsaved'] = 'Your registration choice was saved.';
+$string['registrationforbidden'] = 'You cannot register here.';
 
 $string['userinfo'] = 'Has registered to {$a} options.';
 
@@ -95,3 +96,6 @@ $string['viewallusersnotreg'] = 'View unregistered users';
 $string['registrations'] = 'Registrations';
 $string['usersreg'] = 'Registered users';
 $string['usersnotreg'] = 'Unregistered users';
+
+$string['chooseteammembers'] = 'Please choose your team members';
+$string['potentialteammembers'] = 'Potential team members';

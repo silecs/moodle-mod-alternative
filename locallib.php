@@ -249,3 +249,76 @@ function alternative_table_to_csv($table) {
     fclose($fcsv);
     return $content;
 }
+
+require_once($CFG->dirroot . '/user/selector/lib.php');
+require_once($CFG->dirroot . '/enrol/locallib.php');
+
+
+/**
+ * Select team members
+ */
+class select_team_members extends user_selector_base {
+    protected $alternativeid;
+    protected $courseid;
+
+    public function __construct($name, $options) {
+        $this->alternativeid  = $options['alternative']->id;
+        $this->courseid = $options['alternative']->course;
+        unset($options['alternative']);
+        parent::__construct($name, $options);
+    }
+
+    /**
+     * Candidate users
+     * @param string $search
+     * @return array
+     */
+    public function find_users($search) {
+        global $DB, $USER;
+        //by default wherecondition retrieves all users except the deleted, not confirmed and guest
+        list($wherecondition, $params) = $this->search_sql($search, 'u');
+        $params['courseid'] = $this->courseid;
+        $params['alternativeid'] = $this->alternativeid;
+
+        $fields      = 'SELECT ' . $this->required_fields_sql('u');
+        $countfields = 'SELECT COUNT(1)';
+
+        $sql = " FROM {user} u
+                WHERE $wherecondition AND
+                      u.id != {$USER->id} AND
+                      u.id IN (
+                          SELECT ue.userid
+                            FROM {user_enrolments} ue
+                            JOIN {enrol} e ON (e.id = ue.enrolid AND e.courseid = :courseid))
+                      AND u.id NOT IN (
+                          SELECT ar.userid
+                            FROM {alternative_registration} ar
+                            JOIN {alternative_option} ao ON (ar.optionid = ao.id AND ao.alternativeid = :alternativeid))";
+        $order = ' ORDER BY u.lastname ASC, u.firstname ASC';
+
+        if (!$this->is_validating()) {
+            $potentialmemberscount = $DB->count_records_sql($countfields . $sql, $params);
+            if ($potentialmemberscount > 100) {
+                return $this->too_many_results($search, $potentialmemberscount);
+            }
+        }
+
+        $availableusers = $DB->get_records_sql($fields . $sql . $order, $params);
+
+        if (empty($availableusers)) {
+            return array();
+        }
+
+        return array(get_string('potentialteammembers', 'alternative') => $availableusers);
+    }
+
+    protected function get_options() {
+        $options = parent::get_options();
+        $options['alternative'] = (object) array(
+            'alternativeid' => $this->alternativeid,
+            'course' => $this->courseid,
+        );
+        $options['file']    = 'mod/alternative/locallib.php';
+        return $options;
+    }
+}
