@@ -85,7 +85,7 @@ class mod_alternative_registration_form extends moodleform {
         $occupied = $this->_customdata['occupied'];
 
         foreach ($this->_customdata['options'] as $id => $option) {
-            $mform->addElement('header', 'fieldset[$id]', $option->name);
+            $mform->addElement('header', "fieldset[$id]", $option->name);
             if ($input === 'checkbox') {
                 $mform->addElement($input, "option[{$id}]", '', ' ' . $option->name, $id);
                 $mform->setDefault("option[{$id}]", $option->registrationid);
@@ -192,13 +192,12 @@ class mod_alternative_registration_form extends moodleform {
         // register another user
         $context = get_context_instance(CONTEXT_COURSE, $this->_customdata['alternative']->course);
         if (has_capability('mod/alternative:forceregistrations', $context)) {
-            $userTmp = $this->_form->targetselector->get_selected_users();
-            if (empty($userTmp)) {
+            $usertmp = $this->_form->targetselector->get_selected_user();
+            if ($usertmp === null) {
                 $errors['fieldset_user'] = get_string('noselectedusers', 'alternative');
             } else {
-                $userTmp = reset($userTmp);
-                $this->userid = $userTmp->id;
-                unset($userTmp);
+                $this->userid = $usertmp->id;
+                unset($usertmp);
             }
         }
 
@@ -224,11 +223,13 @@ class mod_alternative_registration_form extends moodleform {
         if (empty($data->option)) {
             $options = $this->_customdata['options'];
             $optionid = reset($options)->id;
-            $errors["option[{$optionid}]"] = get_string('noselectedoption', 'alternative');
+            $fieldname = $this->_customdata['alternative']->multiplemin ? "option[{$optionid}]" : 'option';
+            $errors[$fieldname] = get_string('noselectedoption', 'alternative');
         } else {
             foreach ($data->option as $optionid => $val) {
+                $fieldname = $this->_customdata['alternative']->multiplemin ? "option[{$optionid}]" : 'option';
                 if (!in_array($optionid, $this->_customdata['options'])) {
-                    $errors["option[{$optionid}]"] = "Wrong ID";
+                    $errors[$fieldname] = "Wrong ID";
                 }
             }
         }
