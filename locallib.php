@@ -209,15 +209,15 @@ function alternative_table_users_reg($alternative) {
 function alternative_table_users_not_reg($alternative) {
     global $DB;
 
-    $context = $DB->get_record('context', array('contextlevel'=>CONTEXT_COURSE, 'instanceid'=>$alternative->course));
-    /** @todo : context could be a function parameter ; would it be more robust ?
+    $context = get_context_instance(CONTEXT_COURSE, $alternative->course);
+    /** @todo context could be a function parameter; would it be more robust?
      */
     $sql = "SELECT u.firstname, u.lastname "
          . "FROM {user} AS u "
          . "JOIN {role_assignments} AS ra ON (ra.roleid=5 AND ra.userid=u.id AND ra.contextid=?) "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
          . "WHERE ar.id IS NULL";
-    /** @todo : roleid=5 is hard-coded ; should it be otherwise ?
+    /** @todo roleid=5 is hard-coded; should it be otherwise?
      */
     $result = $DB->get_records_sql($sql, array($context->id));
 
