@@ -103,14 +103,5 @@ if (
 }
 $form->display();
 
-/*
-echo "<dl>";
-$options = $DB->get_records('alternative_option', array('alternativeid' => $alternative->id));
-foreach ($options as $option) {
-    echo "<dt>{$option->name}</dt><dd>" . format_module_intro('alternative', $option, $cm->id) . "</dd>";
-}
-echo "</dl>";
-*/
-
 // Finish the page
 echo $OUTPUT->footer();

@@ -80,6 +80,7 @@ $string['pluginadministration'] = 'Alternative administration';
 $string['pluginname'] = 'alternative';
 
 $string['chooseuser'] = 'Please choose the user to register';
+$string['noselectedoption'] = 'You have to select an option';
 $string['instructionsgeneral'] = '';
 $string['instructionsnochange'] = 'Once a choice is saved, changing it will not be allowed.';
 $string['instructionsteam'] = 'You can register as a team. A team must have between {$a->teammin} and {$a->teammax} members.
@@ -100,3 +101,6 @@ $string['usersnotreg'] = 'Unregistered users';
 
 $string['chooseteammembers'] = 'Please choose your team members';
 $string['potentialteammembers'] = 'Potential team members';
+$string['noselectedusers'] = 'No users selected';
+$string['wrongteamsize'] = 'The size of your team is not between the allowed bounds.';
+$string['teamleadernotamember'] = 'The team leader should not be a member of its team.';
