@@ -204,9 +204,10 @@ class mod_alternative_registration_form extends moodleform {
         // validate team size
         if ($this->_customdata['alternative']->teammax > 1) {
             $users = $this->_form->membersselector->get_selected_users();
+            $size = count($users) + 1;
             if (
-                count($users) < $this->_customdata['alternative']->teammin
-                || count($users) > $this->_customdata['alternative']->teammax
+                $size < $this->_customdata['alternative']->teammin
+                || $size > $this->_customdata['alternative']->teammax
             ) {
                 $errors['fieldset_team'] = get_string('wrongteamsize', 'alternative');
             }
@@ -220,16 +221,23 @@ class mod_alternative_registration_form extends moodleform {
         }
 
         // validate options
-        if (empty($data->option)) {
+        if (empty($data['option'])) {
             $options = $this->_customdata['options'];
             $optionid = reset($options)->id;
             $fieldname = $this->_customdata['alternative']->multiplemin ? "option[{$optionid}]" : 'option';
             $errors[$fieldname] = get_string('noselectedoption', 'alternative');
         } else {
-            foreach ($data->option as $optionid => $val) {
-                $fieldname = $this->_customdata['alternative']->multiplemin ? "option[{$optionid}]" : 'option';
-                if (!in_array($optionid, $this->_customdata['options'])) {
-                    $errors[$fieldname] = "Wrong ID";
+            $ids = array_keys($this->_customdata['options']);
+            if (is_string($data['option'])) {
+                if (!in_array($data['option'], $ids)) {
+                    $errors['option'] = "Wrong ID";
+                }
+            } else {
+                foreach ($data['option'] as $optionid => $val) {
+                    $fieldname = $this->_customdata['alternative']->multiplemin ? "option[{$optionid}]" : 'option';
+                    if (!in_array($optionid, $ids)) {
+                        $errors[$fieldname] = "Wrong ID";
+                    }
                 }
             }
         }

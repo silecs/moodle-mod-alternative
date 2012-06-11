@@ -101,6 +101,9 @@ if (
 ) {
     $form->freeze();
 }
+/**
+ * @todo fetch data for students that want to change their registration.
+ */
 $form->display();
 
 // Finish the page
