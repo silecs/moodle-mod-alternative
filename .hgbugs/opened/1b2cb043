@@ -1,8 +1,12 @@
 [info]
-title = DB-05  Affichage des listes avec une option
+assigned-to = 
 owned-by = 
 created-by = Guillaume.Allegre@silecs.info
-assigned-to = 
 description = L'affichage des listes pourrait être complété par une
 	option (affichage du nombre et/ou de la liste)
+	
+	FG : le "ou" me semble douteux, il alourdirait l'interface et le code
+	pour un gain minime.
+	Par contre, ajouter une colonne avec le nombre d'inscrits serait simple.
+title = DB-05  Affichage des listes avec une option
 
