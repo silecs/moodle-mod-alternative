@@ -79,6 +79,9 @@ $string['alternative'] = "alternative";
 $string['pluginadministration'] = "Administration d'Alternative";
 $string['pluginname'] = "alternative";
 
+$string['register'] = "Inscrire";
+$string['chooseuser'] = "Veuillez sélectionner l'utilisateur à inscrire";
+$string['noselectedoption'] = "Vous devez sélectionner une option";
 $string['instructionsgeneral'] = "";
 $string['instructionsnochange'] = "Une fois que le choix est enregistré, aucune modification n'est autorisée.";
 $string['instructionsteam'] = "Vous pouvez vous inscrire en tant qu'équipe. 
@@ -87,6 +90,7 @@ Si vous inscrivez d'autres membres, vous serez indiqué comme chef d'équipe.";
 $string['instructionsmultiple'] = "Vous devez choisir entre {\$a->multiplemin} et {\$a->multiplemax} options.";
 $string['instructionsmultiplenomax'] = "Vous devez choisir au moins {\$a->multiplemin} options.";
 $string['registrationsaved'] = "Vos inscriptions ont été enregistrées.";
+$string['registrationforbidden'] = "Vous ne pouvez pas vous inscrire ici.";
 
 $string['userinfo'] = "S'est inscrit à {\$a} options.";
 
