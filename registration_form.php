@@ -68,6 +68,7 @@ class mod_alternative_registration_form extends moodleform {
                 'targetuser',
                 array('alternative' => $this->_customdata['alternative'], 'multiselect' => false)
             );
+            $mform->targetselector->message = get_string('usersnotreg', 'alternative');
             $mform->addElement('html', $mform->targetselector->display(true));
         }
 
@@ -78,6 +79,7 @@ class mod_alternative_registration_form extends moodleform {
                 'teammembers',
                 array('alternative' => $this->_customdata['alternative'])
             );
+            $mform->membersselector->message = get_string('potentialteammembers', 'alternative');
             $mform->addElement('html', $mform->membersselector->display(true));
         }
 
