@@ -45,28 +45,31 @@ if (!$course) {
     print_error("coursemisconf");
 }
 
-require_login($course, true, $cm);
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
-require_capability('mod/alternative:viewregistrations', $context);
-$can_register_anyone = has_capability('mod/alternative:forceregistrations', $context);
-
 if (!$alternative = alternative_get_alternative($cm->instance)) {
     print_error('invalidcoursemodule');
 }
+
+require_login($course, true, $cm);
+$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+$can_register_anyone = has_capability('mod/alternative:forceregistrations', $context);
 
 add_to_log($course->id, 'alternative', 'view', "report.php?id={$id}&table={$table}", $alternative->name, $cm->id);
 
 switch ($table) {
     case 'usersReg': // FIXME users-reg
+        require_capability('mod/alternative:viewregistrations', $context);
         $heading = get_string('usersreg', 'alternative');
         $report = alternative_table_users_reg($alternative);
         break;
     case 'usersNotReg': //FIXME users-not-reg
+        require_capability('mod/alternative:viewregistrations', $context);
         $heading = get_string('usersnotreg', 'alternative');
         $report = alternative_table_users_not_reg($alternative, !$csv && $can_register_anyone);
         break;
     case 'registrations':
     default:
+        if (!$alternative->publicreg) {
+        }
         $heading = get_string('registrations', 'alternative');
         $report = alternative_table_registrations($alternative);
         break;
