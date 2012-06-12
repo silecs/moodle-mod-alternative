@@ -55,7 +55,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('alternativename', 'alternative'), array('size'=>'64'));
+        $mform->addElement('text', 'name', get_string('alternativename', 'alternative'), array('size'=>'80'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -101,7 +101,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         //-------------------------------------------------------------------------------
         $repeatarray = array();
         $repeatarray[] = &MoodleQuickForm::createElement('header', '', get_string('option', 'alternative').' {no}');
-        $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[name]', get_string('optionname', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[name]', get_string('optionname', 'alternative'), array('size'=>'80'));
         $repeatarray[] = &MoodleQuickForm::createElement('editor', 'option[introeditor]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => 0));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[datecomment]', get_string('datecomment', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[placesavail]', get_string('placesavail', 'alternative'));
@@ -124,7 +124,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->addHelpButton('option[groupdependent][0]', 'groupdependent', 'alternative');
         for ($i = 0 ; $i < $repeatno ; $i++) {
             $mform->setType("option[introeditor][$i]", PARAM_RAW);
-            $mform->setDefault("option[placesavail][$i]", 0);
+            $mform->setDefault("option[placesavail][$i]", '');
             $mform->addRule("option[placesavail][$i]", null, 'numeric');
             $mform->setType("option[placesavail][$i]", PARAM_INT);
             $mform->setType("option[id][$i]", PARAM_INT);
@@ -181,6 +181,9 @@ class mod_alternative_mod_form extends moodleform_mod {
                 foreach ($fields as $field) {
                     $default_values["option[$field][$rank]"] = $option->$field;
                 }
+				if ( empty($default_values["option[placesavail][$rank]"]) ) {
+					$default_values["option[placesavail][$rank]"] = '';
+				}
                 $default_values["option[introeditor][$rank]"] = array(
                     "text" => $option->intro,
                     "format" => $option->introformat,
