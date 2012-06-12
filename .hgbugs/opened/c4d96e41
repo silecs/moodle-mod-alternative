@@ -1,0 +1,11 @@
+[info]
+assigned-to = 
+owned-by = 
+created-by = François Gannaz <francois.gannaz@silecs.info>
+description = 2 étudiants inscrits dans le cours (cf page "Participants"),
+	1 étudiant listé dans les inscrits,
+	et aucun dans les non-inscrits.
+	
+	Si je supprime les inscriptions, le tableau des non-inscrits reste vide.
+title = utilisateurs non inscrits : liste fausse
+
