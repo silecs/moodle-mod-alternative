@@ -48,6 +48,7 @@ if (!$course) {
 require_login($course, true, $cm);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 require_capability('mod/alternative:viewregistrations', $context);
+$can_register_anyone = has_capability('mod/alternative:forceregistrations', $context);
 
 if (!$alternative = alternative_get_alternative($cm->instance)) {
     print_error('invalidcoursemodule');
@@ -62,7 +63,7 @@ switch ($table) {
         break;
     case 'usersNotReg': //FIXME users-not-reg
         $heading = get_string('usersnotreg', 'alternative');
-        $report = alternative_table_users_not_reg($alternative);
+        $report = alternative_table_users_not_reg($alternative, !$csv && $can_register_anyone);
         break;
     case 'registrations':
     default:
