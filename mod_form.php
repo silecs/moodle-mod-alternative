@@ -167,6 +167,12 @@ class mod_alternative_mod_form extends moodleform_mod {
         }
         $default_values["teamenable"] = !empty($default_values['teammin']) ? 1 : 0;
         $default_values["multipleenable"] = !empty($default_values['multiplemin']) ? 1 : 0;
+        if (empty($default_values['teammax'])) {
+            $default_values['teammax'] = '';
+        }
+        if (empty($default_values['multiplemax'])) {
+            $default_values['multiplemax'] = '';
+        }
         $options = $DB->get_records('alternative_option',array('alternativeid' => $this->_instance));
         if ($options) {
             $fields = array('name', 'datecomment', 'placesavail', 'groupdependent', 'id');
