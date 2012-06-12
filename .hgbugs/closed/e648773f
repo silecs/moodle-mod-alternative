@@ -1,0 +1,11 @@
+[info]
+assigned-to = 
+owned-by = 
+created-by = Guillaume.Allegre@silecs.info
+description = les enseignants ne devraient pas pouvoir s'inscrire
+	
+	Corrigé par la possibilité pour les enseignants d'inscrire un étudiant.
+	Ils ont par défaut la capacité "mod:alternative/forceregistration",
+	donc ils ne peuvent s'inscrire mais peuvent inscrire les étudiants.
+title = DB-02 les enseignants ne devraient pas pouvoir s'inscrire
+
