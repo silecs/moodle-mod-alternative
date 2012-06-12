@@ -1,0 +1,11 @@
+[info]
+assigned-to = 
+owned-by = 
+created-by = François Gannaz <francois.gannaz@silecs.info>
+description = Message en haut de page :
+	Did you remember to make the first column something unique in your call to get_records?
+	Duplicate value 'etu' found in column 'firstname'.
+	
+	"etu" est le prénom du compte étudiant inscrit.
+title = Utilisateurs inscrits : erreur get_records()
+
