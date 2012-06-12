@@ -215,11 +215,11 @@ function alternative_table_users_not_reg($alternative) {
     $sql = "SELECT u.firstname, u.lastname "
          . "FROM {user} AS u "
          . "JOIN {role_assignments} AS ra ON (ra.roleid=5 AND ra.userid=u.id AND ra.contextid=?) "
-         . "LEFT JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
+         . "LEFT JOIN {alternative_registration} AS ar ON (ar.userid = u.id AND ar.alternativeid=?) "
          . "WHERE ar.id IS NULL";
     /** @todo roleid=5 is hard-coded; should it be otherwise?
      */
-    $result = $DB->get_records_sql($sql, array($context->id));
+    $result = $DB->get_records_sql($sql, array($context->id, $alternative->id));
 
     $t = new html_table();
     $t->head = array('Lastname', 'Firstname', 'Register');
