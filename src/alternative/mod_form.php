@@ -81,6 +81,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->addElement('text', 'teammin', get_string('teammin', 'alternative'), array('size'=>'4'));
         $mform->setType('teammin', PARAM_INT);
         $mform->disabledIf('teammin', 'teamenable');
+        $mform->setDefault('teammin', 1);
         $mform->addElement('text', 'teammax', get_string('teammax', 'alternative'), array('size'=>'4'));
         $mform->setType('teammax', PARAM_INT);
         $mform->disabledIf('teammax', 'teamenable');
@@ -91,6 +92,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->addElement('text', 'multiplemin', get_string('multiplemin', 'alternative'), array('size'=>'4'));
         $mform->setType('multiplemin', PARAM_INT);
         $mform->disabledIf('multiplemin', 'multipleenable');
+        $mform->setDefault('multiplemin', 1);
         $mform->addElement('text', 'multiplemax', get_string('multiplemax', 'alternative'), array('size'=>'4'));
         $mform->setType('multiplemax', PARAM_INT);
         $mform->disabledIf('multiplemax', 'multipleenable');
