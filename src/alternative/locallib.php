@@ -261,6 +261,8 @@ class select_team_members extends user_selector_base {
     protected $alternativeid;
     protected $courseid;
 
+    public $message;
+
     public function __construct($name, $options) {
         $this->alternativeid  = $options['alternative']->id;
         $this->courseid = $options['alternative']->course;
@@ -309,7 +311,7 @@ class select_team_members extends user_selector_base {
             return array();
         }
 
-        return array(get_string('potentialteammembers', 'alternative') => $availableusers);
+        return array($this->message => $availableusers);
     }
 
     protected function get_options() {
