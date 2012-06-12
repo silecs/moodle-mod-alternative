@@ -96,3 +96,10 @@ $string['viewallusersnotreg'] = "Voir les utilisateurs non inscrits";
 $string['registrations'] = "Inscriptions";
 $string['usersreg'] = "Utilisateurs inscrits";
 $string['usersnotreg'] = "Utilisateurs non inscrits";
+
+$string['chooseteammembers'] = "Veuillez choisir vos coéquipiers";
+$string['potentialteammembers'] = "Coéquipiers potentiels";
+$string['noselectedusers'] = "Aucun utilisateur sélectionné";
+$string['wrongteamsize'] = "La taille de l'équipe est hors de l'intervalle autorisé.";
+$string['teamleadernotamember'] = "Le chef d'équipe ne doit pas être un membre de l'équipe.";
+
