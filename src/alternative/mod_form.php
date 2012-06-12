@@ -163,6 +163,8 @@ class mod_alternative_mod_form extends moodleform_mod {
         if (empty($this->_instance)) {
             return;
         }
+        $default_values["teamenable"] = !empty($default_values['teammin']) ? 1 : 0;
+        $default_values["multipleenable"] = !empty($default_values['multiplemin']) ? 1 : 0;
         $options = $DB->get_records('alternative_option',array('alternativeid' => $this->_instance));
         if ($options) {
             $fields = array('name', 'datecomment', 'placesavail', 'groupdependent', 'id');
