@@ -204,15 +204,16 @@ function alternative_table_users_reg($alternative) {
 /**
  * @global \moodle_db $DB
  * @param object $alternative
+ * @param boolean $actions
  * @return \html_table
  */
-function alternative_table_users_not_reg($alternative) {
-    global $DB;
+function alternative_table_users_not_reg($alternative, $actions=false) {
+    global $DB, $OUTPUT;
 
     $context = get_context_instance(CONTEXT_COURSE, $alternative->course);
     /** @todo context could be a function parameter; would it be more robust?
      */
-    $sql = "SELECT u.firstname, u.lastname "
+    $sql = "SELECT u.id, u.firstname, u.lastname "
          . "FROM {user} AS u "
          . "JOIN {role_assignments} AS ra ON (ra.roleid=5 AND ra.userid=u.id AND ra.contextid=?) "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.userid = u.id AND ar.alternativeid=?) "
@@ -222,10 +223,19 @@ function alternative_table_users_not_reg($alternative) {
     $result = $DB->get_records_sql($sql, array($context->id, $alternative->id));
 
     $t = new html_table();
-    $t->head = array('Lastname', 'Firstname', 'Register');
+    $t->head = array(get_string('lastname'), get_string('firstname'));
+    $template = '';
+    if ($actions) {
+        $t->head[] = get_string('register', 'alternative');
+        $template = $OUTPUT->single_button(
+            new moodle_url('/mod/alternative/view.php', array('a'=> $alternative->id, 'targetuser' => '%d')),
+            get_string('register', 'alternative'),
+            'post'
+        );
+    }
 
-    foreach ($result as $line) {
-        $t->data[] = array($line->lastname, $line->firstname, '');
+    foreach ($result as $user) {
+        $t->data[] = array($user->lastname, $user->firstname, sprintf($template, $user->id));
     }
 
     return $t;
