@@ -1,0 +1,10 @@
+[info]
+title = DB-01 valeur minimale à 1
+owned-by = 
+created-by = Guillaume.Allegre@silecs.info
+assigned-to = 
+description = 1) pour les réglages, la valeur minimale est à 0 par défaut mais
+	l'activation
+	n'est pas prise en compte si elle reste à 0 et pas de message. Pourquoi
+	pas la fixer par défaut à 1 ?
+

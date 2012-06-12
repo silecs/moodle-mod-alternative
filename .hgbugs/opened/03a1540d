@@ -1,0 +1,13 @@
+[info]
+title = DB-04 paramètrage dépendant du groupe
+owned-by = 
+created-by = Guillaume.Allegre@silecs.info
+assigned-to = 
+description = 4) le paramètre "Dépendant du groupe" associé à chaque option me semble
+	délicat à mettre en place. Au niveau groupe, la priorité est de faire les
+	inscriptions par groupe, ce qui doit pouvoir se gérer en grande partie à
+	partir des réglages communs Groupe et dans ce cas, les choix sont les mêmes pour
+	tous les groupes. Les cas particuliers envisagés dans le cahier des
+	charges devront faire le cas d'une étude un peu plus poussée avant d'être
+	envisagés.
+
