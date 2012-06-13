@@ -268,13 +268,13 @@ require_once($CFG->dirroot . '/enrol/locallib.php');
  */
 class select_team_members extends user_selector_base {
     protected $alternativeid;
-    protected $courseid;
+    protected $coursecontext;
 
     public $message;
 
     public function __construct($name, $options) {
         $this->alternativeid  = $options['alternative']->id;
-        $this->courseid = $options['alternative']->course;
+        $this->coursecontext = $context = context_course::instance($options['alternative']->course);
         unset($options['alternative']);
         parent::__construct($name, $options);
     }
@@ -286,25 +286,16 @@ class select_team_members extends user_selector_base {
      */
     public function find_users($search) {
         global $DB, $USER;
-        //by default wherecondition retrieves all users except the deleted, not confirmed and guest
-        list($wherecondition, $params) = $this->search_sql($search, 'u');
-        $params['courseid'] = $this->courseid;
-        $params['alternativeid'] = $this->alternativeid;
-
         $fields      = 'SELECT ' . $this->required_fields_sql('u');
         $countfields = 'SELECT COUNT(1)';
 
+        list($esql, $params) = get_enrolled_sql($this->coursecontext, 'mod/alternative:choose');
+        $params['altid'] = $this->alternativeid;
         $sql = " FROM {user} u
-                WHERE $wherecondition AND
-                      u.id != {$USER->id} AND
-                      u.id IN (
-                          SELECT ue.userid
-                            FROM {user_enrolments} ue
-                            JOIN {enrol} e ON (e.id = ue.enrolid AND e.courseid = :courseid))
-                      AND u.id NOT IN (
-                          SELECT ar.userid
-                            FROM {alternative_registration} ar
-                            JOIN {alternative_option} ao ON (ar.optionid = ao.id AND ao.alternativeid = :alternativeid))";
+                  JOIN ($esql) je ON je.id = u.id
+                  LEFT JOIN {alternative_registration} ar ON (ar.userid = u.id AND ar.alternativeid = :altid)
+                 WHERE alternativeid IS NULL AND
+                     u.id != {$USER->id}";
         $order = ' ORDER BY u.lastname ASC, u.firstname ASC';
 
         if (!$this->is_validating()) {
@@ -327,7 +318,7 @@ class select_team_members extends user_selector_base {
         $options = parent::get_options();
         $options['alternative'] = (object) array(
             'alternativeid' => $this->alternativeid,
-            'course' => $this->courseid,
+            'coursecontext' => $this->coursecontext,
         );
         $options['file']    = 'mod/alternative/locallib.php';
         return $options;
