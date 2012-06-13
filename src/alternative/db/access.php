@@ -40,6 +40,8 @@ $capabilities = array(
         'legacy' => array(
             'guest' => CAP_PROHIBIT,
             'student' => CAP_ALLOW,
+            'teacher' => CAP_PREVENT,
+            'editingteacher' => CAP_PREVENT,
         )
     ),
     'mod/alternative:viewregistrations' => array(
@@ -58,7 +60,7 @@ $capabilities = array(
         'legacy' => array(
             'guest' => CAP_PROHIBIT,
             'student' => CAP_PROHIBIT,
-            'editingteacher' => CAP_PREVENT,
+            'teacher' => CAP_PREVENT,
             'editingteacher' => CAP_ALLOW,
         )
     ),
