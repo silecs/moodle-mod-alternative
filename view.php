@@ -50,8 +50,8 @@ if ($id) {
 }
 
 require_login($course, true, $cm);
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
-$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+$context = context_module::instance($cm->id);
+$coursecontext = context_course::instance($course->id);
 
 add_to_log($course->id, 'alternative', 'view', "view.php?id={$cm->id}", $alternative->name, $cm->id);
 
