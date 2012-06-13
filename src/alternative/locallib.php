@@ -179,12 +179,13 @@ function alternative_table_registrations($alternative) {
 function alternative_table_users_reg($alternative) {
     global $DB;
     $t = new html_table();
-    $sql = "SELECT u.firstname, u.lastname, ao.name, ar.timemodified, CONCAT(tl.firstname, ' ',tl.lastname) AS leader "
+    $sql = "SELECT u.id, u.firstname, u.lastname, ao.name, ar.timemodified, CONCAT(tl.firstname, ' ',tl.lastname) AS leader "
          . "FROM {user} AS u "
          . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
          . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
          . "LEFT JOIN {user} AS tl ON (ar.teamleaderid = tl.id) "
-         . "WHERE ao.alternativeid = ?"
+         . "WHERE ao.alternativeid = ? "
+         . "GROUP BY u.id "
          . "ORDER BY u.lastname ASC, u.firstname ASC" ;
     $result = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
