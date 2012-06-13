@@ -210,7 +210,7 @@ function alternative_table_users_reg($alternative) {
 function alternative_table_users_not_reg($alternative, $actions=false) {
     global $DB, $OUTPUT;
 
-    $context = get_context_instance(CONTEXT_COURSE, $alternative->course);
+    $context = context_course::instance($alternative->course);
     /** @todo context could be a function parameter; would it be more robust?
      */
     $sql = "SELECT u.id, u.firstname, u.lastname "
@@ -218,7 +218,7 @@ function alternative_table_users_not_reg($alternative, $actions=false) {
          . "JOIN {role_assignments} AS ra ON (ra.roleid=5 AND ra.userid=u.id AND ra.contextid=?) "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.userid = u.id AND ar.alternativeid=?) "
          . "WHERE ar.id IS NULL";
-    /** @todo roleid=5 is hard-coded; should it be otherwise?
+    /** @todo roleid=5 is hard-coded; should it be otherwise? get_roles_with_cap_in_context($context, $capability)
      */
     $result = $DB->get_records_sql($sql, array($context->id, $alternative->id));
 

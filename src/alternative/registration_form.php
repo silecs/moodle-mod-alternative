@@ -61,7 +61,7 @@ class mod_alternative_registration_form extends moodleform {
         $mform->addElement('hidden', 'a', $this->_customdata['alternative']->id);
 
         // register another user
-        $context = get_context_instance(CONTEXT_COURSE, $this->_customdata['alternative']->course);
+        $context = context_course::instance($this->_customdata['alternative']->course);
         if (has_capability('mod/alternative:forceregistrations', $context)) {
             $mform->addElement('header', 'fieldset_user', get_string("chooseuser", 'alternative'));
             $mform->targetselector = new select_team_members(
@@ -192,7 +192,7 @@ class mod_alternative_registration_form extends moodleform {
         $errors = parent::validation($data, $files);
 
         // register another user
-        $context = get_context_instance(CONTEXT_COURSE, $this->_customdata['alternative']->course);
+        $context = context_course::instance($this->_customdata['alternative']->course);
         if (has_capability('mod/alternative:forceregistrations', $context)) {
             $usertmp = $this->_form->targetselector->get_selected_user();
             if ($usertmp === null) {

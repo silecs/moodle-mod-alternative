@@ -50,7 +50,7 @@ if (!$alternative = alternative_get_alternative($cm->instance)) {
 }
 
 require_login($course, true, $cm);
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+$context = context_module::instance($cm->id);
 $can_register_anyone = has_capability('mod/alternative:forceregistrations', $context);
 
 add_to_log($course->id, 'alternative', 'view', "report.php?id={$id}&table={$table}", $alternative->name, $cm->id);
