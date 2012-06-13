@@ -185,10 +185,10 @@ function alternative_table_users_reg($alternative) {
          . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
          . "LEFT JOIN {user} AS tl ON (ar.teamleaderid = tl.id) "
          . "WHERE ao.alternativeid = ?"
-         . "ORDER BY u.lastname ASC" ;
+         . "ORDER BY u.lastname ASC, u.firstname ASC" ;
     $result = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
-    $t->head = array('Lastname', 'Firstname', 'Date');
+    $t->head = array(get_string('lastname'), get_string('firstname'), get_string('date'));
     $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
     $t->head[] = 'Leader' ;
 
