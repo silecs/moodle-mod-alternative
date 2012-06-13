@@ -211,16 +211,15 @@ function alternative_table_users_not_reg($alternative, $actions=false) {
     global $DB, $OUTPUT;
 
     $context = context_course::instance($alternative->course);
-    /** @todo context could be a function parameter; would it be more robust?
-     */
-    $sql = "SELECT u.id, u.firstname, u.lastname "
-         . "FROM {user} AS u "
-         . "JOIN {role_assignments} AS ra ON (ra.roleid=5 AND ra.userid=u.id AND ra.contextid=?) "
-         . "LEFT JOIN {alternative_registration} AS ar ON (ar.userid = u.id AND ar.alternativeid=?) "
-         . "WHERE ar.id IS NULL";
-    /** @todo roleid=5 is hard-coded; should it be otherwise? get_roles_with_cap_in_context($context, $capability)
-     */
-    $result = $DB->get_records_sql($sql, array($context->id, $alternative->id));
+    list($esql, $params) = get_enrolled_sql($context, 'mod/alternative:choose');
+    $sql = "SELECT u.id, u.firstname, u.lastname
+              FROM {user} u
+              JOIN ($esql) je ON je.id = u.id
+              LEFT JOIN {alternative_registration} ar ON (ar.userid = u.id AND ar.alternativeid = :altid)
+             WHERE u.deleted = 0 AND ar.id IS NULL
+             ORDER BY u.lastname ASC, u.firstname ASC";
+    $params['altid'] = $alternative->id;
+    $result = $DB->get_records_sql($sql, $params);
 
     $t = new html_table();
     $t->head = array(get_string('lastname'), get_string('firstname'));
