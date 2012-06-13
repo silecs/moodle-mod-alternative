@@ -82,12 +82,15 @@ $string['pluginname'] = 'alternative';
 $string['register'] = 'Register';
 $string['chooseuser'] = 'Please choose the user to register';
 $string['noselectedoption'] = 'You have to select an option';
+
 $string['instructionsgeneral'] = '';
 $string['instructionsnochange'] = 'Once a choice is saved, changing it will not be allowed.';
 $string['instructionsteam'] = 'You can register as a team. A team must have between {$a->teammin} and {$a->teammax} members.
 As you registered other members of your team, you will be the team leader.';
 $string['instructionsmultiple'] = 'You must choose between {$a->multiplemin} and {$a->multiplemax} options.';
 $string['instructionsmultiplenomax'] = 'You must choose at least {$a->multiplemin} options.';
+$string['instructionsforcereg'] = 'You can not register yourself but your role allows you to register students to any choice.';
+
 $string['registrationsaved'] = 'Your registration choice was saved.';
 $string['registrationforbidden'] = 'You cannot register here.';
 

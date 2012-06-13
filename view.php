@@ -92,7 +92,7 @@ if ($alternative->intro) { // Conditions to show the intro can change to look fo
 }
 
 echo $OUTPUT->heading("Options");
-alternative_print_instructions($alternative);
+alternative_print_instructions($alternative, $coursecontext);
 
 if (
     !$alternative->changeallowed
