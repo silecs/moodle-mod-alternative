@@ -107,8 +107,9 @@ function alternative_options_occupied_places($alternative, $ignore_teams=false) 
  * Prints the HTML for the instructions to display above options.
  *
  * @param type $alternative
+ * @param type $coursecontext
  */
-function alternative_print_instructions($alternative) {
+function alternative_print_instructions($alternative, $coursecontext) {
     global $OUTPUT;
     $instructions = get_string('instructionsgeneral', 'alternative');
     if ($instructions) {
@@ -127,6 +128,10 @@ function alternative_print_instructions($alternative) {
             $instructions .= "<li>" . get_string('instructionsmultiple', 'alternative', $alternative) . "</li>";
         }
     }
+	if ( has_capability('mod/alternative:forceregistrations', $coursecontext) ) {
+		$instructions .= "<li>" . get_string('instructionsforcereg', 'alternative', $alternative) . "</li>";
+	}
+
     if ($instructions) {
         echo $OUTPUT->box("<ul>" . $instructions . "</ul>", 'generalbox', 'alternativeinstructions');
     }
