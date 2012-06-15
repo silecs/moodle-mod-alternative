@@ -137,6 +137,77 @@ function alternative_print_instructions($alternative, $coursecontext) {
     }
 }
 
+
+
+/**
+ * @global \moodle_db $DB
+ * @param object $alternative
+ * @return \html_table
+ */
+function alternative_table_synth_options($alternative) {
+    global $DB;
+
+	$t = new html_table();
+    $t->head = array('', 'Nb');
+
+	// var_dump($alternative);
+	$t->data[] = array('Options', sizeof($alternative->option));
+
+	$sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
+		." WHERE ao.placesavail > 0 AND ao.alternativeid = ?";
+	$result = $DB->get_record_sql($sql, array($alternative->id));
+	$t->data[] = array('Limited places options', $result->limited);
+
+	$sql = "SELECT COUNT(ao.id) AS unlimited FROM {alternative_option} AS ao "
+		." WHERE ao.placesavail = 0 AND ao.alternativeid = ?";
+	$result = $DB->get_record_sql($sql, array($alternative->id));
+	$t->data[] = array('Unlimited places options', $result->unlimited);
+	$t->data[] = array('', ''); //** @fixme better separator ?
+
+
+	$sql = "SELECT SUM(ao.placesavail) AS places FROM {alternative_option} AS ao WHERE ao.alternativeid = ?";
+	$result = $DB->get_record_sql($sql, array($alternative->id));
+	$places = $result->places;
+	$t->data[] = array('Places', $places);
+
+	$sql = "SELECT COUNT(ar.userid) AS reserved "
+         . "FROM {alternative_option} AS ao "
+         . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
+         . "WHERE ao.placesavail > 1 AND ao.alternativeid = ? ";
+	$result = $DB->get_record_sql($sql, array($alternative->id));
+	$t->data[] = array('Reserved (among limited)', $result->reserved);
+	$t->data[] = array('Free', $places - $result->reserved);
+	$t->data[] = array('', ''); //** @fixme better separator ?
+
+	$context = context_course::instance($alternative->course);
+    $userids = get_enrolled_users($context, 'mod/alternative:choose');
+	$potential = sizeof($userids);
+	$t->data[] = array('Potential students', $potential);
+
+	$sql = "SELECT COUNT(DISTINCT ar.userid) AS regs "
+         . "FROM {alternative_option} AS ao "
+         . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
+         . "WHERE ao.alternativeid = ? ";
+	// echo $sql;
+	$result = $DB->get_record_sql($sql, array($alternative->id));
+	$t->data[] = array('Registered students', $result->regs);
+
+	$t->data[] = array('Unregistered students', $potential - $result->regs);
+
+
+	/*
+    $sql = "SELECT ao.name, ao.placesavail, "
+         . "GROUP_CONCAT(CONCAT(u.firstname, ' ',u.lastname)) AS regusers, COUNT(u.id) AS regs "
+         . "FROM {alternative_option} AS ao "
+         . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
+         . "LEFT JOIN {user} AS u ON (ar.userid = u.id) "
+         . "WHERE ao.alternativeid = ? "
+         . "GROUP BY ao.id";
+*/
+    return $t;
+
+}
+
 /**
  * @global \moodle_db $DB
  * @param object $alternative

@@ -98,9 +98,12 @@ $string['registrationforbidden'] = "Vous ne pouvez pas vous inscrire ici.";
 
 $string['userinfo'] = "S'est inscrit à {\$a} options.";
 
+$string['viewsynthesis'] = "Voir le bilan";
 $string['viewallregistrations'] = "Voir les inscriptions";
 $string['viewallusersreg'] = "Voir les utilisateurs inscrits";
 $string['viewallusersnotreg'] = "Voir les utilisateurs non inscrits";
+
+$string['synthesis'] = "Bilan";
 $string['registrations'] = "Inscriptions";
 $string['usersreg'] = "Utilisateurs inscrits";
 $string['usersnotreg'] = "Utilisateurs non inscrits";

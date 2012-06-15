@@ -56,6 +56,11 @@ $can_register_anyone = has_capability('mod/alternative:forceregistrations', $con
 add_to_log($course->id, 'alternative', 'view', "report.php?id={$id}&table={$table}", $alternative->name, $cm->id);
 
 switch ($table) {
+	case 'synth':
+        require_capability('mod/alternative:viewregistrations', $context);
+        $heading = get_string('synthesis', 'alternative');
+        $report = alternative_table_synth_options($alternative);
+        break;
     case 'usersReg': // FIXME users-reg
         require_capability('mod/alternative:viewregistrations', $context);
         $heading = get_string('usersreg', 'alternative');

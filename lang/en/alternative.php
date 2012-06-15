@@ -96,9 +96,12 @@ $string['registrationforbidden'] = 'You cannot register here.';
 
 $string['userinfo'] = 'Has registered to {$a} options.';
 
+$string['viewsynthesis'] = 'View synthesis';
 $string['viewallregistrations'] = 'View registrations';
 $string['viewallusersreg'] = 'View registered users';
 $string['viewallusersnotreg'] = 'View unregistered users';
+
+$string['synthesis'] = 'Synthesis';
 $string['registrations'] = 'Registrations';
 $string['usersreg'] = 'Registered users';
 $string['usersnotreg'] = 'Unregistered users';

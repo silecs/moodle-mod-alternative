@@ -427,8 +427,12 @@ function alternative_extend_navigation(navigation_node $navref, stdclass $course
  */
 function alternative_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $alternativenode=null) {
     global $PAGE;
-    /** @todo show second link if $alternative->publicreg */
+    /** @todo show 3rd link if $alternative->publicreg */
     if (has_capability('mod/alternative:viewregistrations', $PAGE->cm->context)) {
+		$alternativenode->add(
+            get_string("viewsynthesis", "alternative"),
+            new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id, 'table' => 'synth'))
+        );
         $alternativenode->add(
             get_string("viewallregistrations", "alternative"),
             new moodle_url('/mod/alternative/report.php', array('id' => $PAGE->cm->id, 'table' => 'registrations'))
