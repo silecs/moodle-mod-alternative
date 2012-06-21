@@ -17,8 +17,9 @@
         <FIELD NAME="multiplemax" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="A user cannot register more than &quot;multiplemax&quot; choices (0 if no max)." PREVIOUS="multiplemin" NEXT="changeallowed"/>
         <FIELD NAME="changeallowed" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" COMMENT="1 if the user can change its choice" PREVIOUS="multiplemax" NEXT="publicreg"/>
         <FIELD NAME="publicreg" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="If 0, nothing if shown. If 1, public display of the registration. If 2, registrations are only shown to the members of the same groups." PREVIOUS="changeallowed" NEXT="notifybyemail"/>
-        <FIELD NAME="notifybyemail" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if the user must receive an e-mail after its registration." PREVIOUS="publicreg" NEXT="timecreated"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="notifybyemail" NEXT="timemodified"/>
+        <FIELD NAME="notifybyemail" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if the user must receive an e-mail after its registration." PREVIOUS="publicreg" NEXT="compact"/>
+		<FIELD NAME="compact" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 for compact display of options, without descriptions." PREVIOUS="notifybyemail" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="compact" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
       </FIELDS>
       <KEYS>

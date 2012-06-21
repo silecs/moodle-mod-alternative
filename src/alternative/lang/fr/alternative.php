@@ -38,6 +38,9 @@ $string['alternativename'] = "Nom de l'activité";
 $string['changeallowed'] = "Modification autorisée";
 $string['changeallowed_help'] = "Si non cochée, l'utilisateur ne pourra pas modifier son choix initial.
 Les enseignants et les rôles ayant la capacité `alternatives:forceregistration` restent capables de changer le choix de n'importe qui.";
+$string['displaycompact'] = "Affichage compact";
+$string['displaycompact_help'] = "Si non cochée, chaque option sera affichée sur plusieurs lignes,
+	avec une description explicite. Si cochée, chaque option prendra une ligne, la description sera dépliable.";
 
 $string['fieldsetteam'] = "Réglages pour les équipes";
 $string['teamenable'] = "Activer les réglages pour les équipes";
