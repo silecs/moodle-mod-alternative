@@ -86,25 +86,46 @@ class mod_alternative_registration_form extends moodleform {
         $input = $this->_customdata['alternative']->multiplemin ? 'checkbox' : 'radio';
         $occupied = $this->_customdata['occupied'];
 
+		if ( $this->_customdata['alternative']->compact ) { //compact display
+			$mform->addElement('header', "fieldset[0]", 'Options');
+		}
+
         foreach ($this->_customdata['options'] as $id => $option) {
-            $mform->addElement('header', "fieldset[$id]", $option->name);
-            if ($input === 'checkbox') {
-                $mform->addElement($input, "option[{$id}]", '', ' ' . $option->name, $id);
-                $mform->setDefault("option[{$id}]", $option->registrationid);
-            } else {
-                $mform->addElement($input, "option", '', ' ' . $option->name, $id);
-                if ($option->registrationid) {
-                    $mform->setDefault("option", $id);
-                }
-            }
-            $mform->addElement('static', "optionintro[{$id}]", 'Description', format_text($option->intro, $option->introformat));
-            if ($option->datecomment) {
-                $mform->addElement('static', 'datecomment', 'Date', $option->datecomment);
-            }
-            if ($option->placesavail) {
-                $avail = $option->placesavail - (empty($occupied[$id]) ? 0 : $occupied[$id]);
-                $mform->addElement('static', 'places', 'Places', $avail);
-            }
+			if ( ! $this->_customdata['alternative']->compact ) { // long display
+				$mform->addElement('header', "fieldset[$id]", $option->name);
+				if ($input === 'checkbox') {
+					$mform->addElement($input, "option[{$id}]", '', ' ' . $option->name, $id);
+					$mform->setDefault("option[{$id}]", $option->registrationid);
+				} else {
+	                $mform->addElement($input, "option", '', ' ' . $option->name, $id);
+		            if ($option->registrationid) {
+			            $mform->setDefault("option", $id);
+				    }
+				}
+				$mform->addElement('static', "optionintro[{$id}]", 'Description', format_text($option->intro, $option->introformat));
+				if ($option->datecomment) {
+	                $mform->addElement('static', 'datecomment', 'Date', $option->datecomment);
+		        }
+			    if ($option->placesavail) {
+				    $avail = $option->placesavail - (empty($occupied[$id]) ? 0 : $occupied[$id]);
+					$mform->addElement('static', 'places', 'Places', $avail);
+				}
+			} else { // compact display
+				$line = '';
+				$line .= ($option->datecomment ? '('.$option->datecomment.') ' : '');
+				$line .= $option->name;
+				$line .= ($option->placesavail ? ' ('.$option->placesavail.' pl.)' : '');
+				if ($input === 'checkbox') {
+					$mform->addElement($input, "option[{$id}]", '', ' ' . $line, $id);
+					$mform->setDefault("option[{$id}]", $option->registrationid);
+				} else {
+	                $mform->addElement($input, "option", '', ' ' . $line, $id);
+		            if ($option->registrationid) {
+			            $mform->setDefault("option", $id);
+				    }
+				}
+				//** @todo ajouter la description repliée
+			}
             if ($option->registrationid) {
                 $this->user_has_registered = true;
             }
