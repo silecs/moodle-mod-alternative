@@ -53,6 +53,11 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 $coursecontext = context_course::instance($course->id);
 
+// HERE
+
+// redirect()
+
+
 add_to_log($course->id, 'alternative', 'view', "view.php?id={$cm->id}", $alternative->name, $cm->id);
 
 /// Print the page header

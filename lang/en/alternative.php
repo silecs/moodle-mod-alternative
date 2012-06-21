@@ -38,6 +38,9 @@ $string['alternativename'] = 'Activity name';
 $string['changeallowed'] = 'Change allowed';
 $string['changeallowed_help'] = 'If not checked, the user will not be able to change his choice.
 Teachers, and all roles that have the capability `alternatives:forceregistration`, will be able to change the choice of anyone.';
+$string['displaycompact'] = "Compact display";
+$string['displaycompact_help'] = "If not checked, each option will be displayed on several lines, with an explicit description.
+	If checked, each option will be displayed on one line, with a folded description.";
 
 $string["fieldsetteam"] = "Settings for teams";
 $string['teamenable'] = 'Enable team settings';

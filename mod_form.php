@@ -76,6 +76,10 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->setDefault('publicreg', ALTERNATIVE_PUBLIREG_PUBLIC);
         $mform->addHelpButton('publicreg', 'publicreg', 'alternative');
 
+		$mform->addElement('advcheckbox', 'compact', get_string('displaycompact', 'alternative'));
+        $mform->setDefault('compact', 0);
+        $mform->addHelpButton ('compact', 'displaycompact', 'alternative');
+
         $mform->addElement('header', 'alternativefieldset1', get_string('fieldsetteam', 'alternative'));
         $mform->addElement('checkbox', 'teamenable', get_string('enable'));
         $mform->addElement('text', 'teammin', get_string('teammin', 'alternative'), array('size'=>'4'));
