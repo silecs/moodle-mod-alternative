@@ -65,6 +65,7 @@ $string['publicreg_help'] = "Chaque inscription peut être :<dl>
 </dl>";
 
 $string['option'] = "Option";
+$string['options'] = "Options";
 $string['optionname'] = "Titre";
 $string['alternativeoptions'] = "Options pour cette alternative";
 $string['alternativeoptions_help'] = "Chaque alternative montre à l'étudiant plusieurs options.
@@ -110,6 +111,14 @@ $string['synthesis'] = "Bilan";
 $string['registrations'] = "Inscriptions";
 $string['usersreg'] = "Utilisateurs inscrits";
 $string['usersnotreg'] = "Utilisateurs non inscrits";
+$string['synthlimitplaces'] = 'Options à places limitées';
+$string['synthunlimitplaces'] = 'Options à places illimitées';
+$string['synthplaces'] = 'Places';
+$string['synthreserved'] = 'Réservées (parmi les limitées)';
+$string['synthfree'] = 'Disponibles';
+$string['synthpotential'] = 'Étudiants potentiels';
+$string['synthregistered'] = 'Étudiants inscrits';
+$string['synthunregistered'] = 'Étudiants non inscrits';
 
 $string['chooseteammembers'] = "Veuillez choisir vos coéquipiers";
 $string['potentialteammembers'] = "Coéquipiers potentiels";

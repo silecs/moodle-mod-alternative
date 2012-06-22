@@ -65,6 +65,7 @@ $string["publicreg_help"] = "The registrations can be:<dl>
 </dl>";
 
 $string["option"] = "Option";
+$string['options'] = "Options";
 $string["optionname"] = "Title";
 $string['alternativeoptions'] = 'Options for this alternative';
 $string['alternativeoptions_help'] = 'Each alternative shows the user several options.
@@ -108,6 +109,14 @@ $string['synthesis'] = 'Synthesis';
 $string['registrations'] = 'Registrations';
 $string['usersreg'] = 'Registered users';
 $string['usersnotreg'] = 'Unregistered users';
+$string['synthlimitplaces'] = 'Limited places options';
+$string['synthunlimitplaces'] = 'Unlimited places options';
+$string['synthplaces'] = 'Places';
+$string['synthreserved'] = 'Reserved (among limited)';
+$string['synthfree'] = 'Free';
+$string['synthpotential'] = 'Potential students';
+$string['synthregistered'] = 'Registered students';
+$string['synthunregistered'] = 'Unregistered students';
 
 $string['chooseteammembers'] = 'Please choose your team members';
 $string['potentialteammembers'] = 'Potential team members';
