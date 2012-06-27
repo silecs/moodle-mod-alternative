@@ -1,11 +1,12 @@
 <?php
-
-// This module is free software: you can redistribute it and/or modify
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// This module is distributed in the hope that it will be useful,
+// Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -13,12 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
- * Defines the version of alternative
- *
- * This code fragment is called by moodle_needs_upgrading() and
- * /admin/index.php
+ * Defines message providers (types of message sent) for the Alternative module.
  *
  * @package    mod
  * @subpackage alternative
@@ -28,7 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2012062801;      // The current module version (Date: YYYYMMDDXX)
-$module->requires  = 2010031900;      // Requires this Moodle version
-$module->cron      = 0;               // Period for cron to check this module (secs)
-$module->component = 'mod_alternative'; // To check on upgrade, that module sits in correct place
+$messageproviders = array(
+    // Warning to the student that his choice is expected
+    'reminder' => array(
+        'capability' => 'mod/alternative:choose',
+        'defaults' => array(
+            'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN,
+            'email' => MESSAGE_FORCED,
+        ),
+    ),
+);

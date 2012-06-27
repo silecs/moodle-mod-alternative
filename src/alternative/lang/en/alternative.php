@@ -121,3 +121,5 @@ $string['potentialteammembers'] = 'Potential team members';
 $string['noselectedusers'] = 'No users selected';
 $string['wrongteamsize'] = 'The size of your team is not between the allowed bounds.';
 $string['teamleadernotamember'] = 'The team leader should not be a member of its team.';
+
+$string['messageprovider:reminder'] = 'mod/alternative student reminder';
