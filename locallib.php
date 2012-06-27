@@ -21,7 +21,7 @@
  *
  * @package    mod
  * @subpackage alternative
- * @copyright  2012 Silecs
+ * @copyright  2012 Silecs http://www.silecs.info/societe
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -115,6 +115,9 @@ function alternative_print_instructions($alternative, $coursecontext) {
     if ($instructions) {
         $instructions .= "<li>" . $instructions . "</li>";
     }
+    if ( has_capability('mod/alternative:forceregistrations', $coursecontext) ) {
+		$instructions .= "<li><b>" . get_string('instructionsforcereg', 'alternative', $alternative) . "</b></li>";
+	}
     if (!$alternative->changeallowed) {
         $instructions .= "<li>" . get_string('instructionsnochange', 'alternative', $alternative) . "</li>";
     }
@@ -128,9 +131,6 @@ function alternative_print_instructions($alternative, $coursecontext) {
             $instructions .= "<li>" . get_string('instructionsmultiple', 'alternative', $alternative) . "</li>";
         }
     }
-	if ( has_capability('mod/alternative:forceregistrations', $coursecontext) ) {
-		$instructions .= "<li>" . get_string('instructionsforcereg', 'alternative', $alternative) . "</li>";
-	}
 
     if ($instructions) {
         echo $OUTPUT->box("<ul>" . $instructions . "</ul>", 'generalbox', 'alternativeinstructions');

@@ -19,12 +19,9 @@
 /**
  * English strings for alternative
  *
- * You can have a rather longer description of the file as well,
- * if you like, and it can span multiple lines.
- *
  * @package    mod
  * @subpackage alternative
- * @copyright  2011 Your Name
+ * @copyright  2012 Silecs http://www.silecs.info/societe
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
