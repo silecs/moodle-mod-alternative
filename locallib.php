@@ -303,7 +303,8 @@ function alternative_table_users_not_reg($alternative, $actions=false) {
     if ($actions) {
         $t->head[] = get_string('register', 'alternative');
         $template = $OUTPUT->single_button(
-            new moodle_url('/mod/alternative/view.php', array('a'=> $alternative->id, 'targetuser' => '%d')),
+            new moodle_url('/mod/alternative/view.php',
+                    array('a' => $alternative->id, 'forcereg' => 1, 'targetuser' => '%d')),
             get_string('register', 'alternative'),
             'post'
         );
