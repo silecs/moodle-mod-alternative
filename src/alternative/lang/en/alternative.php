@@ -117,6 +117,7 @@ $string['synthfree'] = 'Free';
 $string['synthpotential'] = 'Potential students';
 $string['synthregistered'] = 'Registered students';
 $string['synthunregistered'] = 'Unregistered students';
+$string['forceregister'] = 'Force registrations';
 
 $string['chooseteammembers'] = 'Please choose your team members';
 $string['potentialteammembers'] = 'Potential team members';

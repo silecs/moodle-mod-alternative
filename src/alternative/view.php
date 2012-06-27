@@ -29,7 +29,8 @@ require_once(dirname(dirname(dirname($_SERVER["SCRIPT_FILENAME"]))).'/config.php
 require_once(dirname(__FILE__) . "/locallib.php");
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$a  = optional_param('a', 0, PARAM_INT);  // alternative instance ID
+$altid  = optional_param('a', 0, PARAM_INT);  // alternative instance ID
+$forcereg = optional_param('forcereg', 0, PARAM_INT); // force registration from synthesis view
 
 /**
  * @todo use alternative_get_alternative() and simplify the code here and in the form.
@@ -41,8 +42,8 @@ if ($id) {
     $cm         = get_coursemodule_from_id('alternative', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $alternative  = $DB->get_record('alternative', array('id' => $cm->instance), '*', MUST_EXIST);
-} elseif ($a) {
-    $alternative  = $DB->get_record('alternative', array('id' => $a), '*', MUST_EXIST);
+} elseif ($altid) {
+    $alternative  = $DB->get_record('alternative', array('id' => $altid), '*', MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $alternative->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance('alternative', $alternative->id, $course->id, false, MUST_EXIST);
 } else {
@@ -53,10 +54,10 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 $coursecontext = context_course::instance($course->id);
 
-// HERE
-
-// redirect()
-
+if ( has_capability('mod/alternative:forceregistrations', $coursecontext)
+            && ! $forcereg ) {
+    redirect("$CFG->wwwroot/mod/alternative/report.php?id={$cm->id}&table=synth");
+}
 
 add_to_log($course->id, 'alternative', 'view', "view.php?id={$cm->id}", $alternative->name, $cm->id);
 

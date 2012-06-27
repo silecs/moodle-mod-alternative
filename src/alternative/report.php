@@ -102,6 +102,15 @@ else {
     echo '<div class="sitelink"><a href="' . $csvurl->out(TRUE) . '">Export CSV</a></div>';
     // class="sitelink" (link) or "homelink" (button)
 
+    if ( $can_register_anyone ) {
+        $registerbutton = $OUTPUT->single_button(
+            new moodle_url('/mod/alternative/view.php',
+                    array('a' => $alternative->id, 'forcereg' => 1)),
+                get_string('forceregister', 'alternative'),
+                'post'
+            );
+        echo $registerbutton;
+    }
     // Finish the page
     echo $OUTPUT->footer();
 }
