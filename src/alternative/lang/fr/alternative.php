@@ -17,14 +17,11 @@
 
 
 /**
- * English strings for alternative
- *
- * You can have a rather longer description of the file as well,
- * if you like, and it can span multiple lines.
+ * French strings for alternative
  *
  * @package    mod
  * @subpackage alternative
- * @copyright  2011 Your Name
+ * @copyright  2012 Silecs http://www.silecs.info/societe
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -119,6 +116,7 @@ $string['synthfree'] = 'Disponibles';
 $string['synthpotential'] = 'Étudiants potentiels';
 $string['synthregistered'] = 'Étudiants inscrits';
 $string['synthunregistered'] = 'Étudiants non inscrits';
+$string['forceregister'] = 'Forcer les inscriptions';
 
 $string['chooseteammembers'] = "Veuillez choisir vos coéquipiers";
 $string['potentialteammembers'] = "Coéquipiers potentiels";
