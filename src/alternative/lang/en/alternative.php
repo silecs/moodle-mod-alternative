@@ -116,6 +116,11 @@ $string['synthregistered'] = 'Registered students';
 $string['synthunregistered'] = 'Unregistered students';
 $string['forceregister'] = 'Force registrations';
 
+$string['viewteams'] = "View teams";
+$string['team'] = "Team";
+$string['teams'] = "Teams";
+$string['teamleader'] = "Team leader";
+
 $string['chooseteammembers'] = 'Please choose your team members';
 $string['potentialteammembers'] = 'Potential team members';
 $string['noselectedusers'] = 'No users selected';
