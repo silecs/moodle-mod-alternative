@@ -96,6 +96,13 @@ else {
 
     echo $OUTPUT->heading($alternative->name);
     echo $OUTPUT->heading($heading);
+
+    if (isset($_SESSION['alterNotifMsg'])) {
+        echo $OUTPUT->notification($_SESSION['alterNotifMsg'], $_SESSION['alterNotifStat']);
+        unset ($_SESSION['alterNotifMsg']);
+        unset ($_SESSION['alterNotifStat']);
+    }
+
     echo html_writer::table($report);
 
     $csvurl = new moodle_url('report.php', array('id'=>$id, 'table'=>$table, 'csv'=>1));
