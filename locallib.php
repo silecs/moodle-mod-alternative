@@ -268,6 +268,44 @@ function alternative_table_users_reg($alternative) {
     return $t;
 }
 
+/**
+ * @global \moodle_db $DB
+ * @param object $alternative
+ * @return \html_table
+ */
+function alternative_table_teams($alternative) {
+    global $DB;
+    $t = new html_table();
+    $sql = "SELECT CONCAT(tl.firstname, ' ',tl.lastname) AS leader, COUNT(u.id) AS nb, "
+         ."   GROUP_CONCAT(u.lastname SEPARATOR ', ') AS team, ao.name, ar.timemodified "
+         . "FROM {user} AS u "
+         . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
+         . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
+         . "LEFT JOIN {user} AS tl ON (ar.teamleaderid = tl.id) "
+         . "WHERE ao.alternativeid = ? "
+         . "GROUP BY tl.id "
+         . "ORDER BY tl.lastname ASC, tl.firstname ASC" ;
+    $result = $DB->get_records_sql($sql, array($alternative->id));
+    $t = new html_table();
+    $t->head = array('#', get_string('teamleader', 'alternative'), 'Nb', get_string('team', 'alternative'), get_string('date'));
+    $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
+
+    $count = 0;
+    foreach ($result as $line) {
+        $count++;
+        $t->data[] = array(
+            $count,
+            $line->leader,
+            $line->nb,
+            $line->team,
+            userdate($line->timemodified, "%d/%m"),
+            $line->name,
+        );
+    }
+
+    return $t;
+}
+
 
 /**
  * @global \moodle_db $DB

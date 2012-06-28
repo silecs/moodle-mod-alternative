@@ -71,6 +71,11 @@ switch ($table) {
         $heading = get_string('usersnotreg', 'alternative');
         $report = alternative_table_users_not_reg($alternative, !$csv && $can_register_anyone);
         break;
+    case 'teams':
+        require_capability('mod/alternative:viewregistrations', $context);
+        $heading = get_string('teams', 'alternative');
+        $report = alternative_table_teams($alternative);
+        break;
     case 'registrations':
     default:
         if (!$alternative->publicreg) {

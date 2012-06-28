@@ -118,6 +118,11 @@ $string['synthregistered'] = 'Étudiants inscrits';
 $string['synthunregistered'] = 'Étudiants non inscrits';
 $string['forceregister'] = 'Forcer les inscriptions';
 
+$string['viewteams'] = "Voir les équipes";
+$string['team'] = "Équipe";
+$string['teams'] = "Équipes";
+$string['teamleader'] = "Chef d'équipe";
+
 $string['chooseteammembers'] = "Veuillez choisir vos coéquipiers";
 $string['potentialteammembers'] = "Coéquipiers potentiels";
 $string['noselectedusers'] = "Aucun utilisateur sélectionné";
