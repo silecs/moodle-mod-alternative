@@ -125,3 +125,8 @@ $string['wrongteamsize'] = "La taille de l'équipe est hors de l'intervalle auto
 $string['teamleadernotamember'] = "Le chef d'équipe ne doit pas être un membre de l'équipe.";
 
 $string['messageprovider:reminder'] = 'Relance étudiant mod/alternative';
+$string['sendReminder'] = "Relance";
+$string['reminderSubject'] = "Rappel : vous devez faire un choix dans le module alternative";
+$string['reminderFull'] = "Vous devez faire un choix dans l'activité [[AlterName]].";
+$string['reminderFullHtml'] = "Vous devez faire un choix dans l'activité <i>[[AlterName]]</i>.";
+$string['reminderSmall'] = "Vous devez faire un choix dans l'activité [[AlterName]].";

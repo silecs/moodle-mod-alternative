@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// documentation : http://docs.moodle.org/dev/Messaging_2.0#Under_the_bonnet
+
 defined('MOODLE_INTERNAL') || die();
 
 $messageproviders = array(

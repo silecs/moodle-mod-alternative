@@ -123,3 +123,8 @@ $string['wrongteamsize'] = 'The size of your team is not between the allowed bou
 $string['teamleadernotamember'] = 'The team leader should not be a member of its team.';
 
 $string['messageprovider:reminder'] = 'mod/alternative student reminder';
+$string['sendReminder'] = "Send reminder";
+$string['reminderSubject'] = "Reminder : you must choose among alternative options";
+$string['reminderFull'] = "You must make a choice in the activity [[AlterName]].";
+$string['reminderFullHtml'] = "You must make a choice in the activity <i>[[AlterName]]</i>.";
+$string['reminderSmall'] = "You must make a choice in the activity [[AlterName]].";

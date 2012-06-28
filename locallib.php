@@ -150,7 +150,7 @@ function alternative_table_synth_options($alternative) {
 	$t = new html_table();
     $t->head = array('', 'Nb');
 
-	// var_dump($alternative);
+//var_dump($alternative);
 	$t->data[] = array(get_string('options', 'alternative'), sizeof($alternative->option));
 
 	$sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
@@ -335,6 +335,55 @@ function alternative_table_to_csv($table) {
     fclose($fcsv);
     return $content;
 }
+
+/**
+ * Sends a reminder message to all non registered students
+ * @global \moodle_db $DB
+ * @param object $alternative
+ * @param boolean $actions
+ * @return \html_table
+ */
+function alternative_send_reminder($alternative) {
+    global $DB, $USER;
+
+    $context = context_course::instance($alternative->course);
+    list($esql, $params) = get_enrolled_sql($context, 'mod/alternative:choose');
+    $sql = "SELECT u.id, u.firstname, u.lastname
+              FROM {user} u
+              JOIN ($esql) je ON je.id = u.id
+              LEFT JOIN {alternative_registration} ar ON (ar.userid = u.id AND ar.alternativeid = :altid)
+             WHERE u.deleted = 0 AND ar.id IS NULL
+             ORDER BY u.lastname ASC, u.firstname ASC";
+    $params['altid'] = $alternative->id;
+    $result = $DB->get_records_sql($sql, $params);
+
+    $eventdata = new object();
+    $eventdata->component         = 'mod_alternative';
+    $eventdata->name              = 'reminder';
+    $eventdata->userfrom          = $USER;
+    $eventdata->subject           = get_string('reminderSubject', 'alternative');
+    $eventdata->fullmessage       = str_replace('[[AlterName]]', $alternative->name,
+            get_string('reminderFull', 'alternative'));
+    $eventdata->fullmessageformat = FORMAT_PLAIN;   // text format
+    $eventdata->fullmessagehtml   = str_replace('[[AlterName]]', $alternative->name,
+            get_string('reminderFullHtml', 'alternative'));
+    $eventdata->smallmessage      = str_replace('[[AlterName]]', $alternative->name,
+            get_string('reminderSmall', 'alternative'));   // for sms or twitter // USED BY DEFAULT !
+
+    // documentation : http://docs.moodle.org/dev/Messaging_2.0#Message_dispatching
+    $count = array('err' => 0, 'ok' => 0);
+    foreach ($result as $userto) {
+        $eventdata->userto = $userto;
+        $res = message_send($eventdata);
+        if ($res) {
+            $count['ok']++;
+        } else {
+            $count['err']++;
+        }
+    }
+    return $count;
+}
+
 
 require_once($CFG->dirroot . '/user/selector/lib.php');
 require_once($CFG->dirroot . '/enrol/locallib.php');
