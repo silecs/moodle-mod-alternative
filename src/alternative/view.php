@@ -80,9 +80,10 @@ if (!$form->is_cancelled() and $form->is_submitted() and $form->is_validated()) 
         echo $OUTPUT->notification(get_string('registrationforbidden', 'alternative'), 'notifyfailure');
     } else {
         if ($form->save_to_db($USER->id)) {
-            echo $OUTPUT->header();
-            echo $OUTPUT->notification(get_string('registrationsaved', 'alternative'), 'notifysuccess');
+            $_SESSION['alterNotifStat'] = 'notifysuccess';
+            $_SESSION['alterNotifMsg'] = get_string('registrationsaved', 'alternative');
             add_to_log($course->id, "alternative", "update registration", "view.php?id=$cm->id", $alternative->id, $cm->id);
+            redirect("$CFG->wwwroot/mod/alternative/report.php?id={$cm->id}&table=synth");
         } else {
             echo $OUTPUT->header();
             echo $OUTPUT->notification(get_string('registrationnotsaved', 'alternative'), 'notifyfailure');
