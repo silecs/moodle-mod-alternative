@@ -110,6 +110,15 @@ else {
                 'post'
             );
         echo $registerbutton;
+
+        $reminderbutton = $OUTPUT->single_button(
+            new moodle_url('/mod/alternative/view.php',
+                    array('a' => $alternative->id, 'forcereg' => 0, 'reminder' => 1)),
+                get_string('sendReminder', 'alternative'),
+                'post'
+            );
+        echo $reminderbutton;
+
     }
     // Finish the page
     echo $OUTPUT->footer();
