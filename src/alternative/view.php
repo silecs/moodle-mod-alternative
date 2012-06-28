@@ -31,11 +31,9 @@ require_once(dirname(__FILE__) . "/locallib.php");
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $altid  = optional_param('a', 0, PARAM_INT);  // alternative instance ID
 $forcereg = optional_param('forcereg', 0, PARAM_INT); // force registration from synthesis view
-$reminder = optional_param('reminder', 0, PARAM_INT); // send reminder to unregistered students
 
 /**
  * @todo use alternative_get_alternative() and simplify the code here and in the form.
- * @todo if the user has the capability 'force...', allow him to choose a registered user
  * @todo by group display
  */
 
@@ -55,19 +53,6 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 $coursecontext = context_course::instance($course->id);
 
-if ( has_capability('mod/alternative:forceregistrations', $coursecontext)
-            && $reminder ) {
-    $res = alternative_send_reminder($alternative);
-    if ( $res['err'] == 0 ) {
-        echo $OUTPUT->header();
-        echo $OUTPUT->notification("Résultat envoi : ${res['ok']} messages OK", 'notifysuccess');
-        add_to_log($course->id, "alternative", "reminder sent", "view.php?id=$cm->id", $alternative->id, $cm->id);
-    } else {
-        echo $OUTPUT->header();
-        echo $OUTPUT->notification("Résultat envoi : ${res['ok']} messages ; ${res['err']} erreurs.", 'notifyfailure');
-        add_to_log($course->id, "alternative", "reminder NOT cleanly sent", "view.php?id=$cm->id", $alternative->id, $cm->id);
-    }
-}
 
 if ( has_capability('mod/alternative:forceregistrations', $coursecontext)
             && ! $forcereg ) {

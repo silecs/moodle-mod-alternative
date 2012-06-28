@@ -63,6 +63,7 @@ class mod_alternative_registration_form extends moodleform {
         // register another user
         $context = context_course::instance($this->_customdata['alternative']->course);
         if (has_capability('mod/alternative:forceregistrations', $context)) {
+            $mform->addElement('hidden', 'forcereg', 1);
             $mform->addElement('header', 'fieldset_user', get_string("chooseuser", 'alternative'));
             $mform->targetselector = new select_team_members(
                 'targetuser',

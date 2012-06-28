@@ -112,8 +112,8 @@ else {
         echo $registerbutton;
 
         $reminderbutton = $OUTPUT->single_button(
-            new moodle_url('/mod/alternative/view.php',
-                    array('a' => $alternative->id, 'forcereg' => 0, 'reminder' => 1)),
+            new moodle_url('/mod/alternative/sendreminder.php',
+                    array('a' => $alternative->id )),
                 get_string('sendReminder', 'alternative'),
                 'post'
             );
