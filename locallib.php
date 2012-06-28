@@ -188,22 +188,11 @@ function alternative_table_synth_options($alternative) {
          . "FROM {alternative_option} AS ao "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
          . "WHERE ao.alternativeid = ? ";
-	// echo $sql;
 	$result = $DB->get_record_sql($sql, array($alternative->id));
 	$t->data[] = array(get_string('synthregistered', 'alternative'), $result->regs);
 
 	$t->data[] = array(get_string('synthunregistered', 'alternative'), $potential - $result->regs);
 
-
-	/*
-    $sql = "SELECT ao.name, ao.placesavail, "
-         . "GROUP_CONCAT(CONCAT(u.firstname, ' ',u.lastname)) AS regusers, COUNT(u.id) AS regs "
-         . "FROM {alternative_option} AS ao "
-         . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
-         . "LEFT JOIN {user} AS u ON (ar.userid = u.id) "
-         . "WHERE ao.alternativeid = ? "
-         . "GROUP BY ao.id";
-*/
     return $t;
 
 }
@@ -259,12 +248,15 @@ function alternative_table_users_reg($alternative) {
          . "ORDER BY u.lastname ASC, u.firstname ASC" ;
     $result = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
-    $t->head = array(get_string('lastname'), get_string('firstname'), get_string('date'));
+    $t->head = array('#', get_string('lastname'), get_string('firstname'), get_string('date'));
     $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
     $t->head[] = 'Leader' ;
 
+    $count = 0;
     foreach ($result as $line) {
+        $count++;
         $t->data[] = array(
+            $count,
             $line->lastname,
             $line->firstname,
             userdate($line->timemodified, "%d/%m"),
@@ -298,7 +290,7 @@ function alternative_table_users_not_reg($alternative, $actions=false) {
     $result = $DB->get_records_sql($sql, $params);
 
     $t = new html_table();
-    $t->head = array(get_string('lastname'), get_string('firstname'));
+    $t->head = array('#', get_string('lastname'), get_string('firstname'));
     $template = '';
     if ($actions) {
         $t->head[] = get_string('register', 'alternative');
@@ -310,8 +302,14 @@ function alternative_table_users_not_reg($alternative, $actions=false) {
         );
     }
 
+    $count = 0;
     foreach ($result as $user) {
-        $t->data[] = array($user->lastname, $user->firstname, sprintf($template, $user->id));
+        $count++;
+        $t->data[] = array(
+            $count,
+            $user->lastname,
+            $user->firstname,
+            sprintf($template, $user->id) );
     }
 
     return $t;
