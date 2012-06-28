@@ -179,11 +179,19 @@ function alternative_table_synth_options($alternative) {
 	$t->data[] = array(get_string('synthfree', 'alternative'), $places - $result->reserved);
 	$t->data[] = array('', ''); //** @fixme better separator ?
 
+
 	$context = context_course::instance($alternative->course);
     $userids = get_enrolled_users($context, 'mod/alternative:choose');
 	$potential = sizeof($userids);
 	$t->data[] = array(get_string('synthpotential', 'alternative'), $potential);
 
+    if ( $alternative->teammin > 0 ) { // teams enabled
+        $sql = "SELECT COUNT(DISTINCT teamleaderid) AS teams "
+             . "FROM {alternative_registration} AS ar "
+             . "WHERE ar.alternativeid = ? ";
+        $result = $DB->get_record_sql($sql, array($alternative->id));
+        $t->data[] = array(get_string('teams', 'alternative'), $result->teams);
+    }
 	$sql = "SELECT COUNT(DISTINCT ar.userid) AS regs "
          . "FROM {alternative_option} AS ao "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
