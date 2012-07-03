@@ -390,8 +390,14 @@ function alternative_table_to_csv($table) {
 function alternative_send_reminder($alternative) {
     global $DB, $USER;
 
+    $cm = get_coursemodule_from_instance('alternative', $alternative->id, 0, false, MUST_EXIST);
+    $until = ( $cm->availableuntil > 0 ?
+            str_replace ('[[AlterUntil]]', userdate($cm->availableuntil),
+                    get_string('reminderBefore', 'alternative')) . '.'
+            : '.');
     $context = context_course::instance($alternative->course);
     list($esql, $params) = get_enrolled_sql($context, 'mod/alternative:choose');
+    // who hasn't registered yet?
     $sql = "SELECT u.id, u.firstname, u.lastname
               FROM {user} u
               JOIN ($esql) je ON je.id = u.id
@@ -406,13 +412,13 @@ function alternative_send_reminder($alternative) {
     $eventdata->name              = 'reminder';
     $eventdata->userfrom          = $USER;
     $eventdata->subject           = get_string('reminderSubject', 'alternative');
-    $eventdata->fullmessage       = str_replace('[[AlterName]]', $alternative->name,
-            get_string('reminderFull', 'alternative'));
     $eventdata->fullmessageformat = FORMAT_PLAIN;   // text format
+    $eventdata->fullmessage       = str_replace('[[AlterName]]', $alternative->name,
+            get_string('reminderFull', 'alternative')) . $until;
     $eventdata->fullmessagehtml   = str_replace('[[AlterName]]', $alternative->name,
-            get_string('reminderFullHtml', 'alternative'));
+            get_string('reminderFullHtml', 'alternative')) . $until;
     $eventdata->smallmessage      = str_replace('[[AlterName]]', $alternative->name,
-            get_string('reminderSmall', 'alternative'));   // for sms or twitter // USED BY DEFAULT !
+            get_string('reminderSmall', 'alternative')) . $until;   // for sms or twitter // USED BY DEFAULT !
 
     // documentation : http://docs.moodle.org/dev/Messaging_2.0#Message_dispatching
     $count = array('err' => 0, 'ok' => 0);
