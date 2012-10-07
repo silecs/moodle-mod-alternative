@@ -101,6 +101,13 @@ if ($alternative->intro) { // Conditions to show the intro can change to look fo
 echo $OUTPUT->heading("Options");
 alternative_print_instructions($alternative, $coursecontext);
 
+if ($alternative->publicreg == 1) { // public registrations
+    echo html_writer::table(alternative_table_registrations($alternative));
+}
+if ($alternative->publicreg == 2) { // public by group ?
+    //** @todo
+}
+
 if (
     !$alternative->changeallowed
     && $form->is_registered()
