@@ -92,13 +92,22 @@ class mod_alternative_registration_form extends moodleform {
 		}
 
         foreach ($this->_customdata['options'] as $id => $option) {
+            $attributes = null; // s'il n'y a plus de places dans cette option => disabled
+            if ($option->placesavail) {
+                $avail = $option->placesavail - (empty($occupied[$id]) ? 0 : $occupied[$id]);
+				if ($avail <= 0 && ($option->registrationid == null) ) { // si option cochée, elle reste disponible même si 0 places
+                    $attributes = array('disabled' => 'disabled');
+                }
+			}
 			if ( ! $this->_customdata['alternative']->compact ) { // long display
 				$mform->addElement('header', "fieldset[$id]", $option->name);
 				if ($input === 'checkbox') {
-					$mform->addElement($input, "option[{$id}]", '', ' ' . $option->name, $id);
+                    $attributes['value'] = $id; //**todo à quoi ça sert ? - GA
+					$mform->addElement($input, "option[{$id}]", '', ' ' . $option->name, $attributes);
+                    var_dump($option);
 					$mform->setDefault("option[{$id}]", $option->registrationid);
-				} else {
-	                $mform->addElement($input, "option", '', ' ' . $option->name, $id);
+				} else { // radio
+	                $mform->addElement($input, "option", '', ' ' . $option->name, $id, $attributes);
 		            if ($option->registrationid) {
 			            $mform->setDefault("option", $id);
 				    }
@@ -108,7 +117,6 @@ class mod_alternative_registration_form extends moodleform {
 	                $mform->addElement('static', 'datecomment', 'Date', $option->datecomment);
 		        }
 			    if ($option->placesavail) {
-				    $avail = $option->placesavail - (empty($occupied[$id]) ? 0 : $occupied[$id]);
 					$mform->addElement('static', 'places', 'Places', $avail);
 				}
 			} else { // compact display
@@ -117,15 +125,16 @@ class mod_alternative_registration_form extends moodleform {
 				$line .= $option->name;
 				$line .= ($option->placesavail ? ' ('.$option->placesavail.' pl.)' : '');
 				if ($input === 'checkbox') {
-					$mform->addElement($input, "option[{$id}]", '', ' ' . $line, $id);
+                    $attributes['value'] = $id; //**todo à quoi ça sert ? - GA
+					$mform->addElement($input, "option[{$id}]", '', ' ' . $line, $attributes);
 					$mform->setDefault("option[{$id}]", $option->registrationid);
 				} else {
-	                $mform->addElement($input, "option", '', ' ' . $line, $id);
+	                $mform->addElement($input, "option", '', ' ' . $line, $id, $attributes);
 		            if ($option->registrationid) {
 			            $mform->setDefault("option", $id);
 				    }
 				}
-				//** @todo ajouter la description repliée
+				//** @todo ajouter la description repliée ou popup
 			}
             if ($option->registrationid) {
                 $this->user_has_registered = true;
