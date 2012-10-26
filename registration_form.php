@@ -104,7 +104,6 @@ class mod_alternative_registration_form extends moodleform {
 				if ($input === 'checkbox') {
                     $attributes['value'] = $id; //**todo à quoi ça sert ? - GA
 					$mform->addElement($input, "option[{$id}]", '', ' ' . $option->name, $attributes);
-                    var_dump($option);
 					$mform->setDefault("option[{$id}]", $option->registrationid);
 				} else { // radio
 	                $mform->addElement($input, "option", '', ' ' . $option->name, $id, $attributes);
