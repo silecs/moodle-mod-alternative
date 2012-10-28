@@ -82,6 +82,7 @@ $string['pluginname'] = "alternative";
 
 $string['register'] = "Inscrire";
 $string['unregister'] = "Désinscrire";
+$string['unregisterLeader'] = "Attention : désinscrire un chef d'équipe désinscrit en réalité toute l'équipe.";
 $string['chooseuser'] = "Veuillez sélectionner l'utilisateur à inscrire";
 $string['noselectedoption'] = "Vous devez sélectionner une option";
 

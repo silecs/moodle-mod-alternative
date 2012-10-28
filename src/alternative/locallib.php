@@ -273,7 +273,7 @@ function alternative_table_users_reg($alternative, $actions=false) {
         $t->head[] = get_string('unregister', 'alternative');
         $actionbutton = $OUTPUT->single_button(
             new moodle_url('/mod/alternative/unregister.php',
-                    array('a' => $alternative->id, 'user' => '%d', 'option' => '%d')),
+                    array('a' => $alternative->id, 'leader' => '%d', 'user' => '%d', 'option' => '%d')),
             get_string('unregister', 'alternative'),
             'post'
         );
@@ -294,7 +294,9 @@ function alternative_table_users_reg($alternative, $actions=false) {
             userdate($line->timemodified, "%d/%m"),
             $line->name,
             $emb . $line->leader . $eme,
-            ($leader ? '' : sprintf($actionbutton, $line->userid, $line->optionid))
+            ($leader ?
+                sprintf($actionbutton, $line->teamleaderid, 0, $line->optionid)
+              : sprintf($actionbutton, 0, $line->userid, $line->optionid))
         );
         $t->data[] = $tableline;
     }
@@ -310,6 +312,7 @@ function alternative_table_users_reg($alternative, $actions=false) {
  */
 function alternative_table_teams($alternative, $actions=false) {
     global $DB, $OUTPUT;
+    $actions = false; // désactivé tant que pas clarifié : désinscription = toutes les options ?
     $t = new html_table();
     $sql = "SELECT ar.teamleaderid, tl.firstname, tl.lastname, COUNT(DISTINCT(u.id)) AS nb, "
             . "GROUP_CONCAT(DISTINCT(CONCAT(u.firstname,' ',u.lastname) ) SEPARATOR ', ') AS team "
@@ -352,7 +355,7 @@ function alternative_table_teams($alternative, $actions=false) {
             sprintf($actionbutton, $leader->teamleaderid, 0)
         );
     }
-    
+
     return $t;
 }
 
