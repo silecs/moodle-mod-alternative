@@ -243,12 +243,13 @@ function alternative_table_registrations($alternative) {
 /**
  * @global \moodle_db $DB
  * @param object $alternative
+ * @param boolean $actions
  * @return \html_table
  */
-function alternative_table_users_reg($alternative) {
-    global $DB;
+function alternative_table_users_reg($alternative, $actions=false) {
+    global $DB, $OUTPUT;
     $t = new html_table();
-    $sql = "SELECT CONCAT(u.id,':',ao.id), u.id, u.firstname, u.lastname, ao.name, ar.timemodified, "
+    $sql = "SELECT CONCAT(u.id,':',ao.id), userid, optionid, u.firstname, u.lastname, ao.name, ar.timemodified, "
         ."         ar.teamleaderid, CONCAT(tl.firstname, ' ',tl.lastname) AS leader "
          . "FROM {user} AS u "
          . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
@@ -265,23 +266,35 @@ function alternative_table_users_reg($alternative) {
     $t->head = array('#', get_string('lastname'), get_string('firstname'), get_string('date'));
     $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
     $t->head[] = 'Leader' ;
-
+    $actionbutton = '';
+    if ($actions) {
+        $t->head[] = get_string('unregister', 'alternative');
+        $actionbutton = $OUTPUT->single_button(
+            new moodle_url('/mod/alternative/unregister.php',
+                    array('a' => $alternative->id, 'user' => '%d', 'option' => '%d')),
+            get_string('unregister', 'alternative'),
+            'post'
+        );
+    }
     $count = 0;
     foreach ($result as $line) {
         $count++;
-        list($emb, $eme) = array('', '');
-        if ($line->teamleaderid == $line->id) {  // chefs d'équipe en gras
+        list($emb, $eme, $leader) = array('', '', false);
+        if ($line->teamleaderid == $line->userid) {  // chefs d'équipe en gras
             $emb = '<b>';
             $eme = '</b>';
+            $leader = true;
         }
-        $t->data[] = array(
+        $tableline = array(
             $count,
             $emb . $line->lastname . $eme,
             $emb . $line->firstname . $eme,
             userdate($line->timemodified, "%d/%m"),
             $line->name,
-            $emb . $line->leader . $eme
+            $emb . $line->leader . $eme,
+            ($leader ? '' : sprintf($actionbutton, $line->userid, $line->optionid))
         );
+        $t->data[] = $tableline;
     }
 
     return $t;
@@ -290,13 +303,14 @@ function alternative_table_users_reg($alternative) {
 /**
  * @global \moodle_db $DB
  * @param object $alternative
+ * @param boolean $actions
  * @return \html_table
  */
-function alternative_table_teams($alternative) {
-    global $DB;
+function alternative_table_teams($alternative, $actions=false) {
+    global $DB, $OUTPUT;
     $t = new html_table();
-    $sql = "SELECT CONCAT(tl.firstname, ' ',tl.lastname) AS leader, COUNT(u.id) AS nb, "
-         ."   GROUP_CONCAT(u.lastname SEPARATOR ', ') AS team, ao.name, ar.timemodified "
+    $sql = "SELECT CONCAT(tl.firstname, ' ',tl.lastname) AS leader, COUNT(u.id) AS nb, teamleaderid, "
+         ."   GROUP_CONCAT(u.lastname SEPARATOR ', ') AS team, ao.name, ar.timemodified, optionid "
          . "FROM {user} AS u "
          . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
          . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
@@ -308,17 +322,27 @@ function alternative_table_teams($alternative) {
     $t = new html_table();
     $t->head = array('#', get_string('teamleader', 'alternative'), 'Nb', get_string('team', 'alternative'), get_string('date'));
     $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
-
+    $actionbutton = '';
+    if ($actions) {
+        $t->head[] = get_string('unregister', 'alternative');
+        $actionbutton = $OUTPUT->single_button(
+            new moodle_url('/mod/alternative/unregister.php',
+                    array('a' => $alternative->id, 'leader' => '%d', 'option' => '%d')),
+            get_string('unregister', 'alternative'),
+            'post'
+        );
+    }
     $count = 0;
     foreach ($result as $line) {
         $count++;
         $t->data[] = array(
             $count,
-            $line->leader,
+            '<b>' . $line->leader . '</b>',
             $line->nb,
             $line->team,
             userdate($line->timemodified, "%d/%m"),
             $line->name,
+            sprintf($actionbutton, $line->teamleaderid, $line->optionid)
         );
     }
 
@@ -348,10 +372,10 @@ function alternative_table_users_not_reg($alternative, $actions=false) {
 
     $t = new html_table();
     $t->head = array('#', get_string('lastname'), get_string('firstname'));
-    $template = '';
+    $actionbutton = '';
     if ($actions) {
         $t->head[] = get_string('register', 'alternative');
-        $template = $OUTPUT->single_button(
+        $actionbutton = $OUTPUT->single_button(
             new moodle_url('/mod/alternative/view.php',
                     array('a' => $alternative->id, 'forcereg' => 1, 'targetuser' => '%d')),
             get_string('register', 'alternative'),
@@ -366,7 +390,7 @@ function alternative_table_users_not_reg($alternative, $actions=false) {
             $count,
             $user->lastname,
             $user->firstname,
-            sprintf($template, $user->id) );
+            sprintf($actionbutton, $user->id) );
     }
 
     return $t;
