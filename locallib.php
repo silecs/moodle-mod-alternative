@@ -418,6 +418,50 @@ function alternative_table_to_csv($table) {
 }
 
 /**
+ * unregister a team
+ * @global \moodle_db $DB
+ * @param type $altid
+ * @param type $leader
+ * @param type $option
+ * @return string
+ */
+function alternative_unregister_team($altid, $leader, $option) {
+    global $DB;
+    $sql = "SELECT u.firstname, u.lastname
+              FROM {user} u
+              JOIN {alternative_registration} ar ON (ar.userid = u.id)
+             WHERE u.deleted = 0 AND ar.alternativeid=? AND ar.teamleaderid=? AND ar.optionid=?
+             ORDER BY (teamleaderid = userid) DESC, u.lastname ASC, u.firstname ASC";
+    $results = $DB->get_records_sql($sql, array($altid, $leader, $option));
+    $ul = '';
+    foreach ($results as $result) {
+        $ul .= '<li>' . $result->firstname . ' ' . $result->lastname .'</li>';
+    }
+    $DB->delete_records('alternative_registration',
+            array('alternativeid'=>$altid, 'teamleaderid'=>$leader, 'optionid'=>$option));
+    return $ul;
+}
+
+/**
+ * unregister a user
+ * @global \moodle_db $DB
+ * @param type $altid
+ * @param type $leader
+ * @param type $option
+ * @return string
+ */
+function alternative_unregister_user($altid, $user, $option) {
+    global $DB;
+    $result = $DB->get_record('user', array('id' => $user), '*', MUST_EXIST);
+    $res = $result->firstname . ' ' . $result->lastname;
+    $DB->delete_records('alternative_registration',
+            array('alternativeid'=>$altid, 'userid'=>$user, 'optionid'=>$option));
+    return $res;
+}
+
+
+
+/**
  * Sends a reminder message to all non registered students
  * @global \moodle_db $DB
  * @param object $alternative
