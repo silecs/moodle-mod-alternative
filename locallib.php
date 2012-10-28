@@ -142,15 +142,14 @@ function alternative_print_instructions($alternative, $coursecontext) {
 /**
  * @global \moodle_db $DB
  * @param object $alternative
+ * @param int $cmid course_module id
  * @return \html_table
  */
-function alternative_table_synth_options($alternative) {
+function alternative_table_synth_options($alternative, $cmid) {
     global $DB;
 
 	$t = new html_table();
     $t->head = array('', 'Nb');
-
-//var_dump($alternative);
 	$t->data[] = array(get_string('options', 'alternative'), sizeof($alternative->option));
 
 	$sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
@@ -197,9 +196,11 @@ function alternative_table_synth_options($alternative) {
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
          . "WHERE ao.alternativeid = ? ";
 	$result = $DB->get_record_sql($sql, array($alternative->id));
-	$t->data[] = array(get_string('synthregistered', 'alternative'), $result->regs);
 
-	$t->data[] = array(get_string('synthunregistered', 'alternative'), $potential - $result->regs);
+    $url = new moodle_url('/mod/alternative/report.php', array('id' => $cmid, 'table'=>'usersReg'));
+	$t->data[] = array(get_string('synthregistered', 'alternative'), html_writer::link($url, $result->regs));
+    $url = new moodle_url('/mod/alternative/report.php', array('id' => $cmid, 'table'=>'usersNotReg'));
+	$t->data[] = array(get_string('synthunregistered', 'alternative'), html_writer::link($url, $potential - $result->regs));
 
     return $t;
 
