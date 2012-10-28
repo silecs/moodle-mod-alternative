@@ -247,13 +247,14 @@ function alternative_table_registrations($alternative) {
 function alternative_table_users_reg($alternative) {
     global $DB;
     $t = new html_table();
-    $sql = "SELECT CONCAT(u.id,':',ao.id), u.firstname, u.lastname, ao.name, ar.timemodified, CONCAT(tl.firstname, ' ',tl.lastname) AS leader "
+    $sql = "SELECT CONCAT(u.id,':',ao.id), u.id, u.firstname, u.lastname, ao.name, ar.timemodified, "
+        ."         ar.teamleaderid, CONCAT(tl.firstname, ' ',tl.lastname) AS leader "
          . "FROM {user} AS u "
          . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
          . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
          . "LEFT JOIN {user} AS tl ON (ar.teamleaderid = tl.id) "
          . "WHERE ao.alternativeid = ? "
-         . "ORDER BY u.lastname ASC, u.firstname ASC" ;
+         . "ORDER BY optionid, (teamleaderid=u.id) DESC, u.lastname ASC, u.firstname ASC" ;
     $result = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
     $t->head = array('#', get_string('lastname'), get_string('firstname'), get_string('date'));
@@ -263,13 +264,18 @@ function alternative_table_users_reg($alternative) {
     $count = 0;
     foreach ($result as $line) {
         $count++;
+        list($emb, $eme) = array('', '');
+        if ($line->teamleaderid == $line->id) {  // chefs d'équipe en gras
+            $emb = '<b>';
+            $eme = '</b>';
+        }
         $t->data[] = array(
             $count,
-            $line->lastname,
-            $line->firstname,
+            $emb . $line->lastname . $eme,
+            $emb . $line->firstname . $eme,
             userdate($line->timemodified, "%d/%m"),
             $line->name,
-            $line->leader
+            $emb . $line->leader . $eme
         );
     }
 
