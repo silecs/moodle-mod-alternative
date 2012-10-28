@@ -189,8 +189,10 @@ function alternative_table_synth_options($alternative, $cmid) {
              . "FROM {alternative_registration} AS ar "
              . "WHERE ar.alternativeid = ? ";
         $result = $DB->get_record_sql($sql, array($alternative->id));
-        $t->data[] = array(get_string('teams', 'alternative'), $result->teams);
+        $url = new moodle_url('/mod/alternative/report.php', array('id' => $cmid, 'table'=>'teams'));
+        $t->data[] = array(get_string('teams', 'alternative'), html_writer::link($url, $result->teams));
     }
+
 	$sql = "SELECT COUNT(DISTINCT ar.userid) AS regs "
          . "FROM {alternative_option} AS ao "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
