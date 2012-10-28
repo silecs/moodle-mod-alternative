@@ -74,7 +74,7 @@ switch ($table) {
     case 'teams':
         require_capability('mod/alternative:viewregistrations', $context);
         $heading = get_string('teams', 'alternative');
-        $report = alternative_table_teams($alternative, !$csv && $can_register_anyone);
+        $report = alternative_table_teams($alternative, false);
         break;
     case 'registrations':
     default:
@@ -109,6 +109,10 @@ else {
     }
 
     echo html_writer::table($report);
+
+    if ($table == "usersReg" && $alternative->teammin > 0) {
+        echo "<p><b>" . get_string('unregisterLeader', 'alternative') . "</b></p>\n";
+    }
 
     $csvurl = new moodle_url('report.php', array('id'=>$id, 'table'=>$table, 'csv'=>1));
     echo '<div class="sitelink"><a href="' . $csvurl->out(TRUE) . '">Export CSV</a></div>';
