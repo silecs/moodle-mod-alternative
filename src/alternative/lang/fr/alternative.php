@@ -73,6 +73,7 @@ $string['optionintro'] = "Description";
 $string['datecomment'] = "Date";
 $string['datecomment_help'] = "Ce champ peut contenir n'importe quel texte, mais il est prévu pour une date ou un intervalle de dates.";
 $string['placesavail'] = "Places disponibles";
+$string['teamplacesavail'] = "Places disponibles pour les équipes";
 $string['groupdependent'] = "Dépendant du groupe";
 $string['groupdependent_help'] = "Si cochée, le texte affiché pour chaque utilisateur dépendra de son groupe." ;
 
