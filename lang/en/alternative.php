@@ -81,6 +81,7 @@ $string['pluginadministration'] = 'Alternative administration';
 $string['pluginname'] = 'alternative';
 
 $string['register'] = 'Register';
+$string['unregister'] = 'Unregister';
 $string['chooseuser'] = 'Please choose the user to register';
 $string['noselectedoption'] = 'You have to select an option';
 

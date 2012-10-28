@@ -64,7 +64,7 @@ switch ($table) {
     case 'usersReg': // FIXME users-reg
         require_capability('mod/alternative:viewregistrations', $context);
         $heading = get_string('usersreg', 'alternative');
-        $report = alternative_table_users_reg($alternative);
+        $report = alternative_table_users_reg($alternative, !$csv && $can_register_anyone);
         break;
     case 'usersNotReg': //FIXME users-not-reg
         require_capability('mod/alternative:viewregistrations', $context);
@@ -74,7 +74,7 @@ switch ($table) {
     case 'teams':
         require_capability('mod/alternative:viewregistrations', $context);
         $heading = get_string('teams', 'alternative');
-        $report = alternative_table_teams($alternative);
+        $report = alternative_table_teams($alternative, !$csv && $can_register_anyone);
         break;
     case 'registrations':
     default:
