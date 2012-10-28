@@ -59,7 +59,7 @@ switch ($table) {
 	case 'synth':
         require_capability('mod/alternative:viewregistrations', $context);
         $heading = get_string('synthesis', 'alternative');
-        $report = alternative_table_synth_options($alternative);
+        $report = alternative_table_synth_options($alternative, $id);
         break;
     case 'usersReg': // FIXME users-reg
         require_capability('mod/alternative:viewregistrations', $context);
