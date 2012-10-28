@@ -253,8 +253,12 @@ function alternative_table_users_reg($alternative) {
          . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
          . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
          . "LEFT JOIN {user} AS tl ON (ar.teamleaderid = tl.id) "
-         . "WHERE ao.alternativeid = ? "
-         . "ORDER BY optionid, (teamleaderid=u.id) DESC, u.lastname ASC, u.firstname ASC" ;
+         . "WHERE ao.alternativeid = ? ";
+    if ($alternative->teammin >=1 ) { // team enabled
+        $sql .= "ORDER BY optionid, teamleaderid, (teamleaderid=u.id) DESC, u.lastname ASC, u.firstname ASC" ;
+    } else {
+        $sql .= "ORDER BY u.lastname ASC, u.firstname ASC" ;
+    }
     $result = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
     $t->head = array('#', get_string('lastname'), get_string('firstname'), get_string('date'));
