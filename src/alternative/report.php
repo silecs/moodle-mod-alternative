@@ -53,7 +53,7 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 $can_register_anyone = has_capability('mod/alternative:forceregistrations', $context);
 
-add_to_log($course->id, 'alternative', 'view', "report.php?id={$id}&table={$table}", $alternative->name, $cm->id);
+add_to_log($course->id, 'alternative', 'report', "report.php?id={$id}&table={$table}", $alternative->name, $cm->id);
 
 switch ($table) {
 	case 'synth':
