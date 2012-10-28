@@ -109,6 +109,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $repeatarray[] = &MoodleQuickForm::createElement('editor', 'option[introeditor]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => 0));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[datecomment]', get_string('datecomment', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[placesavail]', get_string('placesavail', 'alternative'));
+        $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[teamplacesavail]', get_string('teamplacesavail', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('advcheckbox', 'option[groupdependent]', get_string('groupdependent', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('hidden', 'option[id]', 0);
 
@@ -131,6 +132,9 @@ class mod_alternative_mod_form extends moodleform_mod {
             $mform->setDefault("option[placesavail][$i]", '');
             $mform->addRule("option[placesavail][$i]", null, 'numeric');
             $mform->setType("option[placesavail][$i]", PARAM_INT);
+            $mform->setDefault("option[teamplacesavail][$i]", '');
+            $mform->addRule("option[teamplacesavail][$i]", null, 'numeric');
+            $mform->setType("option[teamplacesavail][$i]", PARAM_INT);
             $mform->setType("option[id][$i]", PARAM_INT);
         }
 
@@ -179,7 +183,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         }
         $options = $DB->get_records('alternative_option',array('alternativeid' => $this->_instance));
         if ($options) {
-            $fields = array('name', 'datecomment', 'placesavail', 'groupdependent', 'id');
+            $fields = array('name', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
             $rank = 0;
             foreach ($options as $key => $option){
                 foreach ($fields as $field) {
@@ -187,6 +191,9 @@ class mod_alternative_mod_form extends moodleform_mod {
                 }
 				if ( empty($default_values["option[placesavail][$rank]"]) ) {
 					$default_values["option[placesavail][$rank]"] = '';
+				}
+                if ( empty($default_values["option[teamplacesavail][$rank]"]) ) {
+					$default_values["option[teamplacesavail][$rank]"] = '';
 				}
                 $default_values["option[introeditor][$rank]"] = array(
                     "text" => $option->intro,

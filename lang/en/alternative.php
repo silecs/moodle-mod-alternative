@@ -73,6 +73,7 @@ $string["optionintro"] = "Description";
 $string["datecomment"] = "Date";
 $string["datecomment_help"] = "This field can contain any text, but it is meant for a date or a date interval.";
 $string["placesavail"] = "Available places";
+$string["teamplacesavail"] = "Available places for teams";
 $string["groupdependent"] = "Group dependent";
 $string["groupdependent_help"] = "If this box is checked, the text show to each user will depend on his group.";
 

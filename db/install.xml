@@ -37,8 +37,9 @@
         <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Description of this option" PREVIOUS="name" NEXT="introformat"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="datecomment"/>
         <FIELD NAME="datecomment" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Free text on the date of the evenment, etc" PREVIOUS="introformat" NEXT="placesavail"/>
-        <FIELD NAME="placesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available places" PREVIOUS="datecomment" NEXT="groupdependent"/>
-        <FIELD NAME="groupdependent" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if the option differs according to the user's group" PREVIOUS="placesavail" NEXT="timecreated"/>
+        <FIELD NAME="placesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available places" PREVIOUS="datecomment" NEXT="teamplacesavail"/>
+		<FIELD NAME="teamplacesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available team places" PREVIOUS="placesavail" NEXT="groupdependent"/>
+        <FIELD NAME="groupdependent" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if the option differs according to the user's group" PREVIOUS="teamplacesavail" NEXT="timecreated"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="groupdependent" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
       </FIELDS>
@@ -57,8 +58,9 @@
         <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Description of this option" PREVIOUS="hidden" NEXT="introformat"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="datecomment"/>
         <FIELD NAME="datecomment" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Free text on the date of the evenment, etc" PREVIOUS="introformat" NEXT="placesavail"/>
-        <FIELD NAME="placesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available places" PREVIOUS="datecomment" NEXT="timecreated"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="placesavail" NEXT="timemodified"/>
+        <FIELD NAME="placesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available places" PREVIOUS="datecomment" NEXT="teamplacesavail"/>
+		<FIELD NAME="teamplacesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available team places" PREVIOUS="placesavail" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="teamplacesavail" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
       </FIELDS>
       <KEYS>

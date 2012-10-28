@@ -215,8 +215,8 @@ function alternative_table_synth_options($alternative, $cmid) {
  */
 function alternative_table_registrations($alternative) {
     global $DB;
-    $sql = "SELECT ao.name, ao.placesavail, "
-         . "GROUP_CONCAT(CONCAT(u.firstname, ' ',u.lastname)) AS regusers, COUNT(u.id) AS regs "
+    $sql = "SELECT ao.name, ao.placesavail, ao.teamplacesavail, "
+         . "GROUP_CONCAT(CONCAT(u.firstname, ' ',u.lastname)) AS regusers, COUNT(u.id) AS regs, COUNT(DISTINCT ar.teamleaderid) AS teams "
          . "FROM {alternative_option} AS ao "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
          . "LEFT JOIN {user} AS u ON (ar.userid = u.id) "
@@ -225,6 +225,9 @@ function alternative_table_registrations($alternative) {
     $result = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
     $t->head = array('Option', 'Places', 'Registrations', 'Remains', 'Students');
+    if ($alternative->teammin > 0) {
+        $t->head = array_merge($t->head, array('Team places', 'Reg. Teams', 'Remains'));
+    }
 
     foreach ($result as $line) {
         if ($line->placesavail > 0) { //limited places
@@ -235,7 +238,21 @@ function alternative_table_registrations($alternative) {
             $t_avail = '∞';
             $t_remains = '∞';
         }
-        $t->data[] = array($line->name, $t_avail, $line->regs, $t_remains, $line->regusers);
+        $tline = array($line->name, $t_avail, $line->regs, $t_remains, $line->regusers);
+        if ($line->teamplacesavail > 0) { //limited places
+            $t_teamavail = $line->teamplacesavail;
+            $t_teamremains = ($line->teamplacesavail - $line->teams);
+        }
+        else { //unlimited places
+            $t_teamavail = '∞';
+            $t_teamremains = '∞';
+        }
+        if ($alternative->teammin > 0) { // if teams active
+            $tline[] = $t_teamavail;
+            $tline[] = $line->teams;
+            $tline[] = $t_teamremains;
+        }
+        $t->data[] = $tline;
     }
 
     return $t;
