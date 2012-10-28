@@ -311,18 +311,17 @@ function alternative_table_users_reg($alternative, $actions=false) {
 function alternative_table_teams($alternative, $actions=false) {
     global $DB, $OUTPUT;
     $t = new html_table();
-    $sql = "SELECT CONCAT(tl.firstname, ' ',tl.lastname) AS leader, COUNT(u.id) AS nb, teamleaderid, "
-         ."   GROUP_CONCAT(u.lastname SEPARATOR ', ') AS team, ao.name, ar.timemodified, optionid "
-         . "FROM {user} AS u "
-         . "JOIN {alternative_registration} AS ar ON (ar.userid = u.id) "
-         . "JOIN {alternative_option} AS ao ON (ar.optionid = ao.id) "
-         . "LEFT JOIN {user} AS tl ON (ar.teamleaderid = tl.id) "
-         . "WHERE ao.alternativeid = ? "
-         . "GROUP BY tl.id "
-         . "ORDER BY tl.lastname ASC, tl.firstname ASC" ;
-    $result = $DB->get_records_sql($sql, array($alternative->id));
+    $sql = "SELECT ar.teamleaderid, tl.firstname, tl.lastname, COUNT(DISTINCT(u.id)) AS nb, "
+            . "GROUP_CONCAT(DISTINCT(CONCAT(u.firstname,' ',u.lastname) ) SEPARATOR ', ') AS team "
+            . "FROM alternative_registration ar "
+            . "JOIN user tl ON (ar.teamleaderid = tl.id) "
+            . "JOIN user u ON (ar.userid = u.id) "
+            . "WHERE alternativeid=? "
+            . "GROUP BY teamleaderid";
+    $leaders = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
-    $t->head = array('#', get_string('teamleader', 'alternative'), 'Nb', get_string('team', 'alternative'), get_string('date'));
+    $t->head = array('#', get_string('teamleader', 'alternative'), 'Eff', get_string('team', 'alternative'), get_string('date'));
+    $t->head[] = 'Nb';
     $t->head[] = 'Chosen option' . ($alternative->multiplemax > 1 ? 's' : '') ;
     $actionbutton = '';
     if ($actions) {
@@ -335,19 +334,25 @@ function alternative_table_teams($alternative, $actions=false) {
         );
     }
     $count = 0;
-    foreach ($result as $line) {
+    foreach ($leaders as $leader) {
+        $sql = "SELECT COUNT(DISTINCT(optionid)) AS nbopt, GROUP_CONCAT(DISTINCT(name) SEPARATOR ', ') AS opt, ar.timemodified "
+           . "FROM alternative_registration ar "
+           . "JOIN alternative_option ao ON (ar.optionid=ao.id) "
+           . "WHERE ar.alternativeid=? AND teamleaderid=?";
+        $line = $DB->get_record_sql($sql, array($alternative->id, $leader->teamleaderid) );
         $count++;
         $t->data[] = array(
             $count,
-            '<b>' . $line->leader . '</b>',
-            $line->nb,
-            $line->team,
+            '<b>' . $leader->firstname . ' ' . $leader->lastname . '</b>',
+            $leader->nb,
+            $leader->team,
             userdate($line->timemodified, "%d/%m"),
-            $line->name,
-            sprintf($actionbutton, $line->teamleaderid, $line->optionid)
+            $line->nbopt,
+            $line->opt,
+            sprintf($actionbutton, $leader->teamleaderid, 0)
         );
     }
-
+    
     return $t;
 }
 
