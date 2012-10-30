@@ -83,7 +83,12 @@ if (!$form->is_cancelled() and $form->is_submitted() and $form->is_validated()) 
             $_SESSION['alterNotifStat'] = 'notifysuccess';
             $_SESSION['alterNotifMsg'] = get_string('registrationsaved', 'alternative');
             add_to_log($course->id, "alternative", "update registration", "view.php?id=$cm->id", $alternative->id, $cm->id);
-            redirect("$CFG->wwwroot/mod/alternative/report.php?id={$cm->id}&table=synth");
+            if (has_capability('mod/alternative:forceregistrations', $coursecontext)) {
+                redirect("$CFG->wwwroot/mod/alternative/report.php?id={$cm->id}&table=synth");
+            } else {
+                echo $OUTPUT->header();
+                echo $OUTPUT->notification(get_string('registrationsaved', 'alternative'), 'notifysuccess');
+            }
         } else {
             echo $OUTPUT->header();
             echo $OUTPUT->notification(get_string('registrationnotsaved', 'alternative'), 'notifyfailure');
