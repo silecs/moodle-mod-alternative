@@ -123,6 +123,9 @@ $string['viewteams'] = "View teams";
 $string['team'] = "Team";
 $string['teams'] = "Teams";
 $string['teamleader'] = "Team leader";
+$string['individual'] = "Individual";
+$string['unique'] = "Unique";
+$string['multiple'] = "Multiple";
 
 $string['chooseteammembers'] = 'Please choose your team members';
 $string['potentialteammembers'] = 'Potential team members';
