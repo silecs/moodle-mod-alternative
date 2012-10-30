@@ -102,7 +102,7 @@ class mod_alternative_registration_form extends moodleform {
 			if ( ! $this->_customdata['alternative']->compact ) { // long display
 				$mform->addElement('header', "fieldset[$id]", $option->name);
 				if ($input === 'checkbox') {
-                    $attributes['value'] = $id; //**todo à quoi ça sert ? - GA
+                    $attributes['value'] = $id; // booléen suffirait
 					$mform->addElement($input, "option[{$id}]", '', ' ' . $option->name, $attributes);
 					$mform->setDefault("option[{$id}]", $option->registrationid);
 				} else { // radio
@@ -124,7 +124,7 @@ class mod_alternative_registration_form extends moodleform {
 				$line .= $option->name;
 				$line .= ($option->placesavail ? ' ('.$option->placesavail.' pl.)' : '');
 				if ($input === 'checkbox') {
-                    $attributes['value'] = $id; //**todo à quoi ça sert ? - GA
+                    $attributes['value'] = $id; // booléen suffirait
 					$mform->addElement($input, "option[{$id}]", '', ' ' . $line, $attributes);
 					$mform->setDefault("option[{$id}]", $option->registrationid);
 				} else {
