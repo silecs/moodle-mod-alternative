@@ -570,7 +570,7 @@ class select_team_members extends user_selector_base {
      */
     public function find_users($search) {
         global $DB, $USER;
-        $fields      = 'SELECT ' . $this->required_fields_sql('u');
+        $fields      = 'SELECT DISTINCT ' . $this->required_fields_sql('u');
         $countfields = 'SELECT COUNT(1)';
 
         list($esql, $params) = get_enrolled_sql($this->coursecontext, 'mod/alternative:choose');
@@ -578,7 +578,7 @@ class select_team_members extends user_selector_base {
         $sql = " FROM {user} u
                   JOIN ($esql) je ON je.id = u.id
                   LEFT JOIN {alternative_registration} ar ON (ar.userid = u.id AND ar.alternativeid = :altid)
-                 WHERE alternativeid IS NULL AND
+                 WHERE (alternativeid IS NULL OR teamleaderid = {$USER->id}) AND
                      u.id != {$USER->id}";
         $order = ' ORDER BY u.lastname ASC, u.firstname ASC';
 
