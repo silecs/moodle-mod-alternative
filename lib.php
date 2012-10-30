@@ -90,7 +90,7 @@ function alternative_add_instance(stdClass $alternative, mod_alternative_mod_for
     //var_dump($alternative); die();
     $alternative->id = $DB->insert_record("alternative", $alternative);
 
-    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'groupdependent', 'id');
+    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
     foreach ($alternative->option['name'] as $key => $name) {
         if (!empty($name) && trim($name) !== '') {
             $option = new stdClass();
@@ -141,7 +141,7 @@ function alternative_update_instance(stdClass $alternative, mod_alternative_mod_
         $alternative->multiplemax = 0;
     }
 
-    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'groupdependent', 'id');
+    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
     foreach ($alternative->option['name'] as $key => $name) {
         $exists_in_db = !empty($alternative->option['id'][$key]);
         if (!empty($name) && trim($name) !== '') {
