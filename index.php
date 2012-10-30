@@ -30,7 +30,7 @@ $id = required_param('id', PARAM_INT);   // course
 $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 
 require_course_login($course);
-
+$PAGE->set_pagelayout('incourse');
 add_to_log($course->id, 'alternative', 'view all', 'index.php?id='.$course->id, '');
 
 $coursecontext = context_course::instance($course->id);
@@ -48,32 +48,42 @@ if (! $alternatives = get_all_instances_in_course('alternative', $course)) {
 
 $table = new html_table();
 if ($course->format == 'weeks') {
-    $table->head  = array(get_string('week'), get_string('name'));
-    $table->align = array('center', 'left');
+    $table->head  = array(get_string('week'), get_string('name'), '', '');
+    $table->align = array('center', 'left', 'left', 'left');
 } else if ($course->format == 'topics') {
-    $table->head  = array(get_string('topic'), get_string('name'));
+    $table->head  = array(get_string('topic'), get_string('name'), '', '');
     $table->align = array('center', 'left', 'left', 'left');
 } else {
-    $table->head  = array(get_string('name'));
+    $table->head  = array(get_string('name'), '', '');
     $table->align = array('left', 'left', 'left');
 }
+
+$cellmultiple = array(false => get_string('unique', 'alternative'), true => get_string('multiple', 'alternative'));
+$cellteam = array(false => get_string('individual', 'alternative'), true => get_string('team', 'alternative'));
 
 foreach ($alternatives as $alternative) {
     if (!$alternative->visible) {
         $link = html_writer::link(
-            new moodle_url('/mod/alternative.php', array('id' => $alternative->coursemodule)),
+            new moodle_url('/mod/alternative/view.php', array('id' => $alternative->coursemodule)),
             format_string($alternative->name, true),
             array('class' => 'dimmed'));
     } else {
         $link = html_writer::link(
-            new moodle_url('/mod/alternative.php', array('id' => $alternative->coursemodule)),
+            new moodle_url('/mod/alternative/view.php', array('id' => $alternative->coursemodule)),
             format_string($alternative->name, true));
     }
 
     if ($course->format == 'weeks' or $course->format == 'topics') {
-        $table->data[] = array($alternative->section, $link);
+        $table->data[] = array($alternative->section,
+                                $link,
+                                $cellteam[$alternative->teammin >=1],
+                                $cellmultiple[$alternative->multiplemin >=1],
+                );
     } else {
-        $table->data[] = array($link);
+        $table->data[] = array($link,
+                                $cellteam[$alternative->teammin >=1],
+                                $cellmultiple[$alternative->multiplemin >=1],
+            );
     }
 }
 
