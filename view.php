@@ -84,10 +84,12 @@ if (!$form->is_cancelled() and $form->is_submitted() and $form->is_validated()) 
             $_SESSION['alterNotifMsg'] = get_string('registrationsaved', 'alternative');
             add_to_log($course->id, "alternative", "update registration", "view.php?id=$cm->id", $alternative->id, $cm->id);
             if (has_capability('mod/alternative:forceregistrations', $coursecontext)) {
+                // teacher forced registration, send him away
                 redirect("$CFG->wwwroot/mod/alternative/report.php?id={$cm->id}&table=synth");
             } else {
-                echo $OUTPUT->header();
-                echo $OUTPUT->notification(get_string('registrationsaved', 'alternative'), 'notifysuccess');
+                // registration successful, redirect to flush POST
+                $SESSION->{'alternative'.$alternative->id} = 'success';
+                redirect("$CFG->wwwroot/mod/alternative/view.php?id={$cm->id}");
             }
         } else {
             echo $OUTPUT->header();
@@ -96,6 +98,12 @@ if (!$form->is_cancelled() and $form->is_submitted() and $form->is_validated()) 
     }
 } else {
     echo $OUTPUT->header();
+}
+
+// notification after a redirection
+if (isset($SESSION->{'alternative'.$alternative->id}) && $SESSION->{'alternative'.$alternative->id} == 'success') {
+    echo $OUTPUT->notification(get_string('registrationsaved', 'alternative'), 'notifysuccess');
+    unset($SESSION->{'alternative'.$alternative->id});
 }
 
 echo $OUTPUT->heading($alternative->name);
