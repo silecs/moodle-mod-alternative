@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(dirname(dirname($_SERVER["SCRIPT_FILENAME"]))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
 $id = required_param('id', PARAM_INT);   // course
@@ -46,7 +46,7 @@ if (! $alternatives = get_all_instances_in_course('alternative', $course)) {
     notice(get_string('noalternatives', 'alternative'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
-$table = new stdClass();
+$table = new html_table();
 if ($course->format == 'weeks') {
     $table->head  = array(get_string('week'), get_string('name'));
     $table->align = array('center', 'left');
