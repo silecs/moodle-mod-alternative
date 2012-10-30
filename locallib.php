@@ -292,7 +292,9 @@ function alternative_table_users_reg($alternative, $actions=false) {
             new moodle_url('/mod/alternative/unregister.php',
                     array('a' => $alternative->id, 'leader' => '%d', 'user' => '%d', 'option' => '%d')),
             get_string('unregister', 'alternative'),
-            'post'
+            'post',
+//** TODO  student/team
+            array('tooltip' => 'Unregister student')
         );
     }
     $count = 0;
