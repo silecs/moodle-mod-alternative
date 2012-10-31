@@ -48,7 +48,8 @@ class mod_alternative_registration_form extends moodleform {
         if (!isset($customdata['alternative']->id)) {
             print_error('invalidform');
         }
-        $customdata['occupied'] = alternative_options_occupied_places($customdata['alternative']);
+        $customdata['occupied'] = alternative_options_occupied_places($customdata['alternative'], false);
+        $customdata['teamoccupied'] = alternative_options_occupied_places($customdata['alternative'], true);
         parent::moodleform($action, $customdata);
     }
 
@@ -74,7 +75,9 @@ class mod_alternative_registration_form extends moodleform {
         }
 
         // team members
+        $is_team = false;
         if ($this->_customdata['alternative']->teammax > 1) {
+            $is_team = true;
             $mform->addElement('header', 'fieldset_team', get_string("chooseteammembers", 'alternative'));
             $mform->membersselector = new select_team_members(
                 'teammembers',
@@ -86,6 +89,7 @@ class mod_alternative_registration_form extends moodleform {
 
         $input = $this->_customdata['alternative']->multiplemin ? 'checkbox' : 'radio';
         $occupied = $this->_customdata['occupied'];
+        $teamoccupied = $this->_customdata['teamoccupied'];
 
 		if ( $this->_customdata['alternative']->compact ) { //compact display
 			$mform->addElement('header', "fieldset[0]", 'Options');
@@ -99,6 +103,13 @@ class mod_alternative_registration_form extends moodleform {
                     $attributes = array('disabled' => 'disabled');
                 }
 			}
+            if ($is_team && $option->teamplacesavail) {
+                $teamavail = $option->teamplacesavail - (empty($teamoccupied[$id]) ? 0 : $teamoccupied[$id]);
+				if ($teamavail <= 0 && ($option->registrationid == null) ) { // si option cochée, elle reste disponible même si 0 places
+                    $attributes = array('disabled' => 'disabled');
+                }
+			}
+
 			if ( ! $this->_customdata['alternative']->compact ) { // long display
 				$mform->addElement('header', "fieldset[$id]", $option->name);
 				if ($input === 'checkbox') {
@@ -116,13 +127,17 @@ class mod_alternative_registration_form extends moodleform {
 	                $mform->addElement('static', 'datecomment', 'Date', $option->datecomment);
 		        }
 			    if ($option->placesavail) {
-					$mform->addElement('static', 'places', 'Places', $avail);
+					$mform->addElement('static', 'places', 'Indiv. places', $avail);
+				}
+                if ($is_team && $option->teamplacesavail) {
+					$mform->addElement('static', 'teamplaces', 'Team places', $teamavail);
 				}
 			} else { // compact display
 				$line = '';
 				$line .= ($option->datecomment ? '('.$option->datecomment.') ' : '');
 				$line .= $option->name;
-				$line .= ($option->placesavail ? ' ('.$option->placesavail.' pl.)' : '');
+				$line .= ($option->placesavail ? ' ('. $option->placesavail .' ind. pl.)' : '');
+                $line .= ($is_team && $option->teamplacesavail ? ' ('. $option->teamplacesavail .' team pl.)' : '');
 				if ($input === 'checkbox') {
                     $attributes['value'] = $id; // booléen suffirait
 					$mform->addElement($input, "option[{$id}]", '', ' ' . $line, $attributes);

@@ -88,12 +88,12 @@ function alternative_options_form($alternative, $userid) {
  *
  * @global \moodle_db $DB
  * @param object $alternative
- * @param boolean $ignore_teams (opt) Force to ignore teams and count users.
+ * @param boolean $count_teams (opt) Force to count_teams.
  * @return array assoc array: optionid => occupied_places.
  */
-function alternative_options_occupied_places($alternative, $ignore_teams=false) {
+function alternative_options_occupied_places($alternative, $count_teams) {
     global $DB;
-    if ($alternative->teammin and !$ignore_teams) {
+    if ($alternative->teammin and $count_teams) {
         $countable = "DISTINCT teamleaderid";
     } else {
         $countable = "*";
