@@ -152,6 +152,7 @@ function alternative_table_synth_options($alternative, $cmid) {
     $t->head = array('', 'Nb');
 	$t->data[] = array(get_string('options', 'alternative'), sizeof($alternative->option));
 
+    // options with individual places
 	$sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
 		." WHERE ao.placesavail > 0 AND ao.alternativeid = ?";
 	$result = $DB->get_record_sql($sql, array($alternative->id));
@@ -161,9 +162,23 @@ function alternative_table_synth_options($alternative, $cmid) {
 		." WHERE ao.placesavail = 0 AND ao.alternativeid = ?";
 	$result = $DB->get_record_sql($sql, array($alternative->id));
 	$t->data[] = array(get_string('synthunlimitplaces', 'alternative'), $result->unlimited);
+
+    if ($alternative->teammin > 0) { // options with team places
+        $sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
+            ." WHERE ao.teamplacesavail > 0 AND ao.alternativeid = ?";
+        $result = $DB->get_record_sql($sql, array($alternative->id));
+        $t->data[] = array(get_string('synthlimitteamplaces', 'alternative'), $result->limited);
+
+        $sql = "SELECT COUNT(ao.id) AS unlimited FROM {alternative_option} AS ao "
+            ." WHERE ao.teamplacesavail = 0 AND ao.alternativeid = ?";
+        $result = $DB->get_record_sql($sql, array($alternative->id));
+        $t->data[] = array(get_string('synthunlimitteamplaces', 'alternative'), $result->unlimited);
+    }
+
 	$t->data[] = array('', ''); //** @fixme better separator ?
 
 
+    // individual places
 	$sql = "SELECT SUM(ao.placesavail) AS places FROM {alternative_option} AS ao WHERE ao.alternativeid = ?";
 	$result = $DB->get_record_sql($sql, array($alternative->id));
 	$places = $result->places;
@@ -176,7 +191,23 @@ function alternative_table_synth_options($alternative, $cmid) {
 	$result = $DB->get_record_sql($sql, array($alternative->id));
 	$t->data[] = array(get_string('synthreserved', 'alternative'), $result->reserved);
 	$t->data[] = array(get_string('synthfree', 'alternative'), $places - $result->reserved);
-	$t->data[] = array('', ''); //** @fixme better separator ?
+
+    if ($alternative->teammin > 0) { // team places
+        $sql = "SELECT SUM(ao.teamplacesavail) AS teamplaces FROM {alternative_option} AS ao WHERE ao.alternativeid = ?";
+        $result = $DB->get_record_sql($sql, array($alternative->id));
+        $teamplaces = $result->teamplaces;
+        $t->data[] = array(get_string('synthteamplaces', 'alternative'), $teamplaces);
+
+        //** todo: check maybe DISTINCT should be on (teamleaderid, optionid) ?
+        $sql = "SELECT COUNT(DISTINCT ar.teamleaderid) AS reserved "
+            . "FROM {alternative_option} AS ao "
+            . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
+            . "WHERE ao.teamplacesavail > 1 AND ao.alternativeid = ? ";
+        $result = $DB->get_record_sql($sql, array($alternative->id));
+        $t->data[] = array(get_string('synthreserved', 'alternative'), $result->reserved);
+        $t->data[] = array(get_string('synthfree', 'alternative'), $teamplaces - $result->reserved);
+    }
+    $t->data[] = array('', ''); //** @fixme better separator ?
 
 
 	$context = context_course::instance($alternative->course);
