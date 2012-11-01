@@ -70,6 +70,21 @@ function xmldb_alternative_upgrade($oldversion) {
     }
 
 
+	if ($oldversion < 2012110101) {
+
+        // Define field course to be added to alternative
+        $table = new xmldb_table('alternative_option');
+        $field = new xmldb_field('teamplacesavail', XMLDB_TYPE_INTEGER, '0', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'placesavail');
+
+        // Add field course
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Once we reach this point, we can store the new version
+        upgrade_mod_savepoint(true, 2012110101, 'alternative');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }
