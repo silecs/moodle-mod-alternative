@@ -270,7 +270,7 @@ class mod_alternative_registration_form extends moodleform {
             // QuickForm won't display errors on header/html fields, so an ugly hack seems necessary
             $position = $this->_form->_elementIndex['fieldset_team'] + 1;
             $this->_form->_elements[$position]->_text .= '<div class="error">' . $errors['fieldset_team'] . "</div>";
-            unset($errors['fieldset_team']);
+            // unset($errors['fieldset_team']);
         }
 
         // validate options
