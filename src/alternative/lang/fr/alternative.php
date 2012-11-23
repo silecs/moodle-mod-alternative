@@ -145,3 +145,7 @@ $string['reminderFull'] = "Vous devez faire un choix dans l'activité “[[Alter
 $string['reminderFullHtml'] = "Vous devez faire un choix dans l'activité “<i>[[AlterName]]”</i> ";
 $string['reminderSmall'] = "Vous devez faire un choix dans l'activité “[[AlterName]]” ";
 $string['reminderBefore'] = "avant le [[AlterUntil]]";
+
+$string['fieldsetcsv'] = "Importer les options depuis un fichier CSV";
+$string['csv'] = 'Import CSV';
+$string['csv_help'] = "Chaque ligne doit respecter le format : Titre ; Places ; Date ; Description";
