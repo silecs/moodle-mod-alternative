@@ -106,7 +106,7 @@ class mod_alternative_mod_form extends moodleform_mod {
 
         // add a file picker to fill the options from a csv file
         $mform->addElement('header', 'alternativecsv', get_string('fieldsetcsv', 'alternative'));
-        $mform->addElement('filepicker', 'csvfile', get_string('file'), null,
+        $mform->addElement('file', 'csvfile', get_string('file'), null,
                    array('maxbytes' => $csvmaxbytes, 'accepted_types' => 'csv,txt'));
         /*
         $mform->addElement('filemanager', 'csvfile', get_string('file'), null,
@@ -226,12 +226,10 @@ class mod_alternative_mod_form extends moodleform_mod {
      *               or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
     function validation($data, $files) {
-
-/*
-var_dump($data);
-var_dump($files);
-die();
-*/
+        $errors = parent::validation($data, $files);
+        if ($errors) {
+            return $errors;
+        }
         $errors = array();
         if ($data['teammin']) {
             if ($data['teammax'] != 0 && $data['teammax'] < $data['teammin']) {
