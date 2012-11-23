@@ -28,6 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
+$csvmaxbytes = 10 * 1024; // max size for csv import file
 
 /**
  * Module instance settings form
@@ -40,6 +41,7 @@ class mod_alternative_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
+        global $csvmaxbytes;
         if (empty(self::$publicreg_types)) {
             self::$publicreg_types = array(
                 ALTERNATIVE_PUBLIREG_PRIVATE => get_string('private', 'alternative'),
@@ -101,6 +103,17 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->setType('multiplemax', PARAM_INT);
         $mform->disabledIf('multiplemax', 'multipleenable');
         $mform->addHelpButton('multipleenable', 'multipleenable', 'alternative');
+
+        // add a file picker to fill the options from a csv file
+        $mform->addElement('header', 'alternativecsv', get_string('fieldsetcsv', 'alternative'));
+        $mform->addElement('filepicker', 'csvfile', get_string('file'), null,
+                   array('maxbytes' => $csvmaxbytes, 'accepted_types' => 'csv,txt'));
+        /*
+        $mform->addElement('filemanager', 'csvfile', get_string('file'), null,
+                    array('subdirs' => 0, 'maxbytes' => $csvmaxbytes, 'maxfiles' => 1,
+                          'accepted_types' => '*' ));
+         */
+        $mform->addHelpButton('csvfile', 'csv', 'alternative');
 
         //-------------------------------------------------------------------------------
         $repeatarray = array();
@@ -213,6 +226,12 @@ class mod_alternative_mod_form extends moodleform_mod {
      *               or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
     function validation($data, $files) {
+
+/*
+var_dump($data);
+var_dump($files);
+die();
+*/
         $errors = array();
         if ($data['teammin']) {
             if ($data['teammax'] != 0 && $data['teammax'] < $data['teammin']) {
