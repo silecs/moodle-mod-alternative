@@ -35,19 +35,11 @@ $csvmaxbytes = 10 * 1024; // max size for csv import file
  */
 class mod_alternative_mod_form extends moodleform_mod {
 
-    public static $publicreg_types;
-
     /**
      * Defines forms elements
      */
     public function definition() {
         global $csvmaxbytes;
-        if (empty(self::$publicreg_types)) {
-            self::$publicreg_types = array(
-                ALTERNATIVE_PUBLIREG_PRIVATE => get_string('private', 'alternative'),
-                ALTERNATIVE_PUBLIREG_PUBLIC => get_string('public', 'alternative'),
-            );
-        }
 
         $mform = $this->_form;
 
@@ -72,10 +64,6 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->addElement('advcheckbox', 'changeallowed', get_string('changeallowed', 'alternative'));
         $mform->setDefault('changeallowed', 1);
         $mform->addHelpButton('changeallowed', 'changeallowed', 'alternative');
-
-        $mform->addElement('select', 'publicreg', get_string('publicreg', 'alternative'), self::$publicreg_types);
-        $mform->setDefault('publicreg', ALTERNATIVE_PUBLIREG_PUBLIC);
-        $mform->addHelpButton('publicreg', 'publicreg', 'alternative');
 
 		$mform->addElement('advcheckbox', 'compact', get_string('displaycompact', 'alternative'));
         $mform->setDefault('compact', 0);

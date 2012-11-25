@@ -30,9 +30,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-define('ALTERNATIVE_PUBLIREG_PRIVATE', 0);
-define('ALTERNATIVE_PUBLIREG_PUBLIC', 1);
-
 ////////////////////////////////////////////////////////////////////////////////
 // Moodle core API                                                            //
 ////////////////////////////////////////////////////////////////////////////////
@@ -426,7 +423,6 @@ function alternative_extend_navigation(navigation_node $navref, stdclass $course
  */
 function alternative_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $alternativenode=null) {
     global $DB, $PAGE;
-    /** @todo show 3rd link if $alternative->publicreg */
     if (has_capability('mod/alternative:viewregistrations', $PAGE->cm->context)) {
 		$alternativenode->add(
             get_string("viewsynthesis", "alternative"),
