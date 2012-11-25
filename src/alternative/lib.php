@@ -32,7 +32,6 @@ defined('MOODLE_INTERNAL') || die();
 
 define('ALTERNATIVE_PUBLIREG_PRIVATE', 0);
 define('ALTERNATIVE_PUBLIREG_PUBLIC', 1);
-define('ALTERNATIVE_PUBLIREG_GROUP', 2);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Moodle core API                                                            //
