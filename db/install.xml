@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/alternative/db" VERSION="20120325" COMMENT="XMLDB file for Moodle mod/alternative"
+<XMLDB PATH="mod/alternative/db" VERSION="20121125" COMMENT="XMLDB file for Moodle mod/alternative"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -18,7 +18,7 @@
         <FIELD NAME="changeallowed" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" COMMENT="1 if the user can change its choice" PREVIOUS="multiplemax" NEXT="publicreg"/>
         <FIELD NAME="publicreg" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="If 0, nothing if shown. If 1, public display of the registration. If 2, registrations are only shown to the members of the same groups." PREVIOUS="changeallowed" NEXT="notifybyemail"/>
         <FIELD NAME="notifybyemail" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if the user must receive an e-mail after its registration." PREVIOUS="publicreg" NEXT="compact"/>
-		<FIELD NAME="compact" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 for compact display of options, without descriptions." PREVIOUS="notifybyemail" NEXT="timecreated"/>
+        <FIELD NAME="compact" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 for compact display of options, without descriptions." PREVIOUS="notifybyemail" NEXT="timecreated"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="compact" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
       </FIELDS>
@@ -29,7 +29,7 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="alternative_option" COMMENT="Options belonging to an alternative." PREVIOUS="alternative" NEXT="alternative_groupoption">
+    <TABLE NAME="alternative_option" COMMENT="Options belonging to an alternative." PREVIOUS="alternative" NEXT="alternative_registration">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="alternativeid"/>
         <FIELD NAME="alternativeid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on alternative.id" PREVIOUS="id" NEXT="name"/>
@@ -38,9 +38,8 @@
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="datecomment"/>
         <FIELD NAME="datecomment" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Free text on the date of the evenment, etc" PREVIOUS="introformat" NEXT="placesavail"/>
         <FIELD NAME="placesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available places" PREVIOUS="datecomment" NEXT="teamplacesavail"/>
-		<FIELD NAME="teamplacesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available team places" PREVIOUS="placesavail" NEXT="groupdependent"/>
-        <FIELD NAME="groupdependent" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if the option differs according to the user's group" PREVIOUS="teamplacesavail" NEXT="timecreated"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="groupdependent" NEXT="timemodified"/>
+        <FIELD NAME="teamplacesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available team places" PREVIOUS="placesavail" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="teamplacesavail" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
       </FIELDS>
       <KEYS>
@@ -48,29 +47,7 @@
         <KEY NAME="alternative_fk" TYPE="foreign" FIELDS="alternativeid" REFTABLE="alternative" REFFIELDS="id" PREVIOUS="primary"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="alternative_groupoption" COMMENT="Completes alternative_option if its groupdependent=1" PREVIOUS="alternative_option" NEXT="alternative_registration">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="optionid"/>
-        <FIELD NAME="optionid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on alternative_option.id" PREVIOUS="id" NEXT="alternativeid"/>
-        <FIELD NAME="alternativeid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Redundant field to avoid a join on alternative_option." PREVIOUS="optionid" NEXT="groupid"/>
-        <FIELD NAME="groupid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on group.id" PREVIOUS="alternativeid" NEXT="hidden"/>
-        <FIELD NAME="hidden" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if users from this group cannot access this option" PREVIOUS="groupid" NEXT="intro"/>
-        <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Description of this option" PREVIOUS="hidden" NEXT="introformat"/>
-        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="datecomment"/>
-        <FIELD NAME="datecomment" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Free text on the date of the evenment, etc" PREVIOUS="introformat" NEXT="placesavail"/>
-        <FIELD NAME="placesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available places" PREVIOUS="datecomment" NEXT="teamplacesavail"/>
-		<FIELD NAME="teamplacesavail" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Number of available team places" PREVIOUS="placesavail" NEXT="timecreated"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="teamplacesavail" NEXT="timemodified"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="option_fk"/>
-        <KEY NAME="option_fk" TYPE="foreign" FIELDS="optionid" REFTABLE="alternative_option" REFFIELDS="id" PREVIOUS="primary" NEXT="alternative_fk"/>
-        <KEY NAME="alternative_fk" TYPE="foreign" FIELDS="alternativeid" REFTABLE="alternative" REFFIELDS="id" PREVIOUS="option_fk" NEXT="group_fk"/>
-        <KEY NAME="group_fk" TYPE="foreign" FIELDS="groupid" REFTABLE="group" REFFIELDS="id" PREVIOUS="alternative_fk"/>
-      </KEYS>
-    </TABLE>
-    <TABLE NAME="alternative_registration" COMMENT="Records links between users and options" PREVIOUS="alternative_groupoption">
+    <TABLE NAME="alternative_registration" COMMENT="Records links between users and options" PREVIOUS="alternative_option">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="optionid"/>
         <FIELD NAME="optionid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on alternative_option.id" PREVIOUS="id" NEXT="alternativeid"/>

@@ -85,6 +85,26 @@ function xmldb_alternative_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2012110101, 'alternative');
     }
 
+    if ($oldversion < 2012112500) {
+
+        // drop table alternative_groupoption
+        $table = new xmldb_table('alternative_groupoption');
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+        unset($table);
+
+        // drop field alternative.groupdependent
+        $table = new xmldb_table('alternative');
+        $field = new xmldb_field('groupdependent');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // alternative savepoint reached
+        upgrade_mod_savepoint(true, 2012112500, 'alternative');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }
