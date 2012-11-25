@@ -33,7 +33,7 @@ $csv = optional_param('csv', 0, PARAM_INT);
 $table = optional_param('table', 'registrations', PARAM_ALPHA);
 
 /**
- * @todo allow partial access if $alternative->publicreg
+ * @todo allow partial data if $mod->groupmode == SEPARATEGROUPS
  */
 
 $cm = get_coursemodule_from_id('alternative', $id);

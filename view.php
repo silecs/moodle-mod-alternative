@@ -34,7 +34,6 @@ $forcereg = optional_param('forcereg', 0, PARAM_INT); // force registration from
 
 /**
  * @todo use alternative_get_alternative() and simplify the code here and in the form.
- * @todo by group display
  */
 
 if ($id) {
@@ -114,11 +113,16 @@ if ($alternative->intro) { // Conditions to show the intro can change to look fo
 echo $OUTPUT->heading("Options");
 alternative_print_instructions($alternative, $coursecontext);
 
-if ($alternative->publicreg == 1) { // public registrations
-    echo html_writer::table(alternative_table_registrations($alternative));
-}
-if ($alternative->publicreg == 2) { // public by group ?
-    //** @todo
+/// Check to see if groups are being used in this choice
+$groupmode = groups_get_activity_groupmode($cm);
+if ($groupmode) {
+    groups_get_activity_group($cm, true);
+    groups_print_activity_menu($cm, $CFG->wwwroot . '/mod/alternative/view.php?id='.$id);
+    if ($groupmode === SEPARATEGROUPS) {
+        /** @todo display separate groups info */
+    } else {
+        echo html_writer::table(alternative_table_registrations($alternative));
+    }
 }
 
 if (
