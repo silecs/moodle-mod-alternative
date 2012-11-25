@@ -46,7 +46,6 @@ class mod_alternative_mod_form extends moodleform_mod {
             self::$publicreg_types = array(
                 ALTERNATIVE_PUBLIREG_PRIVATE => get_string('private', 'alternative'),
                 ALTERNATIVE_PUBLIREG_PUBLIC => get_string('public', 'alternative'),
-                ALTERNATIVE_PUBLIREG_GROUP => get_string('publicinsamegroup', 'alternative'),
             );
         }
 
@@ -123,7 +122,6 @@ class mod_alternative_mod_form extends moodleform_mod {
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[datecomment]', get_string('datecomment', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[placesavail]', get_string('placesavail', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[teamplacesavail]', get_string('teamplacesavail', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('advcheckbox', 'option[groupdependent]', get_string('groupdependent', 'alternative'));
         $repeatarray[] = &MoodleQuickForm::createElement('hidden', 'option[id]', 0);
 
         if ($this->_instance){
@@ -139,7 +137,6 @@ class mod_alternative_mod_form extends moodleform_mod {
 
         $mform->addHelpButton('option[name][0]', 'alternativeoptions', 'alternative');
         $mform->addHelpButton('option[datecomment][0]', 'datecomment', 'alternative');
-        $mform->addHelpButton('option[groupdependent][0]', 'groupdependent', 'alternative');
         for ($i = 0 ; $i < $repeatno ; $i++) {
             $mform->setType("option[introeditor][$i]", PARAM_RAW);
             $mform->setDefault("option[placesavail][$i]", '');
@@ -196,7 +193,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         }
         $options = $DB->get_records('alternative_option',array('alternativeid' => $this->_instance));
         if ($options) {
-            $fields = array('name', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
+            $fields = array('name', 'datecomment', 'placesavail', 'teamplacesavail', 'id');
             $rank = 0;
             foreach ($options as $key => $option){
                 foreach ($fields as $field) {

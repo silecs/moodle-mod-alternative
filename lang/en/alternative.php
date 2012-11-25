@@ -52,7 +52,6 @@ $string["multiplemin"] = "User min registrations";
 $string["multiplemax"] = "User max registrations";
 
 $string["public"] = "Public";
-$string["publicinsamegroup"] = "Public in the same group";
 $string["publicreg"] = "Public registrations";
 $string["private"] = "Private";
 $string["publicreg_help"] = "The registrations can be:<dl>
