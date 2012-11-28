@@ -28,7 +28,7 @@ class backup_alternative_activity_structure_step extends backup_activity_structu
         $options = new backup_nested_element('options');
 
         $option = new backup_nested_element('option', array('id'), array(
-            'name', 'intro', 'introformat', 'datecomment', "placesavail", "teamplacesavailable",
+            'name', 'intro', 'introformat', 'datecomment', "placesavail", "teamplacesavail",
             'timecreated', 'timemodified'));
 
         $answers = new backup_nested_element('registrations');
