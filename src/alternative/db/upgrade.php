@@ -74,7 +74,7 @@ function xmldb_alternative_upgrade($oldversion) {
 
         // Define field course to be added to alternative
         $table = new xmldb_table('alternative_option');
-        $field = new xmldb_field('teamplacesavail', XMLDB_TYPE_INTEGER, '0', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'placesavail');
+        $field = new xmldb_field('teamplacesavail', XMLDB_TYPE_INTEGER, 1, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'placesavail');
 
         // Add field course
         if (!$dbman->field_exists($table, $field)) {
