@@ -94,8 +94,8 @@ function xmldb_alternative_upgrade($oldversion) {
         }
         unset($table);
 
-        // drop field alternative.groupdependent
-        $table = new xmldb_table('alternative');
+        // drop field alternative_option.groupdependent
+        $table = new xmldb_table('alternative_option');
         $field = new xmldb_field('groupdependent');
         if ($dbman->field_exists($table, $field)) {
             $dbman->drop_field($table, $field);
