@@ -87,6 +87,9 @@ function alternative_add_instance(stdClass $alternative, mod_alternative_mod_for
     $alternative->id = $DB->insert_record("alternative", $alternative);
 
     $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
+
+    // $csvdata = $mform->get_file_content('csvfile');
+
     foreach ($alternative->option['name'] as $key => $name) {
         if (!empty($name) && trim($name) !== '') {
             $option = new stdClass();

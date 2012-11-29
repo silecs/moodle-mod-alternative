@@ -146,3 +146,4 @@ $string['reminderBefore'] = "before [[AlterUntil]]";
 $string['fieldsetcsv'] = "Import options from CSV file";
 $string['csv'] = 'CSV Import';
 $string['csv_help'] = "Each line is composed of Title ; Places ; Date ; Description";
+$string['separator'] = 'Separator';

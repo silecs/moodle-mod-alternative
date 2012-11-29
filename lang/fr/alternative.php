@@ -148,3 +148,4 @@ $string['reminderBefore'] = "avant le [[AlterUntil]]";
 $string['fieldsetcsv'] = "Importer les options depuis un fichier CSV";
 $string['csv'] = 'Import CSV';
 $string['csv_help'] = "Chaque ligne doit respecter le format : Titre ; Places ; Date ; Description";
+$string['separator'] = 'Séparateur';

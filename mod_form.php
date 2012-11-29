@@ -95,6 +95,8 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->addElement('header', 'alternativecsv', get_string('fieldsetcsv', 'alternative'));
         $mform->addElement('file', 'csvfile', get_string('file'), null,
                    array('maxbytes' => $csvmaxbytes, 'accepted_types' => 'csv,txt'));
+        $mform->addElement('text', 'csvsep', get_string('separator', 'alternative'), array('size'=>'1') );
+        $mform->setDefault('csvsep', ';');
         /*
         $mform->addElement('filemanager', 'csvfile', get_string('file'), null,
                     array('subdirs' => 0, 'maxbytes' => $csvmaxbytes, 'maxfiles' => 1,
@@ -216,6 +218,35 @@ class mod_alternative_mod_form extends moodleform_mod {
             return $errors;
         }
         $errors = array();
+
+        $row = 0;
+        $errorscsv = '';
+        $separator = $data['csvsep'];
+        if (($handle = fopen($files['csvfile'], "r")) == FALSE) {
+            $errorscsv = 'Unable to open CSV file.';
+        } else {
+            while (($line = fgets($handle, 4096)) !== FALSE) {
+                $row++;
+                if ($line === '') {
+                    continue;
+                }
+                $linedata = str_getcsv($line, $separator);
+                $num = count($linedata);
+                if ( $num != 4 ) {
+                    $errorscsv .= "l. $row " . "Bad number of fields: " . $num . " instead of 4. ";
+                } else {
+                    $goodint = ( !is_int($linedata[1]) ? (ctype_digit($linedata[1])) : true );
+                    if ( ! $goodint ) {
+                        $errorscsv .= "l. $row " . "Second field should be numeric, with 0 = no limit. ";
+                    }
+                }
+            }
+            fclose($handle);
+        }
+        if ( ! empty($errorscsv) ) {
+            $errors['csvfile'] = $errorscsv;
+        }
+
         if ($data['teammin']) {
             if (empty($data['teammax'])) {
                 $data['teammax'] = 0;
