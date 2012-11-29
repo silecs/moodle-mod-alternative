@@ -52,6 +52,8 @@ function alternative_get_alternative($id, $withoptions=true) {
             }
             /** @todo add a field 'placesoccupied' and simplify code elsewhere */
             /** @todo if 'groupdependent', add a field group: groupid => groupoption */
+        } else {
+            $alternative->option = array();
         }
     } else {
         $alternative = null;
