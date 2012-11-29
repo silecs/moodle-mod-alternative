@@ -222,29 +222,31 @@ class mod_alternative_mod_form extends moodleform_mod {
         $row = 0;
         $errorscsv = '';
         $separator = $data['csvsep'];
-        if (($handle = fopen($files['csvfile'], "r")) == FALSE) {
-            $errorscsv = 'Unable to open CSV file.';
-        } else {
-            while (($line = fgets($handle, 4096)) !== FALSE) {
-                $row++;
-                if ($line === '') {
-                    continue;
-                }
-                $linedata = str_getcsv($line, $separator);
-                $num = count($linedata);
-                if ( $num != 4 ) {
-                    $errorscsv .= "l. $row " . "Bad number of fields: " . $num . " instead of 4. ";
-                } else {
-                    $goodint = ( !is_int($linedata[1]) ? (ctype_digit($linedata[1])) : true );
-                    if ( ! $goodint ) {
-                        $errorscsv .= "l. $row " . "Second field should be numeric, with 0 = no limit. ";
+        if ( isset($csvfile) ) {
+            if (($handle = fopen($files['csvfile'], "r")) == FALSE) {
+                $errorscsv = 'Unable to open CSV file.';
+            } else {
+                while (($line = fgets($handle, 4096)) !== FALSE) {
+                    $row++;
+                    if ($line === '') {
+                        continue;
+                    }
+                    $linedata = str_getcsv($line, $separator);
+                    $num = count($linedata);
+                    if ( $num != 4 ) {
+                        $errorscsv .= "l. $row " . "Bad number of fields: " . $num . " instead of 4. ";
+                    } else {
+                        $goodint = ( !is_int($linedata[1]) ? (ctype_digit($linedata[1])) : true );
+                        if ( ! $goodint ) {
+                            $errorscsv .= "l. $row " . "Second field should be numeric, with 0 = no limit. ";
+                        }
                     }
                 }
+                fclose($handle);
             }
-            fclose($handle);
-        }
-        if ( ! empty($errorscsv) ) {
-            $errors['csvfile'] = $errorscsv;
+            if ( ! empty($errorscsv) ) {
+                $errors['csvfile'] = $errorscsv;
+            }
         }
 
         if ($data['teammin']) {
@@ -266,3 +268,53 @@ class mod_alternative_mod_form extends moodleform_mod {
         return $errors;
     }
 }
+
+
+    /**
+     * Import data from csv file and format it to use it in
+     * alternative_(add|update)_instance in lib.php
+     */
+    function import_csv() {
+        $separator = $this->getElementValue('csvsep');
+        $csv = $this->get_file_content();
+        if ($this->getElementValue('teammax') > 1) {
+            $placesindex = 'teamplacesavail';
+        } else {
+            $placesindex = 'placesavail';
+        }
+        // manage different EOL systems
+        $csv = str_replace("\x0D\x0A", "\n", $csv); // Windows
+        $csv = str_replace("\x0D", "\n", $csv);     // Mac (must be after Windows)
+        //   if ($this->encoding !== 'UTF-8') {
+        //       $csv = utf8_encode($csv);
+        //  }
+        $lines = explode("\n", $csv);
+//$fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
+        $options = array(
+            'name' => array(),
+            'intro' => array(),
+            'introformat' => array(),
+            'datecomment' => array(),
+            'placesavail' => array(),
+            'teamplacesavail' => array()
+            );
+
+            foreach ($lines as $line) {
+                $row++;
+                if ($line === '') {
+                    continue;
+                }
+                $linedata = str_getcsv($line, $separator);
+                $options['name'][] = $linedata[0];
+                $options['placesavail'][] = 0;
+                $options['teamplacesavail'][] = 0;
+                $options[$placesindex][] = $linedata[1];
+                $options['datecomment'][] = $linedata[2];
+                $options['intro'][] = $linedata[3];
+                $options['introformat'][] = 0;
+            }
+
+var_dump($options);
+die("fini");
+        return $options;
+    }
