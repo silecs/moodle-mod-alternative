@@ -83,23 +83,25 @@ function alternative_add_instance(stdClass $alternative, mod_alternative_mod_for
         $alternative->multiplemax = 0;
     }
 
-    //var_dump($alternative); die();
     $alternative->id = $DB->insert_record("alternative", $alternative);
 
     $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
 
-    // $csvdata = $mform->get_file_content('csvfile');
-
-    foreach ($alternative->option['name'] as $key => $name) {
+    if ( $mform->get_new_filename() ) {
+        $options = $mform->import_csv();
+    } else {
+        $options = $alternative->option;
+    }
+    foreach ($options['name'] as $key => $name) {
         if (!empty($name) && trim($name) !== '') {
             $option = new stdClass();
             $option->alternativeid = $alternative->id;
             foreach ($fields as $field) {
-                if (isset($alternative->option[$field][$key])) {
-                    if (is_string($alternative->option[$field][$key])) {
-                        $option->$field = trim($alternative->option[$field][$key]);
+                if (isset($options[$field][$key])) {
+                    if (is_string($options[$field][$key])) {
+                        $option->$field = trim($options[$field][$key]);
                     } else {
-                        $option->$field = $alternative->option[$field][$key];
+                        $option->$field = $options[$field][$key];
                     }
                 }
             }

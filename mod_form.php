@@ -267,21 +267,23 @@ class mod_alternative_mod_form extends moodleform_mod {
         }
         return $errors;
     }
-}
-
 
     /**
      * Import data from csv file and format it to use it in
      * alternative_(add|update)_instance in lib.php
      */
     function import_csv() {
-        $separator = $this->getElementValue('csvsep');
-        $csv = $this->get_file_content();
-        if ($this->getElementValue('teammax') > 1) {
+
+        $formdata = $this->get_data();
+        $separator = $formdata->csvsep;
+
+        if ( isset($formdata->teammax) ) {
             $placesindex = 'teamplacesavail';
         } else {
             $placesindex = 'placesavail';
         }
+
+        $csv = $this->get_file_content('csvfile');
         // manage different EOL systems
         $csv = str_replace("\x0D\x0A", "\n", $csv); // Windows
         $csv = str_replace("\x0D", "\n", $csv);     // Mac (must be after Windows)
@@ -299,22 +301,23 @@ class mod_alternative_mod_form extends moodleform_mod {
             'teamplacesavail' => array()
             );
 
+            $row = 0;
             foreach ($lines as $line) {
-                $row++;
                 if ($line === '') {
                     continue;
                 }
                 $linedata = str_getcsv($line, $separator);
-                $options['name'][] = $linedata[0];
-                $options['placesavail'][] = 0;
-                $options['teamplacesavail'][] = 0;
-                $options[$placesindex][] = $linedata[1];
-                $options['datecomment'][] = $linedata[2];
-                $options['intro'][] = $linedata[3];
-                $options['introformat'][] = 0;
+                $options['name'][$row] = $linedata[0];
+                $options['placesavail'][$row] = 0;
+                $options['teamplacesavail'][$row] = 0;
+                $options[$placesindex][$row] = $linedata[1];
+                $options['datecomment'][$row] = $linedata[2];
+                $options['intro'][$row] = $linedata[3];
+                $options['introformat'][$row] = 0;
+                $row++;
             }
 
-var_dump($options);
-die("fini");
         return $options;
     }
+
+} // class mod_alternative_mod_form
