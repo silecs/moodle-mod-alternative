@@ -143,14 +143,21 @@ function alternative_update_instance(stdClass $alternative, mod_alternative_mod_
     }
 
     $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
-    foreach ($alternative->option['name'] as $key => $name) {
-        $exists_in_db = !empty($alternative->option['id'][$key]);
+
+    if ( $mform->get_new_filename() ) {
+        $options = $mform->import_csv();
+        //** todo supprimer toutes les options existantes et les inscriptions liées ?
+    } else {
+        $options = $options;
+    }
+    foreach ($options['name'] as $key => $name) {
+        $exists_in_db = !empty($options['id'][$key]); //** todo csv ?
         if (!empty($name) && trim($name) !== '') {
             $option = new stdClass();
             $option->alternativeid = $alternative->id;
             foreach ($fields as $field) {
-                if (isset($alternative->option[$field][$key])) {
-                    $option->$field = trim($alternative->option[$field][$key]);
+                if (isset($options[$field][$key])) {
+                    $option->$field = trim($options[$field][$key]);
                 }
             }
             if (empty($option->id)) {
@@ -163,7 +170,7 @@ function alternative_update_instance(stdClass $alternative, mod_alternative_mod_
                 $DB->insert_record("alternative_option", $option);
             }
         } else if ($exists_in_db) {
-            $optionid = (int) $alternative->option['id'][$key];
+            $optionid = (int) $options['id'][$key];
             $DB->delete_records("alternative_options", array("id" => $optionid));
         }
     }
