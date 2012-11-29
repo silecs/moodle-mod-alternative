@@ -217,11 +217,17 @@ class mod_alternative_mod_form extends moodleform_mod {
         }
         $errors = array();
         if ($data['teammin']) {
+            if (empty($data['teammax'])) {
+                $data['teammax'] = 0;
+            }
             if ($data['teammax'] != 0 && $data['teammax'] < $data['teammin']) {
                 $errors['teammax'] = "max >= min OR no max";
             }
         }
         if ($data['multiplemin']) {
+            if (empty($data['multiplemax'])) {
+                $data['multiplemax'] = 0;
+            }
             if ($data['multiplemax'] != 0 && $data['multiplemax'] < $data['multiplemin']) {
                 $errors['multiplemax'] = "max >= min OR no max";
             }
