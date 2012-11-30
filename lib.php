@@ -148,7 +148,7 @@ function alternative_update_instance(stdClass $alternative, mod_alternative_mod_
         $options = $mform->import_csv();
         //** todo supprimer toutes les options existantes et les inscriptions liées ?
     } else {
-        $options = $options;
+        $options = $alternative->option;
     }
     foreach ($options['name'] as $key => $name) {
         $exists_in_db = !empty($options['id'][$key]); //** todo csv ?
