@@ -146,6 +146,10 @@ $string['reminderSmall'] = "Vous devez faire un choix dans l'activité “[[Alte
 $string['reminderBefore'] = "avant le [[AlterUntil]]";
 
 $string['fieldsetcsv'] = "Importer les options depuis un fichier CSV";
+$string['uploadoverwrites'] = "Attention : l'envoi d'un nouveau fichier supprime les inscriptions et les options précédemment enregistrées.";
 $string['csv'] = 'Import CSV';
 $string['csv_help'] = "Chaque ligne doit respecter le format : Titre ; Places ; Date ; Description";
 $string['separator'] = 'Séparateur';
+$string['csvunableopen'] = "Impossible d'ouvrir le fichier CSV.";
+$string['csvbadfieldnb'] = "Nombre incorrect de champs : {\$a} au lieu de 4.  ";
+$string['csv2ndfield'] = "Le 2e champ (places) devrait être numérique, avec 0 = illimité.  ";
