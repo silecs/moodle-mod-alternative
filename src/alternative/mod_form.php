@@ -225,7 +225,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $row = 0;
         $errorscsv = '';
         $separator = $data['csvsep'];
-        if ( isset($csvfile) ) {
+        if ( isset($files['csvfile']) ) {
             if (($handle = fopen($files['csvfile'], "r")) == FALSE) {
                 $errorscsv = 'Unable to open CSV file.';
             } else {
@@ -237,11 +237,11 @@ class mod_alternative_mod_form extends moodleform_mod {
                     $linedata = str_getcsv($line, $separator);
                     $num = count($linedata);
                     if ( $num != 4 ) {
-                        $errorscsv .= "l. $row " . "Bad number of fields: " . $num . " instead of 4.  ";
+                        $errorscsv .= "l. $row " . get_string('csvbadfieldnb', 'alternative', $num);
                     } else {
                         $goodint = ( !is_int($linedata[1]) ? (ctype_digit($linedata[1])) : true );
                         if ( ! $goodint ) {
-                            $errorscsv .= "l. $row " . "Second field should be numeric, with 0 = no limit.  ";
+                            $errorscsv .= "l. $row " . get_string('csv2ndfield', 'alternative');
                         }
                     }
                 }

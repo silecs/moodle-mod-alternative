@@ -143,7 +143,11 @@ $string['reminderFullHtml'] = "You must make a choice in the activity “<i>[[Al
 $string['reminderSmall'] = "You must make a choice in the activity “[[AlterName]]” ";
 $string['reminderBefore'] = "before [[AlterUntil]]";
 
-$string['fieldsetcsv'] = "Import options from CSV file";
+$string['fieldsetcsv'] = 'Import options from CSV file';
+$string['uploadoverwrites'] = 'Beware: uploading a new file deletes all previous registrations and options.';
 $string['csv'] = 'CSV Import';
-$string['csv_help'] = "Each line is composed of Title ; Places ; Date ; Description";
+$string['csv_help'] = 'Each line is composed of Title ; Places ; Date ; Description';
 $string['separator'] = 'Separator';
+$string['csvunableopen'] = 'Unable to open CSV file.';
+$string['csvbadfieldnb'] = 'Bad number of fields: {$a} instead of 4.  ';
+$string['csv2ndfield'] = 'The 2nd field (places) should be numeric, with 0 = no limit.  ';
