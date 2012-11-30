@@ -584,13 +584,13 @@ require_once($CFG->dirroot . '/enrol/locallib.php');
  * Select team members
  */
 class select_team_members extends user_selector_base {
-    protected $alternativeid;
+    protected $alternative;
     protected $coursecontext;
 
     public $message;
 
     public function __construct($name, $options) {
-        $this->alternativeid  = $options['alternative']->id;
+        $this->alternative  = $options['alternative'];
         $this->coursecontext = $context = context_course::instance($options['alternative']->course);
         unset($options['alternative']);
         parent::__construct($name, $options);
@@ -603,16 +603,31 @@ class select_team_members extends user_selector_base {
      */
     public function find_users($search) {
         global $DB, $USER;
+
         $fields      = 'SELECT DISTINCT ' . $this->required_fields_sql('u');
         $countfields = 'SELECT COUNT(1)';
 
+        $course = $DB->get_record('course', array('id' => $this->alternative->course), '*', MUST_EXIST);
+        $cm = get_coursemodule_from_instance('alternative', $this->alternative->id, $course->id, false, MUST_EXIST);
+        $groupmode = groups_get_activity_groupmode($cm, $course);
+        if ($groupmode == SEPARATEGROUPS) {
+            //$groups = groups_get_activity_allowed_groups($cm);
+            $groupJoin = " JOIN {groups_members} gm ON u.id = gm.userid "
+                . "JOIN {groupings_groups} gg ON gm.groupid = gg.groupid";
+            $groupCond = " AND gg.groupingid = " . ((int)$cm->groupingid);
+        } else {
+            $groupJoin = "";
+            $groupCond = "";
+        }
+
         list($esql, $params) = get_enrolled_sql($this->coursecontext, 'mod/alternative:choose');
-        $params['altid'] = $this->alternativeid;
+        $params['altid'] = $this->alternative->id;
         $sql = " FROM {user} u
                   JOIN ($esql) je ON je.id = u.id
                   LEFT JOIN {alternative_registration} ar ON (ar.userid = u.id AND ar.alternativeid = :altid)
+                  $groupJoin
                  WHERE (alternativeid IS NULL OR teamleaderid = {$USER->id}) AND
-                     u.id != {$USER->id}";
+                     u.id != {$USER->id} $groupCond";
         $order = ' ORDER BY u.lastname ASC, u.firstname ASC';
 
         if (!$this->is_validating()) {
@@ -634,7 +649,7 @@ class select_team_members extends user_selector_base {
     protected function get_options() {
         $options = parent::get_options();
         $options['alternative'] = (object) array(
-            'alternativeid' => $this->alternativeid,
+            'alternativeid' => $this->alternative->id,
             'coursecontext' => $this->coursecontext,
         );
         $options['file']    = 'mod/alternative/locallib.php';
