@@ -146,7 +146,7 @@ function alternative_update_instance(stdClass $alternative, mod_alternative_mod_
 
     if ( $mform->get_new_filename() ) {
         $options = $mform->import_csv();
-        //** todo supprimer toutes les options existantes et les inscriptions liées ?
+        alternative_delete_options($alternative->id);
     } else {
         $options = $alternative->option;
     }
@@ -199,6 +199,24 @@ function alternative_delete_instance($id) {
     $DB->delete_records('alternative_groupoption', array('alternativeid' => $alternative->id));
     $DB->delete_records('alternative_option', array('alternativeid' => $alternative->id));
     $DB->delete_records('alternative', array('id' => $alternative->id));
+
+    return true;
+}
+
+/**
+ * Removes old options, prior to update a CSV import
+ *
+ * @param int $id Id of alternative
+ * @return boolean Success/Failure
+ */
+function alternative_delete_options($id) {
+    global $DB;
+
+    if (! $alternative = $DB->get_record('alternative', array('id' => $id))) {
+        return false;
+    }
+    $DB->delete_records('alternative_registration', array('alternativeid' => $id));
+    $DB->delete_records('alternative_option', array('alternativeid' => $id));
 
     return true;
 }
