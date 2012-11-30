@@ -234,11 +234,11 @@ class mod_alternative_mod_form extends moodleform_mod {
                     $linedata = str_getcsv($line, $separator);
                     $num = count($linedata);
                     if ( $num != 4 ) {
-                        $errorscsv .= "l. $row " . "Bad number of fields: " . $num . " instead of 4. ";
+                        $errorscsv .= "l. $row " . "Bad number of fields: " . $num . " instead of 4.  ";
                     } else {
                         $goodint = ( !is_int($linedata[1]) ? (ctype_digit($linedata[1])) : true );
                         if ( ! $goodint ) {
-                            $errorscsv .= "l. $row " . "Second field should be numeric, with 0 = no limit. ";
+                            $errorscsv .= "l. $row " . "Second field should be numeric, with 0 = no limit.  ";
                         }
                     }
                 }
@@ -274,10 +274,8 @@ class mod_alternative_mod_form extends moodleform_mod {
      */
     function import_csv() {
 
-        $formdata = $this->get_data();
-        $separator = $formdata->csvsep;
-
-        if ( isset($formdata->teammax) ) {
+        $separator = $this->_form->getElementValue('csvsep');
+        if ( $this->_form->getElementValue('teammax') ) {
             $placesindex = 'teamplacesavail';
         } else {
             $placesindex = 'placesavail';
@@ -291,7 +289,6 @@ class mod_alternative_mod_form extends moodleform_mod {
         //       $csv = utf8_encode($csv);
         //  }
         $lines = explode("\n", $csv);
-//$fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
         $options = array(
             'name' => array(),
             'intro' => array(),
