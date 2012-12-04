@@ -27,6 +27,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/* @var $DB moodle_database */
 
 require dirname(__FILE__) . '/lib.php';
 require dirname(__FILE__) . '/registration_form.php';
@@ -152,47 +153,46 @@ function alternative_table_synth_options($alternative, $cmid) {
 
 	$t = new html_table();
     $t->head = array('', 'Nb');
-	$t->data[] = array(get_string('options', 'alternative'), sizeof($alternative->option));
+    $t->data[] = array(get_string('options', 'alternative'), sizeof($alternative->option));
 
     // options with individual places
-	$sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
-		." WHERE ao.placesavail > 0 AND ao.alternativeid = ?";
-	$result = $DB->get_record_sql($sql, array($alternative->id));
-	$t->data[] = array(get_string('synthlimitplaces', 'alternative'), $result->limited);
+    $sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
+            . " WHERE ao.placesavail > 0 AND ao.alternativeid = ?";
+    $result = $DB->get_record_sql($sql, array($alternative->id));
+    $t->data[] = array(get_string('synthlimitplaces', 'alternative'), $result->limited);
 
-	$sql = "SELECT COUNT(ao.id) AS unlimited FROM {alternative_option} AS ao "
-		." WHERE ao.placesavail = 0 AND ao.alternativeid = ?";
-	$result = $DB->get_record_sql($sql, array($alternative->id));
-	$t->data[] = array(get_string('synthunlimitplaces', 'alternative'), $result->unlimited);
+    $sql = "SELECT COUNT(ao.id) AS unlimited FROM {alternative_option} AS ao "
+            . " WHERE ao.placesavail = 0 AND ao.alternativeid = ?";
+    $result = $DB->get_record_sql($sql, array($alternative->id));
+    $t->data[] = array(get_string('synthunlimitplaces', 'alternative'), $result->unlimited);
 
     if ($alternative->teammin > 0) { // options with team places
         $sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
-            ." WHERE ao.teamplacesavail > 0 AND ao.alternativeid = ?";
+                . " WHERE ao.teamplacesavail > 0 AND ao.alternativeid = ?";
         $result = $DB->get_record_sql($sql, array($alternative->id));
         $t->data[] = array(get_string('synthlimitteamplaces', 'alternative'), $result->limited);
 
         $sql = "SELECT COUNT(ao.id) AS unlimited FROM {alternative_option} AS ao "
-            ." WHERE ao.teamplacesavail = 0 AND ao.alternativeid = ?";
+                . " WHERE ao.teamplacesavail = 0 AND ao.alternativeid = ?";
         $result = $DB->get_record_sql($sql, array($alternative->id));
         $t->data[] = array(get_string('synthunlimitteamplaces', 'alternative'), $result->unlimited);
     }
 
-	$t->data[] = array('', ''); //** @fixme better separator ?
-
+    $t->data[] = array('', ''); //** @fixme better separator ?
 
     // individual places
-	$sql = "SELECT SUM(ao.placesavail) AS places FROM {alternative_option} AS ao WHERE ao.alternativeid = ?";
-	$result = $DB->get_record_sql($sql, array($alternative->id));
-	$places = $result->places;
-	$t->data[] = array(get_string('synthplaces', 'alternative'), $places);
+    $sql = "SELECT SUM(ao.placesavail) AS places FROM {alternative_option} AS ao WHERE ao.alternativeid = ?";
+    $result = $DB->get_record_sql($sql, array($alternative->id));
+    $places = $result->places;
+    $t->data[] = array(get_string('synthplaces', 'alternative'), $places);
 
-	$sql = "SELECT COUNT(ar.userid) AS reserved "
+    $sql = "SELECT COUNT(ar.userid) AS reserved "
          . "FROM {alternative_option} AS ao "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
          . "WHERE ao.placesavail > 1 AND ao.alternativeid = ? ";
-	$result = $DB->get_record_sql($sql, array($alternative->id));
-	$t->data[] = array(get_string('synthreserved', 'alternative'), $result->reserved);
-	$t->data[] = array(get_string('synthfree', 'alternative'), $places - $result->reserved);
+    $result = $DB->get_record_sql($sql, array($alternative->id));
+    $t->data[] = array(get_string('synthreserved', 'alternative'), $result->reserved);
+    $t->data[] = array(get_string('synthfree', 'alternative'), $places - $result->reserved);
 
     if ($alternative->teammin > 0) { // team places
         $sql = "SELECT SUM(ao.teamplacesavail) AS teamplaces FROM {alternative_option} AS ao WHERE ao.alternativeid = ?";
@@ -212,10 +212,20 @@ function alternative_table_synth_options($alternative, $cmid) {
     $t->data[] = array('', ''); //** @fixme better separator ?
 
 
-	$context = context_course::instance($alternative->course);
-    $userids = get_enrolled_users($context, 'mod/alternative:choose');
-	$potential = sizeof($userids);
-	$t->data[] = array(get_string('synthpotential', 'alternative'), $potential);
+    $context = context_course::instance($alternative->course);
+    $cm = get_coursemodule_from_id('alternative', $cmid, $alternative->course);
+    if (groups_get_activity_groupmode($cm) == SEPARATEGROUPS && $cm->groupingid) {
+        // limited to one grouping
+        list ($sqlUser, $paramsUser) = get_enrolled_sql($context, 'mod/alternative:choose');
+        $sql = "SELECT count(*) FROM ($sqlUser) u "
+                . "JOIN {groups_members} gm ON u.id = gm.userid "
+                . "JOIN {groupings_groups} gg ON gm.groupid = gg.groupid "
+                . "WHERE gg.groupingid = " . ((int)$cm->groupingid);
+        $potentialCount = (int) $DB->count_records_sql($sql, $paramsUser);
+    } else {
+        $potentialCount = count_enrolled_users($context, 'mod/alternative:choose');
+    }
+    $t->data[] = array(get_string('synthpotential', 'alternative'), $potentialCount);
 
     if ( $alternative->teammin > 0 ) { // teams enabled
         $sql = "SELECT COUNT(DISTINCT teamleaderid) AS teams "
@@ -226,16 +236,16 @@ function alternative_table_synth_options($alternative, $cmid) {
         $t->data[] = array(get_string('teams', 'alternative'), html_writer::link($url, $result->teams));
     }
 
-	$sql = "SELECT COUNT(DISTINCT ar.userid) AS regs "
+    $sql = "SELECT COUNT(DISTINCT ar.userid) AS regs "
          . "FROM {alternative_option} AS ao "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
          . "WHERE ao.alternativeid = ? ";
-	$result = $DB->get_record_sql($sql, array($alternative->id));
+    $result = $DB->get_record_sql($sql, array($alternative->id));
 
     $url = new moodle_url('/mod/alternative/report.php', array('id' => $cmid, 'table'=>'usersReg'));
-	$t->data[] = array(get_string('synthregistered', 'alternative'), html_writer::link($url, $result->regs));
+    $t->data[] = array(get_string('synthregistered', 'alternative'), html_writer::link($url, $result->regs));
     $url = new moodle_url('/mod/alternative/report.php', array('id' => $cmid, 'table'=>'usersNotReg'));
-	$t->data[] = array(get_string('synthunregistered', 'alternative'), html_writer::link($url, $potential - $result->regs));
+    $t->data[] = array(get_string('synthunregistered', 'alternative'), html_writer::link($url, $potentialCount - $result->regs));
 
     return $t;
 
@@ -422,12 +432,36 @@ function alternative_table_users_not_reg($alternative, $actions=false) {
     global $DB, $OUTPUT;
 
     $context = context_course::instance($alternative->course);
+    $cm = get_coursemodule_from_instance('alternative', $alternative->id, $alternative->course);
+    if (groups_get_activity_groupmode($cm) == SEPARATEGROUPS) {
+        if ($cm->groupingid) {
+            $groupJoin = " JOIN {groups_members} gm ON u.id = gm.userid "
+                . "JOIN {groupings_groups} gg ON gm.groupid = gg.groupid";
+            $groupCond = " AND gg.groupingid = " . ((int)$cm->groupingid);
+        } else {
+            $groups = groups_get_activity_allowed_groups($cm);
+            $groupsIds = array();
+            foreach ($groups as $g) {
+                $groupsIds[] = $g->id;
+            }
+            list ($sqlGroups, $paramsGroups) = $DB->get_in_or_equal($groupsIds, SQL_PARAMS_NAMED);
+            $groupJoin = " JOIN {groups_members} gm ON u.id = gm.userid ";
+            $groupCond = " AND gm.groupid " . $sqlGroups;
+        }
+    } else {
+        $groupJoin = "";
+        $groupCond = "";
+    }
     list($esql, $params) = get_enrolled_sql($context, 'mod/alternative:choose');
+    if (isset($paramsGroups)) {
+        $params = $params + $paramsGroups;
+    }
     $sql = "SELECT u.id, u.firstname, u.lastname
               FROM {user} u
               JOIN ($esql) je ON je.id = u.id
               LEFT JOIN {alternative_registration} ar ON (ar.userid = u.id AND ar.alternativeid = :altid)
-             WHERE u.deleted = 0 AND ar.id IS NULL
+              $groupJoin
+             WHERE u.deleted = 0 AND ar.id IS NULL $groupCond
              ORDER BY u.lastname ASC, u.firstname ASC";
     $params['altid'] = $alternative->id;
     $result = $DB->get_records_sql($sql, $params);
@@ -611,10 +645,20 @@ class select_team_members extends user_selector_base {
         $cm = get_coursemodule_from_instance('alternative', $this->alternative->id, $course->id, false, MUST_EXIST);
         $groupmode = groups_get_activity_groupmode($cm, $course);
         if ($groupmode == SEPARATEGROUPS) {
-            //$groups = groups_get_activity_allowed_groups($cm);
-            $groupJoin = " JOIN {groups_members} gm ON u.id = gm.userid "
-                . "JOIN {groupings_groups} gg ON gm.groupid = gg.groupid";
-            $groupCond = " AND gg.groupingid = " . ((int)$cm->groupingid);
+            if ($cm->groupingid) {
+                $groupJoin = " JOIN {groups_members} gm ON u.id = gm.userid "
+                    . "JOIN {groupings_groups} gg ON gm.groupid = gg.groupid";
+                $groupCond = " AND gg.groupingid = " . ((int)$cm->groupingid);
+            } else {
+                $groups = groups_get_activity_allowed_groups($cm);
+                $groupsIds = array();
+                foreach ($groups as $g) {
+                    $groupsIds[] = $g->id;
+                }
+                list ($sqlGroups, $paramsGroups) = $DB->get_in_or_equal($groupsIds, SQL_PARAMS_NAMED);
+                $groupJoin = " JOIN {groups_members} gm ON u.id = gm.userid ";
+                $groupCond = " AND gm.groupid " . $sqlGroups;
+            }
         } else {
             $groupJoin = "";
             $groupCond = "";
@@ -622,12 +666,15 @@ class select_team_members extends user_selector_base {
 
         list($esql, $params) = get_enrolled_sql($this->coursecontext, 'mod/alternative:choose');
         $params['altid'] = $this->alternative->id;
+        if (isset($paramsGroups)) {
+            $params = $params + $paramsGroups;
+        }
         $sql = " FROM {user} u
                   JOIN ($esql) je ON je.id = u.id
                   LEFT JOIN {alternative_registration} ar ON (ar.userid = u.id AND ar.alternativeid = :altid)
                   $groupJoin
                  WHERE (alternativeid IS NULL OR teamleaderid = {$USER->id}) AND
-                     u.id != {$USER->id} $groupCond";
+                     u.id != {$USER->id} $groupCond ";
         $order = ' ORDER BY u.lastname ASC, u.firstname ASC';
 
         if (!$this->is_validating()) {
