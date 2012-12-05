@@ -433,12 +433,14 @@ function alternative_table_users_not_reg($alternative, $actions=false) {
 
     $context = context_course::instance($alternative->course);
     $cm = get_coursemodule_from_instance('alternative', $alternative->id, $alternative->course);
+    $groupJoin = "";
+    $groupCond = "";
     if (groups_get_activity_groupmode($cm) == SEPARATEGROUPS) {
         if ($cm->groupingid) {
             $groupJoin = " JOIN {groups_members} gm ON u.id = gm.userid "
                 . "JOIN {groupings_groups} gg ON gm.groupid = gg.groupid";
             $groupCond = " AND gg.groupingid = " . ((int)$cm->groupingid);
-        } else {
+        } else if (!has_capability('moodle/site:accessallgroups')) {
             $groups = groups_get_activity_allowed_groups($cm);
             $groupsIds = array();
             foreach ($groups as $g) {
@@ -448,9 +450,6 @@ function alternative_table_users_not_reg($alternative, $actions=false) {
             $groupJoin = " JOIN {groups_members} gm ON u.id = gm.userid ";
             $groupCond = " AND gm.groupid " . $sqlGroups;
         }
-    } else {
-        $groupJoin = "";
-        $groupCond = "";
     }
     list($esql, $params) = get_enrolled_sql($context, 'mod/alternative:choose');
     if (isset($paramsGroups)) {
