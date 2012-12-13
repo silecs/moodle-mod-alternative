@@ -132,12 +132,17 @@ class mod_alternative_mod_form extends moodleform_mod {
         $mform->addHelpButton('option[datecomment][0]', 'datecomment', 'alternative');
         for ($i = 0 ; $i < $repeatno ; $i++) {
             $mform->setType("option[introeditor][$i]", PARAM_RAW);
+            //****
             $mform->setDefault("option[placesavail][$i]", '');
             $mform->addRule("option[placesavail][$i]", null, 'numeric');
             $mform->setType("option[placesavail][$i]", PARAM_INT);
+            $mform->disabledIf("option[placesavail][$i]", 'teamenable', 'checked');
+            //****
             $mform->setDefault("option[teamplacesavail][$i]", '');
             $mform->addRule("option[teamplacesavail][$i]", null, 'numeric');
             $mform->setType("option[teamplacesavail][$i]", PARAM_INT);
+            $mform->disabledIf("option[teamplacesavail][$i]", 'teamenable', 'notchecked');
+            //****
             $mform->setType("option[id][$i]", PARAM_INT);
         }
 
