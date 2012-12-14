@@ -155,18 +155,19 @@ function alternative_table_synth_options($alternative, $cmid) {
     $t->head = array('', 'Nb');
     $t->data[] = array(get_string('options', 'alternative'), sizeof($alternative->option));
 
-    // options with individual places
-    $sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
-            . " WHERE ao.placesavail > 0 AND ao.alternativeid = ?";
-    $result = $DB->get_record_sql($sql, array($alternative->id));
-    $t->data[] = array(get_string('synthlimitplaces', 'alternative'), $result->limited);
+    if ($alternative->teammin == 0) { // options with individual places
+        $sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
+                . " WHERE ao.placesavail > 0 AND ao.alternativeid = ?";
+        $result = $DB->get_record_sql($sql, array($alternative->id));
+        $t->data[] = array(get_string('synthlimitplaces', 'alternative'), $result->limited);
 
-    $sql = "SELECT COUNT(ao.id) AS unlimited FROM {alternative_option} AS ao "
-            . " WHERE ao.placesavail = 0 AND ao.alternativeid = ?";
-    $result = $DB->get_record_sql($sql, array($alternative->id));
-    $t->data[] = array(get_string('synthunlimitplaces', 'alternative'), $result->unlimited);
-
-    if ($alternative->teammin > 0) { // options with team places
+        $sql = "SELECT COUNT(ao.id) AS unlimited FROM {alternative_option} AS ao "
+                . " WHERE ao.placesavail = 0 AND ao.alternativeid = ?";
+        $result = $DB->get_record_sql($sql, array($alternative->id));
+        $t->data[] = array(get_string('synthunlimitplaces', 'alternative'), $result->unlimited);
+    }
+    else {
+        // options with team places
         $sql = "SELECT COUNT(ao.id) AS limited FROM {alternative_option} AS ao "
                 . " WHERE ao.teamplacesavail > 0 AND ao.alternativeid = ?";
         $result = $DB->get_record_sql($sql, array($alternative->id));
@@ -180,21 +181,22 @@ function alternative_table_synth_options($alternative, $cmid) {
 
     $t->data[] = array('', ''); //** @fixme better separator ?
 
-    // individual places
-    $sql = "SELECT SUM(ao.placesavail) AS places FROM {alternative_option} AS ao WHERE ao.alternativeid = ?";
-    $result = $DB->get_record_sql($sql, array($alternative->id));
-    $places = $result->places;
-    $t->data[] = array(get_string('synthplaces', 'alternative'), $places);
+    if ($alternative->teammin == 0) { // individual places
+        $sql = "SELECT SUM(ao.placesavail) AS places FROM {alternative_option} AS ao WHERE ao.alternativeid = ?";
+        $result = $DB->get_record_sql($sql, array($alternative->id));
+        $places = $result->places;
+        $t->data[] = array(get_string('synthplaces', 'alternative'), $places);
 
-    $sql = "SELECT COUNT(ar.userid) AS reserved "
-         . "FROM {alternative_option} AS ao "
-         . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
-         . "WHERE ao.placesavail > 1 AND ao.alternativeid = ? ";
-    $result = $DB->get_record_sql($sql, array($alternative->id));
-    $t->data[] = array(get_string('synthreserved', 'alternative'), $result->reserved);
-    $t->data[] = array(get_string('synthfree', 'alternative'), $places - $result->reserved);
-
-    if ($alternative->teammin > 0) { // team places
+        $sql = "SELECT COUNT(ar.userid) AS reserved "
+             . "FROM {alternative_option} AS ao "
+            . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
+            . "WHERE ao.placesavail > 1 AND ao.alternativeid = ? ";
+        $result = $DB->get_record_sql($sql, array($alternative->id));
+        $t->data[] = array(get_string('synthreserved', 'alternative'), $result->reserved);
+        $t->data[] = array(get_string('synthfree', 'alternative'), $places - $result->reserved);
+    }
+    else {
+        // team places
         $sql = "SELECT SUM(ao.teamplacesavail) AS teamplaces FROM {alternative_option} AS ao WHERE ao.alternativeid = ?";
         $result = $DB->get_record_sql($sql, array($alternative->id));
         $teamplaces = $result->teamplaces;
@@ -267,34 +269,43 @@ function alternative_table_registrations($alternative) {
          . "GROUP BY ao.id";
     $result = $DB->get_records_sql($sql, array($alternative->id));
     $t = new html_table();
-    $t->head = array('Option', 'Places', 'Registrations', 'Remains', 'Students');
+    $t->head = array(get_string('option', 'alternative'), get_string('students', 'alternative'));
     if ($alternative->teammin > 0) {
-        $t->head = array_merge($t->head, array('Team places', 'Reg. Teams', 'Remains'));
+        $t->head = array_merge($t->head, array(
+            get_string('teamplaces', 'alternative'),
+            get_string('regteams', 'alternative'),
+            get_string('remains', 'alternative')
+            ));
+    } else {
+        $t->head = array_merge($t->head, array(
+            get_string('places', 'alternative'),
+            get_string('registrations', 'alternative'),
+            get_string('remains', 'alternative')
+            ));
     }
 
     foreach ($result as $line) {
         if ($line->placesavail > 0) { //limited places
             $t_avail = $line->placesavail;
+            $t_regs = $line->regs;
             $t_remains = ($line->placesavail - $line->regs);
         }
         else { //unlimited places
             $t_avail = '∞';
             $t_remains = '∞';
         }
-        $tline = array($line->name, $t_avail, $line->regs, $t_remains, $line->regusers);
+
         if ($line->teamplacesavail > 0) { //limited places
-            $t_teamavail = $line->teamplacesavail;
-            $t_teamremains = ($line->teamplacesavail - $line->teams);
+            $t_avail = $line->teamplacesavail;
+            $t_regs = $line->teams;
+            $t_remains = ($line->teamplacesavail - $line->teams);
         }
         else { //unlimited places
-            $t_teamavail = '∞';
-            $t_teamremains = '∞';
+            $t_avail = '∞';
+            $t_remains = '∞';
         }
-        if ($alternative->teammin > 0) { // if teams active
-            $tline[] = $t_teamavail;
-            $tline[] = $line->teams;
-            $tline[] = $t_teamremains;
-        }
+
+        $tline = array($line->name, $line->regusers, $t_avail, $t_regs, $t_remains);
         $t->data[] = $tline;
     }
 
