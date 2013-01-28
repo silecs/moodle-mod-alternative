@@ -22,13 +22,13 @@
  *
  * @package    mod
  * @subpackage alternative
- * @copyright  2012 Silecs http://www.silecs.info/societe
+ * @copyright  2012-2013 Silecs http://www.silecs.info/societe
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2012121401;      // The current module version (Date: YYYYMMDDXX)
+$module->version   = 2013012800;      // The current module version (Date: YYYYMMDDXX)
 $module->requires  = 2010031900;      // Requires this Moodle version
 $module->cron      = 0;               // Period for cron to check this module (secs)
 $module->component = 'mod_alternative'; // To check on upgrade, that module sits in correct place

@@ -64,5 +64,14 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW,
         )
     ),
+    'mod/alternative:addinstance' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'legacy' => array(
+            'guest' => CAP_PROHIBIT,
+            'student' => CAP_PROHIBIT,
+            'teacher' => CAP_PREVENT,
+            'editingteacher' => CAP_ALLOW,
+        )
+    ),
 );
-
