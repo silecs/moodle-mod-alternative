@@ -196,7 +196,6 @@ function alternative_delete_instance($id) {
     }
 
     $DB->delete_records('alternative_registration', array('alternativeid' => $alternative->id));
-    $DB->delete_records('alternative_groupoption', array('alternativeid' => $alternative->id));
     $DB->delete_records('alternative_option', array('alternativeid' => $alternative->id));
     $DB->delete_records('alternative', array('id' => $alternative->id));
 
