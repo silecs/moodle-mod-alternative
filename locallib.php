@@ -389,9 +389,9 @@ function alternative_table_teams($alternative, $actions=false) {
     $t = new html_table();
     $sql = "SELECT ar.teamleaderid, tl.firstname, tl.lastname, COUNT(DISTINCT(u.id)) AS nb, "
             . "GROUP_CONCAT(DISTINCT(CONCAT(u.firstname,' ',u.lastname) ) SEPARATOR ', ') AS team "
-            . "FROM alternative_registration ar "
-            . "JOIN user tl ON (ar.teamleaderid = tl.id) "
-            . "JOIN user u ON (ar.userid = u.id) "
+            . "FROM {alternative_registration} ar "
+            . "JOIN {user} tl ON (ar.teamleaderid = tl.id) "
+            . "JOIN {user} u ON (ar.userid = u.id) "
             . "WHERE alternativeid=? "
             . "GROUP BY teamleaderid";
     $leaders = $DB->get_records_sql($sql, array($alternative->id));
@@ -412,8 +412,8 @@ function alternative_table_teams($alternative, $actions=false) {
     $count = 0;
     foreach ($leaders as $leader) {
         $sql = "SELECT COUNT(DISTINCT(optionid)) AS nbopt, GROUP_CONCAT(DISTINCT(name) SEPARATOR ', ') AS opt, ar.timemodified "
-           . "FROM alternative_registration ar "
-           . "JOIN alternative_option ao ON (ar.optionid=ao.id) "
+           . "FROM {alternative_registration} ar "
+           . "JOIN {alternative_option} ao ON (ar.optionid=ao.id) "
            . "WHERE ar.alternativeid=? AND teamleaderid=?";
         $line = $DB->get_record_sql($sql, array($alternative->id, $leader->teamleaderid) );
         $count++;
