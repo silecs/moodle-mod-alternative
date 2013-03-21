@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['modulename'] = 'Alternative';
 $string['modulenameplural'] = 'alternatives';
-$string['modulename_help'] = 'The alternative module allows users to register one or several choices in a given list.';
+$string['modulename_help'] = 'The alternative module allows students to register one or several choices in a given list.';
 
 $string['alternativename'] = 'Activity name';
 $string['changeallowed'] = 'Change allowed';
