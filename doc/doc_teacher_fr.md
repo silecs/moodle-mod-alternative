@@ -26,13 +26,13 @@ mais propose de multiples options pour s'adapter à des besoins variés :
 Alternative est une activité normale.
 Elle s'ajoute donc à un cours de la même façon que les autres.
 
-En dehors des champs communs à toutes les activités, les indications spécifiques
-sont : la modification autorisé, l'affichage compact ou détaillé, l'activation des
-équipes, le contrôle des inscriptions multiples. Chaque option est documentée dans
-l'aide Moodle (bouton "?").
+En sus des champs communs à toutes les activités (nom, description, etc),
+les indications spécifiques sont :
+la modification autorisé, l'affichage compact ou détaillé, l'activation des
+équipes, le contrôle des inscriptions multiples.
+Chaque option est documentée dans l'aide Moodle (bouton "?").
 
-Ensuite, viennent la saisie des options, manuelle ou par import d'un fichier CSV.
-
+Ensuite, vient la saisie des options, manuelle ou par import d'un fichier CSV.
 Il y a deux champs prévus par défaut pour la saisie d'options, et un bouton permet
 d'en ajouter 2, autant de fois que nécessaire.
 
