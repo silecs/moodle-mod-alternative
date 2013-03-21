@@ -10,6 +10,7 @@ a date for an examination, of an internship, etc.
 
 Alternative is similar to the official "Choice" module, but has many settings
 to adapt to various needs:
+
 - individual or team registration (with a team leader)
 - possible quota on each option
 - single choice, or limited, or unlimited
@@ -45,6 +46,7 @@ must enable the "_enableavailability_" setting on the page
 
 Once the activity is created, four or five new entries are available in the
 menu _Settings » Alternative administration_ for the following views:
+
 - View synthesis
 - View registrations
 - View teams (if enabled)
@@ -57,6 +59,7 @@ The synthesis displays the global statistics in a table.
 On the last two lines, the figures are active links towards the matching views.
 
 From this view, one link and two buttons allow the teacher to:
+
 - fetch a csv export of the registrations,
 - force the student registrations,
 - send a reminder message to students without any registration.
