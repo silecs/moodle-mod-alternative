@@ -109,13 +109,13 @@ class mod_alternative_mod_form extends moodleform_mod {
 
         //-------------------------------------------------------------------------------
         $repeatarray = array();
-        $repeatarray[] = &MoodleQuickForm::createElement('header', '', get_string('option', 'alternative').' {no}');
-        $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[name]', get_string('optionname', 'alternative'), array('size'=>'80'));
-        $repeatarray[] = &MoodleQuickForm::createElement('editor', 'option[introeditor]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => 0));
-        $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[datecomment]', get_string('datecomment', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[placesavail]', get_string('placesavail', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('text', 'option[teamplacesavail]', get_string('teamplacesavail', 'alternative'));
-        $repeatarray[] = &MoodleQuickForm::createElement('hidden', 'option[id]', 0);
+        $repeatarray[] = $mform->createElement('header', '', get_string('option', 'alternative').' {no}');
+        $repeatarray[] = $mform->createElement('text', 'option[name]', get_string('optionname', 'alternative'), array('size'=>'80'));
+        $repeatarray[] = $mform->createElement('editor', 'option[introeditor]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => 0));
+        $repeatarray[] = $mform->createElement('text', 'option[datecomment]', get_string('datecomment', 'alternative'));
+        $repeatarray[] = $mform->createElement('text', 'option[placesavail]', get_string('placesavail', 'alternative'));
+        $repeatarray[] = $mform->createElement('text', 'option[teamplacesavail]', get_string('teamplacesavail', 'alternative'));
+        $repeatarray[] = $mform->createElement('hidden', 'option[id]', 0);
 
         if ($this->_instance){
             global $DB;
