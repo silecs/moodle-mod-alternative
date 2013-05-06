@@ -284,27 +284,29 @@ function alternative_table_registrations($alternative) {
             ));
     }
 
+
     foreach ($result as $line) {
-        if ($line->placesavail > 0) { //limited places
-            $t_avail = $line->placesavail;
-            $t_regs = $line->regs;
-            $t_remains = ($line->placesavail - $line->regs);
-        }
-        else { //unlimited places
-            $t_avail = '∞';
-            $t_remains = '∞';
-        }
-
-        if ($line->teamplacesavail > 0) { //limited places
-            $t_avail = $line->teamplacesavail;
-            $t_regs = $line->teams;
-            $t_remains = ($line->teamplacesavail - $line->teams);
-        }
-        else { //unlimited places
-            $t_avail = '∞';
-            $t_remains = '∞';
-        }
-
+		if ($alternative->teammin == 0) { // individual registrations
+			$t_regs = $line->regs;
+			if ($line->placesavail > 0) { //limited places
+				$t_avail = $line->placesavail;
+				$t_remains = ($line->placesavail - $line->regs);
+			}
+			else { //unlimited places
+				$t_avail = '∞';
+				$t_remains = '∞';
+			}
+		} else {		// team registrations
+			$t_regs = $line->teams;
+			if ($line->teamplacesavail > 0) { //limited places
+				$t_avail = $line->teamplacesavail;
+				$t_remains = ($line->teamplacesavail - $line->teams);
+			}
+			else { //unlimited places
+				$t_avail = '∞';
+				$t_remains = '∞';
+			}
+		}
         $tline = array($line->name, $line->regusers, $t_avail, $t_regs, $t_remains);
         $t->data[] = $tline;
     }
