@@ -318,7 +318,7 @@ class mod_alternative_mod_form extends moodleform_mod {
                 $options[$placesindex][$row] = $linedata[1];
                 $options['datecomment'][$row] = $linedata[2];
                 $options['intro'][$row] = $linedata[3];
-                $options['introformat'][$row] = 0;
+                $options['introformat'][$row] = 1;
                 $row++;
             }
 
