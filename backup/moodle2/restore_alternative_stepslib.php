@@ -54,7 +54,10 @@ class restore_alternative_activity_structure_step extends restore_activity_struc
         $data->alternativeid = $this->get_new_parentid('alternative');
         $data->timecreated = $this->apply_date_offset($data->timecreated);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
-
+        $data->groupid = (integer)$data->groupid > -1 ?
+            $this->get_mappingid('group', $data->groupid) :
+            $data->groupid;
+        
         $newitemid = $DB->insert_record('alternative_option', $data);
         $this->set_mapping('alternative_option', $oldid, $newitemid);
     }
