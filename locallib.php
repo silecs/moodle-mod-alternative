@@ -260,7 +260,7 @@ function alternative_table_synth_options($alternative, $cmid) {
  */
 function alternative_table_registrations($alternative) {
     global $DB;
-    $sql = "SELECT ao.name, ao.placesavail, ao.teamplacesavail, "
+    $sql = "SELECT ao.id, ao.name, ao.placesavail, ao.teamplacesavail, "
          . "GROUP_CONCAT(CONCAT(u.firstname, ' ',u.lastname) SEPARATOR ', ') AS regusers, COUNT(u.id) AS regs, COUNT(DISTINCT ar.teamleaderid) AS teams "
          . "FROM {alternative_option} AS ao "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
