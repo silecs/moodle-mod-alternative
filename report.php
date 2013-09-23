@@ -127,14 +127,16 @@ else {
             );
         echo $registerbutton;
         
-        $groupbutton = $OUTPUT->single_button(
-            new moodle_url('/mod/alternative/groups.php',
-                    array('a' => $alternative->id, 'gengrps' => 1)),
-                get_string('generategroups', 'alternative'),
-                'post'
-            );
-        echo $groupbutton;
-
+        if ((boolean)$alternative->groupbinding) {
+            $groupbutton = $OUTPUT->single_button(
+                new moodle_url('/mod/alternative/groups.php',
+                        array('a' => $alternative->id, 'gengrps' => 1)),
+                    get_string('generategroups', 'alternative'),
+                    'post'
+                );
+            echo $groupbutton;
+        }
+        
         $reminderbutton = $OUTPUT->single_button(
             new moodle_url('/mod/alternative/sendreminder.php',
                     array('a' => $alternative->id )),
