@@ -33,6 +33,6 @@ $module->requires  = 2012062500;      // Requires this Moodle version
 $module->cron      = 0;               // Period for cron to check this module (secs)
 $module->component = 'mod_alternative'; // To check on upgrade, that module sits in correct place
 $module->maturity  = MATURITY_STABLE;
-$module->release   = '1.0.3 (Build 2013091700)';
+$module->release   = '1.0.3 (Build 2013091801)';
 
 $module->dependencies = array();

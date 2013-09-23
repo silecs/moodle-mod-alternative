@@ -69,6 +69,8 @@ Ces options sont décrites sous cette forme.
 Si le titre n'est pas rempli, l'option ne sera pas créée (mais sera supprimée si elle existait).
 Vous pouvez ajouter des options supplémentaires avec le bouton sous ces champs.";
 $string['optionintro'] = "Description";
+$string["optiongroup"] = "Lier au groupe";
+$string["optiongroupnone"] = "Aucun";
 $string['datecomment'] = "Date";
 $string['datecomment_help'] = "Ce champ peut contenir n'importe quel texte, mais il est prévu pour une date ou un intervalle de dates.";
 $string['placesavail'] = "Places disponibles";
@@ -159,3 +161,10 @@ $string['separator'] = 'Séparateur';
 $string['csvunableopen'] = "Impossible d'ouvrir le fichier CSV.";
 $string['csvbadfieldnb'] = "Nombre incorrect de champs : {\$a} au lieu de 4.  ";
 $string['csv2ndfield'] = "Le 2e champ (places) devrait être numérique, avec 0 = illimité.  ";
+
+$string['fieldsetgroupbinding'] = 'Liaison de groupes';
+$string['groupmatching'] = 'Forcer la concordance de groupes';
+$string['grouponetoone'] = "Forcer une relation <i>un à un</i> entre options et groupes";
+$string['generategroups'] = "Générer les groupes";
+$string['groupdone'] = "Les participants ont été inscrits à leurs groupes respectifs.";
+$string['groupnotallowed'] = "You did not have the permission to generate the groups.";

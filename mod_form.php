@@ -39,10 +39,13 @@ class mod_alternative_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-        global $csvmaxbytes;
+        global $csvmaxbytes, $CFG, $DB, $COURSE, $PAGE;
 
         $mform = $this->_form;
 
+        // include JS Module
+        $PAGE->requires->js_init_call('M.mod_alternative.init');
+        
         //-------------------------------------------------------------------------------
         // Adding the "general" fieldset, where all the common settings are showed
         $mform->addElement('header', 'general', get_string('general', 'form'));
@@ -107,11 +110,30 @@ class mod_alternative_mod_form extends moodleform_mod {
          */
         $mform->addHelpButton('csvfile', 'csv', 'alternative');
 
+        // link to groups
+        $mform->addElement('header', 'alternativegroupbinding', get_string('fieldsetgroupbinding', 'alternative'));
+        $mform->addElement('advcheckbox', 'groupbinding', get_string('enable'));
+        $mform->setDefault('groupbinding', 0);
+        $mform->addElement('advcheckbox', 'groupmatching', get_string('groupmatching', 'alternative'));
+        $mform->setDefault('groupmatching', 0);
+        $mform->addElement('advcheckbox', 'grouponetoone', get_string('grouponetoone', 'alternative'));
+        $mform->setDefault('grouponetoone', 0);
+        // all mutual exclusion behaviours are defined in module.js 
+        
+        // get groups
+        $groups = array("-1" => get_string('optiongroupnone', 'alternative'));        
+        $db_groups = $DB->get_records('groups', array('courseid' => $COURSE->id));
+        foreach ($db_groups as $group) {
+            $groups[$group->id] = $group->name;
+        }
+        
         //-------------------------------------------------------------------------------
         $repeatarray = array();
         $repeatarray[] = $mform->createElement('header', '', get_string('option', 'alternative').' {no}');
         $repeatarray[] = $mform->createElement('text', 'option[name]', get_string('optionname', 'alternative'), array('size'=>'80'));
         $repeatarray[] = $mform->createElement('editor', 'option[introeditor]', get_string('optionintro', 'alternative'), array('rows' => 5), array('maxfiles' => 0));
+        $repeatarray[] = $mform->createElement('select', 'option[group]', get_string('optiongroup', 'alternative'), $groups);
+        $repeatarray[] = $mform->createElement('hidden', 'option[groupid]', '-1');
         $repeatarray[] = $mform->createElement('text', 'option[datecomment]', get_string('datecomment', 'alternative'));
         $repeatarray[] = $mform->createElement('text', 'option[placesavail]', get_string('placesavail', 'alternative'));
         $repeatarray[] = $mform->createElement('text', 'option[teamplacesavail]', get_string('teamplacesavail', 'alternative'));
@@ -144,6 +166,9 @@ class mod_alternative_mod_form extends moodleform_mod {
             $mform->disabledIf("option[teamplacesavail][$i]", 'teamenable', 'notchecked');
             //****
             $mform->setType("option[id][$i]", PARAM_INT);
+            //
+            $mform->setDefault("option[group][$i]", '-1');
+            $mform->setDefault("option[groupid][$i]", '-1');
         }
 
         //-------------------------------------------------------------------------------
@@ -151,7 +176,7 @@ class mod_alternative_mod_form extends moodleform_mod {
         $this->standard_coursemodule_elements();
         //-------------------------------------------------------------------------------
         // add standard buttons, common to all modules
-        $this->add_action_buttons();
+        $this->add_action_buttons();        
     }
 
     function get_data() {
@@ -191,12 +216,13 @@ class mod_alternative_mod_form extends moodleform_mod {
         }
         $options = $DB->get_records('alternative_option',array('alternativeid' => $this->_instance));
         if ($options) {
-            $fields = array('name', 'datecomment', 'placesavail', 'teamplacesavail', 'id');
+            $fields = array('name', 'datecomment', 'placesavail', 'teamplacesavail', 'id', 'groupid');
             $rank = 0;
             foreach ($options as $key => $option){
                 foreach ($fields as $field) {
                     $default_values["option[$field][$rank]"] = $option->$field;
                 }
+                $default_values["option[group][$rank]"] = $option->groupid;
 				if ( empty($default_values["option[placesavail][$rank]"]) ) {
 					$default_values["option[placesavail][$rank]"] = '';
 				}

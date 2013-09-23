@@ -715,3 +715,29 @@ class select_team_members extends user_selector_base {
         return $options;
     }
 }
+
+/**
+ * enroll users in groups according to the options they choose
+ * 
+ * @global StdClass $CFG        moodle global configuration object
+ * @global \moodle_db $DB       moodle global database object
+ * @param StdClass $alternative alternattive object
+ */
+function alternative_generate_groups($alternative) {
+    global $CFG, $DB;
+    require_once $CFG->dirroot.'/group/lib.php';
+    
+    $sql = 'SELECT ar.id, ao.groupid, ar.userid ';
+    $sql.= 'FROM {alternative_option} ao ';
+    $sql.= 'JOIN {alternative_registration} ar ';
+    $sql.= 'ON ao.id = ar.optionid ';
+    $sql.= 'AND ao.alternativeid = '.$alternative->id.' ';
+    $sql.= 'WHERE ao.groupid <> -1';
+    
+    if ((boolean) $alternative->groupbinding) {
+        $records = $DB->get_records_sql($sql);
+        foreach ($records as $reg => $record) {
+            groups_add_member($record->groupid, $record->userid);
+        }
+    }
+}

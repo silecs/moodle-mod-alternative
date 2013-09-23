@@ -69,6 +69,8 @@ These options are described in this form.
 If the title is not set, the option will not be created (but will be deleted if it existed).
 You can add new option with the button after these field sets.';
 $string["optionintro"] = "Description";
+$string["optiongroup"] = "Bind to group";
+$string["optiongroupnone"] = "None";
 $string["datecomment"] = "Date";
 $string["datecomment_help"] = "This field can contain any text, but it is meant for a date or a date interval.";
 $string["placesavail"] = "Available places";
@@ -157,3 +159,10 @@ $string['separator'] = 'Separator';
 $string['csvunableopen'] = 'Unable to open CSV file.';
 $string['csvbadfieldnb'] = 'Bad number of fields: {$a} instead of 4.  ';
 $string['csv2ndfield'] = 'The 2nd field (places) should be numeric, with 0 = no limit.  ';
+
+$string['fieldsetgroupbinding'] = 'Group binding';
+$string['groupmatching'] = 'Force group matching';
+$string['grouponetoone'] = 'Force one to one relationship between options and groups';
+$string['generategroups'] = "Generate groups";
+$string['groupdone'] = "Participants were enrolled in their respective groups.";
+$string['groupnotallowed'] = "Vous ne disposez pas des droits pour générer les groupes.";

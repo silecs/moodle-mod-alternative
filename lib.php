@@ -85,7 +85,7 @@ function alternative_add_instance(stdClass $alternative, mod_alternative_mod_for
 
     $alternative->id = $DB->insert_record("alternative", $alternative);
 
-    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
+    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id', 'groupid');
 
     if ( $mform->get_new_filename() ) {
         $options = $mform->import_csv();
@@ -104,6 +104,9 @@ function alternative_add_instance(stdClass $alternative, mod_alternative_mod_for
                         $option->$field = $options[$field][$key];
                     }
                 }
+            }
+            if (!(boolean)$alternative->groupbinding) {
+                $option->groupid = "-1";
             }
             if (empty($option->id)) {
                 $option->timecreated = time();
@@ -142,7 +145,7 @@ function alternative_update_instance(stdClass $alternative, mod_alternative_mod_
         $alternative->multiplemax = 0;
     }
 
-    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
+    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id', 'groupid');
 
     if ( $mform->get_new_filename() ) {
         $options = $mform->import_csv();
@@ -159,6 +162,9 @@ function alternative_update_instance(stdClass $alternative, mod_alternative_mod_
                 if (isset($options[$field][$key])) {
                     $option->$field = trim($options[$field][$key]);
                 }
+            }
+            if (!(boolean)$alternative->groupbinding) {
+                $option->groupid = "-1";
             }
             if (empty($option->id)) {
                 $option->timecreated = time();
