@@ -112,12 +112,15 @@ class mod_alternative_mod_form extends moodleform_mod {
 
         // link to groups
         $mform->addElement('header', 'alternativegroupbinding', get_string('fieldsetgroupbinding', 'alternative'));
-        $mform->addElement('advcheckbox', 'groupbinding', get_string('enable'));
+        $mform->addElement('advcheckbox', 'groupbinding', get_string('groupbinding', 'alternative'));
         $mform->setDefault('groupbinding', 0);
+        $mform->addHelpButton('groupbinding', 'groupbinding', 'alternative');
         $mform->addElement('advcheckbox', 'groupmatching', get_string('groupmatching', 'alternative'));
         $mform->setDefault('groupmatching', 0);
+        $mform->addHelpButton('groupmatching', 'groupmatching', 'alternative');
         $mform->addElement('advcheckbox', 'grouponetoone', get_string('grouponetoone', 'alternative'));
         $mform->setDefault('grouponetoone', 0);
+        $mform->addHelpButton('grouponetoone', 'grouponetoone', 'alternative');
         // all mutual exclusion behaviours are defined in module.js 
         
         // get groups

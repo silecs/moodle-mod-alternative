@@ -163,8 +163,12 @@ $string['csvbadfieldnb'] = "Nombre incorrect de champs : {\$a} au lieu de 4.  ";
 $string['csv2ndfield'] = "Le 2e champ (places) devrait être numérique, avec 0 = illimité.  ";
 
 $string['fieldsetgroupbinding'] = 'Liaison de groupes';
+$string['groupbinding'] = 'Active la lisaison de groupes';
 $string['groupmatching'] = 'Forcer la concordance de groupes';
 $string['grouponetoone'] = "Forcer une relation <i>un à un</i> entre options et groupes";
 $string['generategroups'] = "Générer les groupes";
 $string['groupdone'] = "Les participants ont été inscrits à leurs groupes respectifs.";
-$string['groupnotallowed'] = "You did not have the permission to generate the groups.";
+$string['groupnotallowed'] = "Vous ne disposez pas des droits pour générer les groupes.";
+$string['groupbinding_help'] = 'Si la case est cochée, active la liaison option/groupe.';
+$string['groupmatching_help'] = "Si la case est cochée, force la concordance entre les options et les groupes de mêmes noms. Ce choix désactive la possibilité d'une relation 'un à un'.";
+$string['grouponetoone_help'] = "Si la case est cochée et que la concordance des groupes n'est pas active, force une relation 'un à un' entre une option et un groupe. Chaque groupe choisi n'est plus disponible pour les autres options.";

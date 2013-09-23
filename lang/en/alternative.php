@@ -161,8 +161,12 @@ $string['csvbadfieldnb'] = 'Bad number of fields: {$a} instead of 4.  ';
 $string['csv2ndfield'] = 'The 2nd field (places) should be numeric, with 0 = no limit.  ';
 
 $string['fieldsetgroupbinding'] = 'Group binding';
+$string['groupbinding'] = 'Enable group binding';
 $string['groupmatching'] = 'Force group matching';
 $string['grouponetoone'] = 'Force one to one relationship between options and groups';
 $string['generategroups'] = "Generate groups";
 $string['groupdone'] = "Participants were enrolled in their respective groups.";
-$string['groupnotallowed'] = "Vous ne disposez pas des droits pour générer les groupes.";
+$string['groupnotallowed'] = "You did not have the permission to generate the groups.";
+$string['groupbinding_help'] = 'If checked, enable group binding feature.';
+$string['groupmatching_help'] = "If checked, force name matching between options and groups. This choice disable the 'one to one relationship' feature.";
+$string['grouponetoone_help'] = "If checked and group matching isn't, force a 'one to one relationship' between an option and a group. Each chosen group is no more available for other options.";
