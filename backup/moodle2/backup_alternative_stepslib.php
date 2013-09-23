@@ -23,12 +23,13 @@ class backup_alternative_activity_structure_step extends backup_activity_structu
             'name', 'intro', 'introformat',
             'teammin', 'teammax', 'multiplemin', 'multiplemax',
             'changeallowed', 'publicreg', 'notifybyemail', 'compact',
+            'groupbinding', 'groupmatching', 'grouponetoone',
             'timecreated', 'timemodified'));
 
         $options = new backup_nested_element('options');
 
         $option = new backup_nested_element('option', array('id'), array(
-            'name', 'intro', 'introformat', 'datecomment', "placesavail", "teamplacesavail",
+            'groupid', 'name', 'intro', 'introformat', 'datecomment', "placesavail", "teamplacesavail",
             'timecreated', 'timemodified'));
 
         $answers = new backup_nested_element('registrations');
