@@ -69,7 +69,7 @@ class restore_alternative_activity_structure_step extends restore_activity_struc
         $oldid = $data->id;
 
         $data->alternativeid = $this->get_new_parentid('alternative');
-        $data->optionid = $this->get_mappingid('alternative_option', $oldid);
+        $data->optionid = $this->get_mappingid('alternative_option', $data->optionid);
         $data->userid = $this->get_mappingid('user', $data->userid);
         $data->teamleaderid = $this->get_mappingid('user', $data->teamleaderid);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
