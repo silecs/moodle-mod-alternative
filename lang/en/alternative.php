@@ -170,3 +170,8 @@ $string['groupnotallowed'] = "You did not have the permission to generate the gr
 $string['groupbinding_help'] = 'If checked, enable group binding feature.';
 $string['groupmatching_help'] = "If checked, force name matching between options and groups. This choice disable the 'one to one relationship' feature.";
 $string['grouponetoone_help'] = "If checked and group matching isn't, force a 'one to one relationship' between an option and a group. Each chosen group is no more available for other options.";
+
+$string['alternative:addinstance'] = 'Add a new alternative';
+$string['alternative:choose'] = 'Choose an option';
+$string['alternative:forceregistrations'] = 'Force registrations';
+$string['alternative:viewregistrations'] = 'View registrations';

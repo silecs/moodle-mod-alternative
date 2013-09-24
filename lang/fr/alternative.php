@@ -172,3 +172,8 @@ $string['groupnotallowed'] = "Vous ne disposez pas des droits pour générer les
 $string['groupbinding_help'] = 'Si la case est cochée, active la liaison option/groupe.';
 $string['groupmatching_help'] = "Si la case est cochée, force la concordance entre les options et les groupes de mêmes noms. Ce choix désactive la possibilité d'une relation 'un à un'.";
 $string['grouponetoone_help'] = "Si la case est cochée et que la concordance des groupes n'est pas active, force une relation 'un à un' entre une option et un groupe. Chaque groupe choisi n'est plus disponible pour les autres options.";
+
+$string['alternative:addinstance'] = 'Ajouter une nouvelle alternative';
+$string['alternative:choose'] = 'Choisir une option';
+$string['alternative:forceregistrations'] = 'Forcer les inscriptions';
+$string['alternative:viewregistrations'] = 'Voir les inscriptions';
