@@ -17,6 +17,7 @@ mais propose de multiples options pour s'adapter à des besoins variés :
 - saisie manuelle des choix ou importation d'un fichier csv
 - statistiques
 - export csv des inscriptions
+- inscription automatisée aux groupes en fonction des choix des utilisateurs
 
 
 ## Fonctionnement

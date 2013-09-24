@@ -17,6 +17,7 @@ to adapt to various needs:
 - manual input for the options, or import of a csv file
 - statistics
 - csv export of the registrations
+- group enrolment according to user choices
 
 
 ## Details
