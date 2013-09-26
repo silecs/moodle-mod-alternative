@@ -53,8 +53,7 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading($alternative->name);
 echo $OUTPUT->heading(get_string('generategroups', 'alternative'));
 
-if ( has_capability('mod/alternative:forceregistrations', $coursecontext) &&
-    (boolean)$alernative->groupbinding ) {
+if ( has_capability('mod/alternative:forceregistrations', $coursecontext) ) {
     // generate groups
     alternative_generate_groups($alternative);
     echo $OUTPUT->notification(get_string('groupdone', 'alternative'), 'notifysuccess');
