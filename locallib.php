@@ -259,16 +259,20 @@ function alternative_table_synth_options($alternative, $cmid) {
  * @return \html_table
  */
 function alternative_table_registrations($alternative) {
-    global $DB;
+    global $DB, $PAGE, $COURSE;
+     
     $sql = "SELECT ao.id, ao.name, ao.placesavail, ao.teamplacesavail, "
-         . "GROUP_CONCAT(CONCAT(u.firstname, ' ',u.lastname) SEPARATOR ', ') AS regusers, COUNT(u.id) AS regs, COUNT(DISTINCT ar.teamleaderid) AS teams "
+         . "    GROUP_CONCAT(CONCAT(u.firstname, ' ',u.lastname) SEPARATOR ', ') AS regusers, "
+         . "    GROUP_CONCAT(u.id SEPARATOR ', ') AS reguserids, "
+         . "    COUNT(u.id) AS regs, COUNT(DISTINCT ar.teamleaderid) AS teams "
          . "FROM {alternative_option} AS ao "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
          . "LEFT JOIN {user} AS u ON (ar.userid = u.id) "
          . "WHERE ao.alternativeid = ? "
          . "GROUP BY ao.id";
-    $result = $DB->get_records_sql($sql, array($alternative->id));
+    $result = $DB->get_records_sql($sql, array($alternative->id));   
     $t = new html_table();
+    $t->id = 'alt_registrations';
     $t->head = array(get_string('option', 'alternative'), get_string('students', 'alternative'));
     if ($alternative->teammin > 0) {
         $t->head = array_merge($t->head, array(
@@ -283,7 +287,6 @@ function alternative_table_registrations($alternative) {
             get_string('remains', 'alternative')
             ));
     }
-
 
     foreach ($result as $line) {
 		if ($alternative->teammin == 0) { // individual registrations
@@ -307,10 +310,24 @@ function alternative_table_registrations($alternative) {
 				$t_remains = '∞';
 			}
 		}
+        if ($line->regusers != "") {
+            $users = explode(", ", $line->regusers);
+            $useris = explode(", ", $line->reguserids);
+            foreach ($users as $i => $user) {
+                $users[$i] = '<li class="alt_user" data-userid="'.$useris[$i].'">'.$user.'</li>';
+            }
+            $line->regusers = '<ul class="alt_user_list">'.implode("", $users).'</ul>';
+        } else {
+            $line->regusers = '<ul class="alt_user_list"></ul>';
+        }        
+        $line->name = '<div class="alt_option" data-optionid="'.$line->id.'">'.$line->name.'</div>';
+        $t_avail = '<div class="alt_avail">'.$t_avail.'</div>';
+        $t_regs = '<div class="alt_regs">'.$t_regs.'</div>';
+        $t_remains = '<div class="alt_remains">'.$t_remains.'</div>';
         $tline = array($line->name, $line->regusers, $t_avail, $t_regs, $t_remains);
         $t->data[] = $tline;
     }
-
+    
     return $t;
 }
 
