@@ -34,6 +34,7 @@ $sesskey        = required_param('sesskey', PARAM_RAW);
 $userid         = required_param('userid', PARAM_INT);  // user ID
 $oldoptionid    = required_param('oldoptionid', PARAM_INT);  // old option ID
 $newoptionid    = required_param('newoptionid', PARAM_INT); // new option ID
+$action         = required_param('action', PARAM_ALPHANUMEXT); // new option ID
 
 $res = array(
     'success' => false
@@ -70,11 +71,25 @@ if (!has_capability('mod/alternative:forceregistrations', $context)) {
     $res['error'] = get_string('notallowedtomodifyregistrations', 'alternative');
     echo json_encode($res);
     die();
-} else {
-    $res['success'] = alternative_modify_registration($userid, $oldoptionid, $newoptionid);
+} else {    
+    switch ($action) {
+        case 'modify' :
+            $res['success'] = alternative_modify_registration($userid, $oldoptionid, $newoptionid);
+            $optionid = $newoptionid;
+            break;
+        case 'remove' :
+            $res['success'] = alternative_remove_registration($userid, $oldoptionid);
+            $optionid = $oldoptionid;
+            break;
+        default :
+            $res['error'] = get_string('unknownaction', 'alternative').' : '.$action;
+            echo json_encode($res);
+            die();
+    }
+    
     $res['response'] = array(
         'userid' => $userid,
-        'optionid' => $newoptionid
+        'optionid' => $optionid
     );
     echo json_encode($res);
 }

@@ -178,3 +178,4 @@ $string['alternative:viewregistrations'] = 'View registrations';
 
 $string['notallowedtomodifyregistrations'] = 'You are not allowed to update registrations';
 $string['modifyregistrations'] = 'Modify registrations';
+$string['unknownaction'] = 'Unknown action';
