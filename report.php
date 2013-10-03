@@ -83,32 +83,7 @@ switch ($table) {
         $heading = get_string('registrations', 'alternative');
         $report = alternative_table_registrations($alternative);
         if ($can_register_anyone) {
-            $yuimodule = array(
-                'name' => 'evidev-yui-dd-limiteddrop',
-                'fullpath' => new moodle_url('yui/dragdrop/limiteddrop.js')
-            );
-
-            $PAGE->requires->js_module($yuimodule);
-
-            $PAGE->requires->yui_module(
-                'moodle-mod_alternative-dragdrop',
-                'M.mod_alternative.init_dragdrop',
-                array(
-                    array(
-                        'constraintNodeId' => 'alt_registrations',
-                        'draggableClass' => 'alt_user',
-                        'dropableClass' => 'alt_user_list',
-                        'optionClass' => 'alt_option',
-                        'registrationClass' => 'alt_regs',
-                        'availableClass' => 'alt_avail',
-                        'remainClass' => 'alt_remains',
-                        'ajaxurl' => '/mod/alternative/updateregs.php',
-                        'id' => $alternative->id
-                    )
-                )
-            );
-
-            $PAGE->requires->css(new moodle_url('css/dragdrop.css'));
+            alternative_add_dragdrop_registration($alternative->id);
         }
         break;
 }
@@ -147,24 +122,6 @@ else {
     // class="sitelink" (link) or "homelink" (button)
 
     if ( $can_register_anyone ) {
-        $registerbutton = $OUTPUT->single_button(
-            new moodle_url('/mod/alternative/view.php',
-                    array('a' => $alternative->id, 'forcereg' => 1)),
-                get_string('forceregister', 'alternative'),
-                'post'
-            );
-        echo $registerbutton;
-        
-        if ((boolean)$alternative->groupbinding) {
-            $groupbutton = $OUTPUT->single_button(
-                new moodle_url('/mod/alternative/groups.php',
-                        array('a' => $alternative->id, 'gengrps' => 1)),
-                    get_string('generategroups', 'alternative'),
-                    'post'
-                );
-            echo $groupbutton;
-        }
-        
         if ($table != 'registrations') {
             $modifyregbutton = $OUTPUT->single_button(
                 new moodle_url('/mod/alternative/report.php',
@@ -175,6 +132,24 @@ else {
             echo $modifyregbutton;
         }
         
+        $registerbutton = $OUTPUT->single_button(
+            new moodle_url('/mod/alternative/view.php',
+                    array('a' => $alternative->id, 'forcereg' => 1)),
+                get_string('forceregister', 'alternative'),
+                'post'
+            );
+        echo $registerbutton;
+                
+        if ((boolean)$alternative->groupbinding) {
+            $groupbutton = $OUTPUT->single_button(
+                new moodle_url('/mod/alternative/groups.php',
+                        array('a' => $alternative->id, 'gengrps' => 1)),
+                    get_string('generategroups', 'alternative'),
+                    'post'
+                );
+            echo $groupbutton;
+        }
+                
         $reminderbutton = $OUTPUT->single_button(
             new moodle_url('/mod/alternative/sendreminder.php',
                     array('a' => $alternative->id )),

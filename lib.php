@@ -649,3 +649,67 @@ function alternative_modify_registration($userid, $oldoptionid, $newoptionid) {
     $sql.= 'AND userid='.$userid.' ';
     return $DB->execute($sql);
 }
+
+/**
+ * remove a user registration for a given option
+ * 
+ * @global StdClass $DB             global moodle database object
+ * @param integer   $userid         user ID
+ * @param integer   $optionid       option ID
+ * @return boolean  return true in case of success or false
+ */
+function alternative_remove_registration($userid, $optionid) {
+    global $DB;
+    return $DB->delete_records(
+        'alternative_registration',
+        array(
+            'userid' => $userid,
+            'optionid' => $optionid
+        )
+    );
+}
+
+/**
+ * add support for drag and drop registration
+ * 
+ * @global StdClass $PAGE           global moodle page object
+ * @param integer   $alternativeid  alternative ID
+ */
+function alternative_add_dragdrop_registration($alternativeid) {
+    global $PAGE;
+    
+    $yuimodules = array(
+        'evidev-yui-dd-limiteddrop' => array(
+            'name' => 'evidev-yui-dd-limiteddrop',
+            'fullpath' => new moodle_url('yui/dragdrop/limiteddrop.js')
+        ),
+        'evidev-yui-dd-removabledrag' => array(
+            'name' => 'evidev-yui-dd-removabledrag',
+            'fullpath' => new moodle_url('yui/dragdrop/removabledrag.js')
+        ),
+    );
+
+    foreach ($yuimodules as $yuimodule) {
+        $PAGE->requires->js_module($yuimodule);
+    }    
+
+    $PAGE->requires->yui_module(
+        'moodle-mod_alternative-dragdrop',
+        'M.mod_alternative.init_dragdrop',
+        array(
+            array(
+                'constraintNodeId' => 'alt_registrations',
+                'draggableClass' => 'alt_user',
+                'dropableClass' => 'alt_user_list',
+                'optionClass' => 'alt_option',
+                'registrationClass' => 'alt_regs',
+                'availableClass' => 'alt_avail',
+                'remainClass' => 'alt_remains',
+                'ajaxurl' => '/mod/alternative/updateregs.php',
+                'id' => $alternativeid
+            )
+        )
+    );
+
+    $PAGE->requires->css(new moodle_url('css/dragdrop.css'));
+}
