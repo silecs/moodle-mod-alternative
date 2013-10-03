@@ -47,6 +47,7 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
                 writeOnce: true
             },
             onEvents: {
+                value: {}
             }
         },
         EVENTS: {

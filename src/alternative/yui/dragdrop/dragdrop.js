@@ -66,7 +66,11 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
         ALTDD.superclass.constructor.apply(this, arguments);
         var _me = this,
             _start = true,
-            _data = [];
+            _data = [],
+            /* AJAX event handlers */
+            _ajaxStart,
+            _ajaxSuccess,
+            _ajaxFailure;
     
         /**
          * private immutable class to store data
@@ -102,12 +106,15 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
             var selector = '#' + _me.get('constraintNodeId') + ' .' + _me.get('draggableClass'),
                 drags = Y.all(selector);
             drags.each(function(v, k) {
-                var dd = new Y.DD.Drag({
+                var dd = new E.yui.dd.RemovableDrag({
                     node: v,
                     target: {
                         padding: '0 0 0 20'
                     },
-                    groups: _me.groups
+                    groups: _me.groups,
+                    onEvents: {
+                        'drag:remove': _onremove
+                    }
                 }).plug(Y.Plugin.DDProxy, {
                     moveOnEnd: false
                 }).plug(Y.Plugin.DDConstrained, {
@@ -194,10 +201,10 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
                 user = dragnode.getData('userid');
             
             if (_start) {
-                _data['onstart'] = new Data(option, user);                
+                _data['onstart'] = new Data(option, user);
             } else {
-                _data['onend'] = new Data(option, user);  
-                _request(e);
+                _data['onend'] = new Data(option, user);
+                _request(e, ALTDD.ACTIONS.update);
             }
             _start = !_start;            
             
@@ -214,11 +221,38 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
         }
         
         /**
-         * perform the AJAX request
+         * remove event handler
          * 
          * @param {CustomEvent} e   event object
          */
-        function _request(e) {
+        function _onremove(e) {
+            var dragnode = e.drag.get('node'),
+                option_node = _closest(dragnode, '.' + _me.get('optionClass')),
+                option = option_node.getData('optionid'),
+                user = dragnode.getData('userid');
+            e.drop = Y.DD.DDM.getDrop(dragnode.ancestor());
+            _data['onstart'] = new Data(option, user);
+            _data['onend'] = _data['onstart'];
+            _ajaxSuccess = _recalc;
+            _ajaxFailure = _recalc;
+            _request(e, ALTDD.ACTIONS.remove);
+        }
+        
+        /**
+         * release data object
+         */
+        function _releaseData() {
+            delete _data['onstart'];
+            delete _data['onend'];
+        }
+        
+        /**
+         * perform the AJAX request
+         * 
+         * @param {CustomEvent} e       event object
+         * @param {String}      action  action requested
+         */
+        function _request(e, action) {
             var uri = M.cfg.wwwroot + _me.get('ajaxurl'),
                 spinner = M.util.add_spinner(Y, e.drag.get('node')),
                 params = {
@@ -226,7 +260,8 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
                     sesskey: M.cfg.sesskey,
                     userid: _data['onend'].getUser(),
                     oldoptionid: _data['onstart'].getOption(),
-                    newoptionid: _data['onend'].getOption()
+                    newoptionid: _data['onend'].getOption(),
+                    action: action
                 };
             
             Y.io(uri, {
@@ -235,16 +270,30 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
                 on: {
                     start : function(tid) {                        
                         spinner.show();
+                        if (_ajaxStart) {
+                            _ajaxStart.apply(_me, [e, tid]);
+                            _ajaxStart = null;
+                        }
                     },
                     success: function(tid, response) {
                         var responsetext = Y.JSON.parse(response.responseText);
+                        if (_ajaxSuccess) {
+                            _ajaxSuccess.apply(_me, [e, tid, response]);
+                            _ajaxSuccess = null;
+                        }
                         window.setTimeout(function(e) {
                             spinner.hide();
                         }, 250);
+                        _releaseData();
                     },
                     failure: function(tid, response) {
                         var responsetext = Y.JSON.parse(response.responseText);
+                        if (_ajaxFailure) {
+                            _ajaxFailure.apply(_me, [e, tid, response]);
+                            _ajaxFailure = null;
+                        }
                         spinner.hide();
+                        _releaseData();
                     }
                 },
                 context:this
@@ -255,6 +304,12 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
         _init_draggable();
         _init_dropable();
     };
+    
+    // actions
+    ALTDD.ACTIONS = {
+        update: 'modify',
+        remove: 'remove'
+    }
     
     // extension
     Y.extend(ALTDD, M.core.dragdrop, {
@@ -275,5 +330,5 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
         return new ALTDD(config);
     };
 }, '@VERSION@', {
-    requires: ['base', 'node', 'io', 'dom', 'dd', 'dd-scroll', 'moodle-core-dragdrop', 'evidev-yui-dd-limiteddrop']
+    requires: ['base', 'node', 'io', 'dom', 'dd', 'dd-scroll', 'moodle-core-dragdrop', 'evidev-yui-dd-limiteddrop', 'evidev-yui-dd-removabledrag']
 });

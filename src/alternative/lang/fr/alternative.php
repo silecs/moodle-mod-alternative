@@ -180,3 +180,4 @@ $string['alternative:viewregistrations'] = 'Voir les inscriptions';
 
 $string['notallowedtomodifyregistrations'] = "Vous n'êtes pas autorisé à modififier les inscriptions";
 $string['modifyregistrations'] = 'Modifier les inscriptions';
+$string['unknownaction'] = 'Action inconnue';
