@@ -149,7 +149,7 @@ YUI.add('evidev-yui-dd-removabledrag', function(Y) {
             style+= "   cursor:pointer;\n";
             style+= "   font-size: 1.3em;\n";
             style+= "   display: inline-block;\n";
-            style+= "   line-height: 1.3em;\n";
+            style+= "   line-height: 1em;\n";
             style+= "}\n\n";
             style+= ".removabledrag-close:before {\n";
             style+= "   content: '" + RD.CLOSE_BUTTON + "';\n";
