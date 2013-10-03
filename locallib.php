@@ -738,10 +738,11 @@ class select_team_members extends user_selector_base {
  * 
  * @global StdClass $CFG        moodle global configuration object
  * @global \moodle_db $DB       moodle global database object
+ * @global StdClass $COURSE     moodle global course object
  * @param StdClass $alternative alternattive object
  */
 function alternative_generate_groups($alternative) {
-    global $CFG, $DB;
+    global $CFG, $DB, $COURSE;
     require_once $CFG->dirroot.'/group/lib.php';
     
     $sql = 'SELECT ar.id, ao.groupid, ar.userid ';
@@ -749,12 +750,22 @@ function alternative_generate_groups($alternative) {
     $sql.= 'JOIN {alternative_registration} ar ';
     $sql.= 'ON ao.id = ar.optionid ';
     $sql.= 'AND ao.alternativeid = '.$alternative->id.' ';
-    $sql.= 'WHERE ao.groupid <> -1';
     
-    if ((boolean) $alternative->groupbinding) {
+    if ((boolean) $alternative->groupbinding) {        
         $records = $DB->get_records_sql($sql);
         foreach ($records as $reg => $record) {
-            groups_add_member($record->groupid, $record->userid);
+            // get groups in which the current user is registered
+            $groups = groups_get_all_groups($COURSE->id, $record->userid);
+            // remove user from groups
+            foreach ($groups as $group) {
+                if ($group->id !== $record->groupid) {                    
+                    groups_remove_member($group->id, $record->userid);
+                }
+            }
+            if ($record->groupid !== "-1") {
+                // add user in groups
+                groups_add_member($record->groupid, $record->userid);
+            }
         }
     }
 }
