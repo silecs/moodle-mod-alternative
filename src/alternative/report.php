@@ -82,6 +82,34 @@ switch ($table) {
         }
         $heading = get_string('registrations', 'alternative');
         $report = alternative_table_registrations($alternative);
+        if ($can_register_anyone) {
+            $yuimodule = array(
+                'name' => 'evidev-yui-dd-limiteddrop',
+                'fullpath' => new moodle_url('yui/dragdrop/limiteddrop.js')
+            );
+
+            $PAGE->requires->js_module($yuimodule);
+
+            $PAGE->requires->yui_module(
+                'moodle-mod_alternative-dragdrop',
+                'M.mod_alternative.init_dragdrop',
+                array(
+                    array(
+                        'constraintNodeId' => 'alt_registrations',
+                        'draggableClass' => 'alt_user',
+                        'dropableClass' => 'alt_user_list',
+                        'optionClass' => 'alt_option',
+                        'registrationClass' => 'alt_regs',
+                        'availableClass' => 'alt_avail',
+                        'remainClass' => 'alt_remains',
+                        'ajaxurl' => '/mod/alternative/updateregs.php',
+                        'id' => $alternative->id
+                    )
+                )
+            );
+
+            $PAGE->requires->css(new moodle_url('css/dragdrop.css'));
+        }
         break;
 }
 
@@ -94,7 +122,7 @@ else {
     $PAGE->set_url('/mod/alternative/report.php', array('id' => $id, 'table' => $table));
     $PAGE->set_title(format_string($alternative->name));
     $PAGE->set_heading(format_string($course->fullname));
-    $PAGE->set_context($context);
+    $PAGE->set_context($context);        
 
     // begin the page
     echo $OUTPUT->header();
@@ -135,6 +163,16 @@ else {
                     'post'
                 );
             echo $groupbutton;
+        }
+        
+        if ($table != 'registrations') {
+            $modifyregbutton = $OUTPUT->single_button(
+                new moodle_url('/mod/alternative/report.php',
+                        array('id' => $id, 'table' => 'registrations')),
+                    get_string('modifyregistrations', 'alternative'),
+                    'post'
+                );
+            echo $modifyregbutton;
         }
         
         $reminderbutton = $OUTPUT->single_button(

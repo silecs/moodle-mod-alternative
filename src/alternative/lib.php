@@ -631,3 +631,21 @@ function alternative_groups_deleted($courseid) {
     }
     return true;
 }
+
+/**
+ * update a user registration to an option
+ * 
+ * @global StdClass $DB             global moodle database object
+ * @param integer   $userid         user ID
+ * @param integer   $oldoptionid    old option ID
+ * @param integer   $newoptionid    new option ID
+ * @return boolean  return true in case of success or false
+ */
+function alternative_modify_registration($userid, $oldoptionid, $newoptionid) {
+    global $DB;
+    $sql = 'UPDATE {alternative_registration} ';
+    $sql.= 'SET optionid='.$newoptionid.' ';
+    $sql.= 'WHERE optionid='.$oldoptionid.' ';
+    $sql.= 'AND userid='.$userid.' ';
+    return $DB->execute($sql);
+}
