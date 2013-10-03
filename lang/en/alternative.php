@@ -175,3 +175,6 @@ $string['alternative:addinstance'] = 'Add a new alternative';
 $string['alternative:choose'] = 'Choose an option';
 $string['alternative:forceregistrations'] = 'Force registrations';
 $string['alternative:viewregistrations'] = 'View registrations';
+
+$string['notallowedtomodifyregistrations'] = 'You are not allowed to update registrations';
+$string['modifyregistrations'] = 'Modify registrations';
