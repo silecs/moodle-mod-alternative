@@ -656,15 +656,17 @@ function alternative_modify_registration($userid, $oldoptionid, $newoptionid) {
  * @global StdClass $DB             global moodle database object
  * @param integer   $userid         user ID
  * @param integer   $optionid       option ID
+ * @param integer   $regid          registration ID
  * @return boolean  return true in case of success or false
  */
-function alternative_remove_registration($userid, $optionid) {
+function alternative_remove_registration($userid, $optionid, $regid) {
     global $DB;
     return $DB->delete_records(
         'alternative_registration',
         array(
             'userid' => $userid,
-            'optionid' => $optionid
+            'optionid' => $optionid,
+            'id' => $regid
         )
     );
 }

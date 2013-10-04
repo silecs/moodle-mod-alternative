@@ -264,6 +264,7 @@ function alternative_table_registrations($alternative) {
     $sql = "SELECT ao.id, ao.name, ao.placesavail, ao.teamplacesavail, "
          . "    GROUP_CONCAT(CONCAT(u.firstname, ' ',u.lastname) SEPARATOR ', ') AS regusers, "
          . "    GROUP_CONCAT(u.id SEPARATOR ', ') AS reguserids, "
+         . "    GROUP_CONCAT(ar.id SEPARATOR ', ') AS regids, "
          . "    COUNT(u.id) AS regs, COUNT(DISTINCT ar.teamleaderid) AS teams "
          . "FROM {alternative_option} AS ao "
          . "LEFT JOIN {alternative_registration} AS ar ON (ar.optionid = ao.id) "
@@ -313,8 +314,9 @@ function alternative_table_registrations($alternative) {
         if ($line->regusers != "") {
             $users = explode(", ", $line->regusers);
             $useris = explode(", ", $line->reguserids);
+            $regids = explode(", ", $line->regids);
             foreach ($users as $i => $user) {
-                $users[$i] = '<li class="alt_user" data-userid="'.$useris[$i].'">'.$user.'</li>';
+                $users[$i] = '<li class="alt_user" data-userid="'.$useris[$i].'" data-regid="'.$regids[$i].'">'.$user.'</li>';
             }
             $line->regusers = '<ul class="alt_user_list">'.implode("", $users).'</ul>';
         } else {
