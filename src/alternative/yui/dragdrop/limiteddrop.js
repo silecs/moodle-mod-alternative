@@ -160,8 +160,9 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
             if (!_registered[id]) {
                 drag.on('drag:start', _ondragstart);
                 //drag.on('drag:end', _ondragend);                
-                drag.on('drag:drophit', _ondragdrophit)
-                drag.on('drag:dropmiss', _ondragdropmiss)
+                drag.on('drag:drophit', _ondragdrophit);
+                drag.on('drag:dropmiss', _ondragdropmiss);
+                drag.after('destroy', _ondestroy, _me, drag);
                 _registered[id] = true;
             }
         }
@@ -176,8 +177,8 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
             if (_registered[id]) {
                 drag.detach('drag:start', _ondragstart);
                 //drag.detach('drag:end', _ondragend);
-                drag.detach('drag:drophit', _ondragdrophit)
-                drag.detach('drag:dropmiss', _ondragdropmiss)
+                drag.detach('drag:drophit', _ondragdrophit);
+                drag.detach('drag:dropmiss', _ondragdropmiss);
                 delete _registered[id];
             }
         }
@@ -302,6 +303,22 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
                 })
             }
         }
+        
+        /**
+         * handler for destroy event
+         * 
+         * @param {EventFacade} e   event facade object passed by the source
+         * @param {Drag} drag   drag object that fires the destroy event
+         */
+        function _ondestroy(e, drag) {
+            _unregister(drag);
+            _me.notify();
+            _me.fire(LD.EVENTS.UPDATE, {
+                drop: _me,
+                drag: drag,
+                cause: 'itemremoved'
+            });
+        }
 
         /**
          * get dropped drag items
@@ -359,6 +376,17 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
             return limit > 0 && _count() >= limit;
         };
 
+        /**
+         * notification handler of external changes
+         *
+         * @api
+         */
+        this.notify = function(e) {
+            if (_checkCapacity() && _locked) {
+                _me.unlock();
+            }
+        }
+        
         // register private events
         this.on('drop:enter', _ondropenter);
         this.on('drop:hit', _ondrophit);

@@ -66,6 +66,7 @@ YUI.add('evidev-yui-dd-removabledrag', function(Y) {
              * @param {EventFacade} event An Event Facade object with the following specific property added:
              * <dl>
              *  <dt>drag</dt><dd>the removed drag object</dd>
+             *  <dt>drop</dt><dd>its drop target</dd>
              * </dl>
              * @bubbles DDM
              * @type {CustomEvent}
@@ -106,13 +107,9 @@ YUI.add('evidev-yui-dd-removabledrag', function(Y) {
         /**
          * remove
          */
-        function _remove() {
-            _me.fire(RD.EVENTS.REMOVE, {
-                drag: _me
-            });
+        function _remove() {            
+            _me.get('node').remove();
             _me.destroy();
-            _me.get('node').remove(true);
-            
         };
         
         /**
@@ -159,6 +156,15 @@ YUI.add('evidev-yui-dd-removabledrag', function(Y) {
                 Y.one('head').appendChild(node).setAttribute('id', id).setHTML(style);
             }
         }
+        
+        // register to own events
+        this.after('destroy', function(e) {
+            var drop = Y.DD.DDM.getDrop(this.get('node').ancestor());
+            _me.fire(RD.EVENTS.REMOVE, {
+                drag: this,
+                drop: drop
+            });
+        }, this, this);
         
         // initialization
         _publishEvents();
