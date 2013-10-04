@@ -156,7 +156,7 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
         function _closest(node, search) {
             var constraint = Y.one('#' + _me.get('constraintNodeId'));
             var _node = node, found = false;
-            while (_node && !found && node != constraint) {
+            while (_node && !found && _node != constraint) {
                 var _search = _node.one(search);
                 found = _search != null;
                 if (!found) {
