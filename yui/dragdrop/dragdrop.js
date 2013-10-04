@@ -230,9 +230,10 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
                     dropnode = e.drop.get('node'),
                     option_node = _closest(dropnode, '.' + _me.get('optionClass')),
                     option = option_node.getData('optionid'),
-                    user = dragnode.getData('userid');
+                    user = dragnode.getData('userid'),
+                    regid = dragnode.getData('regid');
             _data['onstart'] = new Data(option, user);
-            _data['onend'] = _data['onstart'];
+            _data['onend'] = new Data(regid, user);
             _ajaxSuccess = _recalc;
             _ajaxFailure = _recalc;
             _request(e, ALTDD.ACTIONS.remove);

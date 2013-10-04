@@ -78,7 +78,8 @@ if (!has_capability('mod/alternative:forceregistrations', $context)) {
             $optionid = $newoptionid;
             break;
         case 'remove' :
-            $res['success'] = alternative_remove_registration($userid, $oldoptionid);
+            // here $newoptionid is the id of the user registration
+            $res['success'] = alternative_remove_registration($userid, $oldoptionid, $newoptionid);
             $optionid = $oldoptionid;
             break;
         default :
@@ -93,5 +94,3 @@ if (!has_capability('mod/alternative:forceregistrations', $context)) {
     );
     echo json_encode($res);
 }
-
-
