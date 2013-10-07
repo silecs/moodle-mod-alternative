@@ -82,6 +82,9 @@ switch ($table) {
         }
         $heading = get_string('registrations', 'alternative');
         $report = alternative_table_registrations($alternative);
+        if ($can_register_anyone) {
+            alternative_add_dragdrop_registration($alternative->id);
+        }
         break;
 }
 
@@ -94,7 +97,7 @@ else {
     $PAGE->set_url('/mod/alternative/report.php', array('id' => $id, 'table' => $table));
     $PAGE->set_title(format_string($alternative->name));
     $PAGE->set_heading(format_string($course->fullname));
-    $PAGE->set_context($context);
+    $PAGE->set_context($context);        
 
     // begin the page
     echo $OUTPUT->header();
@@ -119,6 +122,16 @@ else {
     // class="sitelink" (link) or "homelink" (button)
 
     if ( $can_register_anyone ) {
+        if ($table != 'registrations') {
+            $modifyregbutton = $OUTPUT->single_button(
+                new moodle_url('/mod/alternative/report.php',
+                        array('id' => $id, 'table' => 'registrations')),
+                    get_string('modifyregistrations', 'alternative'),
+                    'post'
+                );
+            echo $modifyregbutton;
+        }
+        
         $registerbutton = $OUTPUT->single_button(
             new moodle_url('/mod/alternative/view.php',
                     array('a' => $alternative->id, 'forcereg' => 1)),
@@ -126,7 +139,17 @@ else {
                 'post'
             );
         echo $registerbutton;
-
+                
+        if ((boolean)$alternative->groupbinding) {
+            $groupbutton = $OUTPUT->single_button(
+                new moodle_url('/mod/alternative/groups.php',
+                        array('a' => $alternative->id, 'gengrps' => 1)),
+                    get_string('generategroups', 'alternative'),
+                    'post'
+                );
+            echo $groupbutton;
+        }
+                
         $reminderbutton = $OUTPUT->single_button(
             new moodle_url('/mod/alternative/sendreminder.php',
                     array('a' => $alternative->id )),

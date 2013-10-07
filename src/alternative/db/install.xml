@@ -18,8 +18,11 @@
         <FIELD NAME="changeallowed" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" COMMENT="1 if the user can change its choice" PREVIOUS="multiplemax" NEXT="publicreg"/>
         <FIELD NAME="publicreg" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="If 0, nothing if shown. If 1, public display of the registration. If 2, registrations are only shown to the members of the same groups." PREVIOUS="changeallowed" NEXT="notifybyemail"/>
         <FIELD NAME="notifybyemail" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if the user must receive an e-mail after its registration." PREVIOUS="publicreg" NEXT="compact"/>
-        <FIELD NAME="compact" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 for compact display of options, without descriptions." PREVIOUS="notifybyemail" NEXT="timecreated"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="compact" NEXT="timemodified"/>
+        <FIELD NAME="compact" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 for compact display of options, without descriptions." PREVIOUS="notifybyemail" NEXT="groupbinding"/>
+        <FIELD NAME="groupbinding" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 for group binding enabled." PREVIOUS="compact" NEXT="groupmatching"/>
+        <FIELD NAME="groupmatching" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 for forcing group matching." PREVIOUS="groupbinding" NEXT="grouponetoone"/>
+        <FIELD NAME="grouponetoone" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 for forcing a one to one relationship between options and groups." PREVIOUS="groupmatching" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="grouponetoone" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
       </FIELDS>
       <KEYS>
@@ -32,8 +35,9 @@
     <TABLE NAME="alternative_option" COMMENT="Options belonging to an alternative." PREVIOUS="alternative" NEXT="alternative_registration">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="alternativeid"/>
-        <FIELD NAME="alternativeid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on alternative.id" PREVIOUS="id" NEXT="name"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" PREVIOUS="alternativeid" NEXT="intro"/>
+        <FIELD NAME="alternativeid" TYPE="int" LENGTH="20" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on alternative.id" PREVIOUS="id" NEXT="groupid"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="FK on groups.id" PREVIOUS="alternativeid" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" PREVIOUS="groupid" NEXT="intro"/>
         <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Description of this option" PREVIOUS="name" NEXT="introformat"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="datecomment"/>
         <FIELD NAME="datecomment" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Free text on the date of the evenment, etc" PREVIOUS="introformat" NEXT="placesavail"/>
@@ -44,7 +48,8 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="alternative_fk"/>
-        <KEY NAME="alternative_fk" TYPE="foreign" FIELDS="alternativeid" REFTABLE="alternative" REFFIELDS="id" PREVIOUS="primary"/>
+        <KEY NAME="alternative_fk" TYPE="foreign" FIELDS="alternativeid" REFTABLE="alternative" REFFIELDS="id" PREVIOUS="primary" NEXT="group_fk"/>
+        <KEY NAME="group_fk" TYPE="foreign" FIELDS="groupid" REFTABLE="groups" REFFIELDS="id" PREVIOUS="alternative_fk"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="alternative_registration" COMMENT="Records links between users and options" PREVIOUS="alternative_option">

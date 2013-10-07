@@ -54,7 +54,10 @@ class restore_alternative_activity_structure_step extends restore_activity_struc
         $data->alternativeid = $this->get_new_parentid('alternative');
         $data->timecreated = $this->apply_date_offset($data->timecreated);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
-
+        $data->groupid = (integer)$data->groupid > -1 ?
+            $this->get_mappingid('group', $data->groupid) :
+            $data->groupid;
+        
         $newitemid = $DB->insert_record('alternative_option', $data);
         $this->set_mapping('alternative_option', $oldid, $newitemid);
     }
@@ -66,7 +69,7 @@ class restore_alternative_activity_structure_step extends restore_activity_struc
         $oldid = $data->id;
 
         $data->alternativeid = $this->get_new_parentid('alternative');
-        $data->optionid = $this->get_mappingid('alternative_option', $oldid);
+        $data->optionid = $this->get_mappingid('alternative_option', $data->optionid);
         $data->userid = $this->get_mappingid('user', $data->userid);
         $data->teamleaderid = $this->get_mappingid('user', $data->teamleaderid);
         $data->timemodified = $this->apply_date_offset($data->timemodified);

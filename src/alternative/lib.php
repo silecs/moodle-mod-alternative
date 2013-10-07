@@ -85,7 +85,7 @@ function alternative_add_instance(stdClass $alternative, mod_alternative_mod_for
 
     $alternative->id = $DB->insert_record("alternative", $alternative);
 
-    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
+    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id', 'groupid');
 
     if ( $mform->get_new_filename() ) {
         $options = $mform->import_csv();
@@ -104,6 +104,9 @@ function alternative_add_instance(stdClass $alternative, mod_alternative_mod_for
                         $option->$field = $options[$field][$key];
                     }
                 }
+            }
+            if (!(boolean)$alternative->groupbinding) {
+                $option->groupid = "-1";
             }
             if (empty($option->id)) {
                 $option->timecreated = time();
@@ -142,7 +145,7 @@ function alternative_update_instance(stdClass $alternative, mod_alternative_mod_
         $alternative->multiplemax = 0;
     }
 
-    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id');
+    $fields = array('name', 'intro', 'introformat', 'datecomment', 'placesavail', 'teamplacesavail', 'groupdependent', 'id', 'groupid');
 
     if ( $mform->get_new_filename() ) {
         $options = $mform->import_csv();
@@ -159,6 +162,9 @@ function alternative_update_instance(stdClass $alternative, mod_alternative_mod_
                 if (isset($options[$field][$key])) {
                     $option->$field = trim($options[$field][$key]);
                 }
+            }
+            if (!(boolean)$alternative->groupbinding) {
+                $option->groupid = "-1";
             }
             if (empty($option->id)) {
                 $option->timecreated = time();
@@ -479,4 +485,233 @@ function alternative_extend_settings_navigation(settings_navigation $settingsnav
         );
 
     }
+}
+
+/**
+ * event handler when a group is created
+ * 
+ * this will update {alternative_option}.groupid records of all alternatives in the
+ * same course as the created group to the group id, only if {alternative}.groupmatching
+ * is set to 1 and {alternative_option}.name matches the name of the created group
+ * 
+ * @global StdClass         $DB         global moodle database object
+ * @param object|boolean    $eventdata  the event object data or false in case of failure
+ * @return boolean          return true in case of success or false
+ */
+function alternative_group_created($eventdata) {
+    global $DB;
+    if (!$eventdata) {
+        return false;
+    }
+    $sql = 'SELECT ao.id ';
+    $sql.= 'FROM {alternative_option} ao ';
+    $sql.= 'JOIN {alternative} al ';
+    $sql.= 'ON ao.alternativeid = al.id ';
+    $sql.= 'AND al.course = '.$eventdata->courseid.' ';
+    $sql.= 'WHERE al.groupmatching = 1 ';
+    $sql.= 'AND ao.name = "'.$eventdata->name.'"';
+    $records =  $DB->get_records_sql($sql);
+    foreach ($records as $record) {
+        $DB->update_record_raw(
+            'alternative_option',
+            array('id' => $record->id, 'groupid' => $eventdata->id),
+            true
+        );
+    }
+    return true;
+}
+
+/**
+ * event handler when a group is updated
+ * 
+ * this will update {alternative_option}.groupid records of all alternatives in
+ * the same course as the updated group in two ways :
+ * <ul>
+ *  <li>
+ *      set the field value to the group id if {alternative}.groupmatching is set
+ *      to 1 and {alternative_option}.name matches the name of the updated group
+ *  </li>
+ *  <li>
+ *      set the field value to -1 if {alternative}.groupmatching is set to 1 and
+ *      {alternative_option}.groupid is the same as the group id but {alternative_option}.name
+ *      does not match the group name anymore
+ *  </li>
+ * </ul>
+ * 
+ * @global StdClass         $DB         global moodle database object
+ * @param object|boolean    $eventdata  the event object data or false in case of failure
+ * @return boolean          return true in case of success or false
+ */
+function alternative_group_updated($eventdata) {
+    global $DB;
+    if (!$eventdata) {
+        return false;
+    }
+    // update to group id
+    alternative_group_created($eventdata);
+    // update to -1
+    $sql = 'SELECT ao.id ';
+    $sql.= 'FROM {alternative_option} ao ';
+    $sql.= 'JOIN {alternative} al ';
+    $sql.= 'ON ao.alternativeid = al.id ';
+    $sql.= 'AND al.course = '.$eventdata->courseid.' ';
+    $sql.= 'WHERE al.groupmatching = 1 ';    
+    $sql.= 'AND ao.name <> "'.$eventdata->name.'"';
+    $sql.= 'AND ao.groupid = "'.$eventdata->id.'"';
+    $records =  $DB->get_records_sql($sql);
+    foreach ($records as $record) {
+        $DB->update_record_raw(
+            'alternative_option',
+            array('id' => $record->id, 'groupid' => '-1'),
+            true
+        );
+    }
+    return true;
+}
+
+/**
+ * event handler when a group is deleted
+ * 
+ * this will set to -1 the {alternative_option}.groupid records of all alternatives
+ * in the same course as the deleted group if the old value of this field was the id
+ * of the deleted group
+ * 
+ * @global StdClass         $DB         global moodle database object
+ * @param object|boolean    $eventdata  the event object data or false in case of failure
+ * @return boolean          return true in case of success or false
+ */
+function alternative_group_deleted($eventdata) {
+    global $DB;
+    if (!$eventdata) {
+        return false;
+    }
+    $sql = 'SELECT id ';
+    $sql.= 'FROM {alternative_option} ';
+    $sql.= 'WHERE groupid = '.$eventdata->id;
+    $records =  $DB->get_records_sql($sql);
+    foreach ($records as $record) {
+        $DB->update_record_raw(
+            'alternative_option',
+            array('id' => $record->id, 'groupid' => '-1'),
+            true
+        );
+    }
+    return true;
+}
+
+/**
+ * event handler when all group of a course are deleted
+ * 
+ * this will set to -1 the {alternative_option}.groupid records of all alternatives
+ * in the same course as the deleted groups if the old value of this field was one of
+ * the ids of the deleted groups
+ * 
+ * @global StdClass         $DB         global moodle database object
+ * @param integer|boolean   $courseid   the course id or false in case of failure
+ * @return boolean          return true in case of success or false
+ */
+function alternative_groups_deleted($courseid) {
+    global $DB;
+    if (!$courseid) {
+        return false;
+    }
+    $sql = 'SELECT ao.id ';
+    $sql.= 'FROM {alternative_option} ao ';
+    $sql.= 'JOIN {alternative} al ';
+    $sql.= 'ON ao.alternativeid = al.id ';
+    $sql.= 'AND al.course = '.$courseid.' ';
+    $sql.= 'WHERE ao.groupid <> -1';
+    $records =  $DB->get_records_sql($sql);
+    foreach ($records as $record) {
+        $DB->update_record_raw(
+            'alternative_option',
+            array('id' => $record->id, 'groupid' => '-1'),
+            true
+        );
+    }
+    return true;
+}
+
+/**
+ * update a user registration to an option
+ * 
+ * @global StdClass $DB             global moodle database object
+ * @param integer   $userid         user ID
+ * @param integer   $oldoptionid    old option ID
+ * @param integer   $newoptionid    new option ID
+ * @return boolean  return true in case of success or false
+ */
+function alternative_modify_registration($userid, $oldoptionid, $newoptionid) {
+    global $DB;
+    $sql = 'UPDATE {alternative_registration} ';
+    $sql.= 'SET optionid='.$newoptionid.' ';
+    $sql.= 'WHERE optionid='.$oldoptionid.' ';
+    $sql.= 'AND userid='.$userid.' ';
+    return $DB->execute($sql);
+}
+
+/**
+ * remove a user registration for a given option
+ * 
+ * @global StdClass $DB             global moodle database object
+ * @param integer   $userid         user ID
+ * @param integer   $optionid       option ID
+ * @param integer   $regid          registration ID
+ * @return boolean  return true in case of success or false
+ */
+function alternative_remove_registration($userid, $optionid, $regid) {
+    global $DB;
+    return $DB->delete_records(
+        'alternative_registration',
+        array(
+            'userid' => $userid,
+            'optionid' => $optionid,
+            'id' => $regid
+        )
+    );
+}
+
+/**
+ * add support for drag and drop registration
+ * 
+ * @global StdClass $PAGE           global moodle page object
+ * @param integer   $alternativeid  alternative ID
+ */
+function alternative_add_dragdrop_registration($alternativeid) {
+    global $PAGE;
+    
+    $yuimodules = array(
+        'evidev-yui-dd-limiteddrop' => array(
+            'name' => 'evidev-yui-dd-limiteddrop',
+            'fullpath' => new moodle_url('yui/dragdrop/limiteddrop.js')
+        ),
+        'evidev-yui-dd-removabledrag' => array(
+            'name' => 'evidev-yui-dd-removabledrag',
+            'fullpath' => new moodle_url('yui/dragdrop/removabledrag.js')
+        ),
+    );
+
+    foreach ($yuimodules as $yuimodule) {
+        $PAGE->requires->js_module($yuimodule);
+    }    
+
+    $PAGE->requires->yui_module(
+        'moodle-mod_alternative-dragdrop',
+        'M.mod_alternative.init_dragdrop',
+        array(
+            array(
+                'constraintNodeId' => 'alt_registrations',
+                'draggableClass' => 'alt_user',
+                'dropableClass' => 'alt_user_list',
+                'optionClass' => 'alt_option',
+                'registrationClass' => 'alt_regs',
+                'availableClass' => 'alt_avail',
+                'remainClass' => 'alt_remains',
+                'ajaxurl' => '/mod/alternative/updateregs.php',
+                'id' => $alternativeid
+            )
+        )
+    );
+
+    $PAGE->requires->css(new moodle_url('css/dragdrop.css'));
 }

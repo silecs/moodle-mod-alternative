@@ -69,6 +69,8 @@ These options are described in this form.
 If the title is not set, the option will not be created (but will be deleted if it existed).
 You can add new option with the button after these field sets.';
 $string["optionintro"] = "Description";
+$string["optiongroup"] = "Bind to group";
+$string["optiongroupnone"] = "None";
 $string["datecomment"] = "Date";
 $string["datecomment_help"] = "This field can contain any text, but it is meant for a date or a date interval.";
 $string["placesavail"] = "Available places";
@@ -157,3 +159,23 @@ $string['separator'] = 'Separator';
 $string['csvunableopen'] = 'Unable to open CSV file.';
 $string['csvbadfieldnb'] = 'Bad number of fields: {$a} instead of 4.  ';
 $string['csv2ndfield'] = 'The 2nd field (places) should be numeric, with 0 = no limit.  ';
+
+$string['fieldsetgroupbinding'] = 'Group binding';
+$string['groupbinding'] = 'Enable group binding';
+$string['groupmatching'] = 'Force group matching';
+$string['grouponetoone'] = 'Force one to one relationship between options and groups';
+$string['generategroups'] = "Generate groups";
+$string['groupdone'] = "Participants were enrolled in their respective groups.";
+$string['groupnotallowed'] = "You did not have the permission to generate the groups.";
+$string['groupbinding_help'] = 'If checked, enable group binding feature.';
+$string['groupmatching_help'] = "If checked, force name matching between options and groups. This choice disable the 'one to one relationship' feature.";
+$string['grouponetoone_help'] = "If checked and group matching isn't, force a 'one to one relationship' between an option and a group. Each chosen group is no more available for other options.";
+
+$string['alternative:addinstance'] = 'Add a new alternative';
+$string['alternative:choose'] = 'Choose an option';
+$string['alternative:forceregistrations'] = 'Force registrations';
+$string['alternative:viewregistrations'] = 'View registrations';
+
+$string['notallowedtomodifyregistrations'] = 'You are not allowed to update registrations';
+$string['modifyregistrations'] = 'Modify registrations';
+$string['unknownaction'] = 'Unknown action';

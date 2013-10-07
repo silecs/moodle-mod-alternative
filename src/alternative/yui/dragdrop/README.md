@@ -1,0 +1,1 @@
+limiteddrop.js and removabledrag.js are part of the eviweb/yui-lib available at [github](https://github.com/eviweb/yui-lib)
