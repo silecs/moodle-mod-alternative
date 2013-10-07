@@ -270,9 +270,7 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
             _drag = true;
 
             if (drop === _me) {
-                if (_checkCapacity() && _locked && !_lockforced) {
-                    _me.unlock();
-                }
+                _me.notify();
                 _me.fire(LD.EVENTS.UPDATE, {
                     drop: _me,
                     drag: drag,
@@ -403,10 +401,11 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
         /**
          * notification handler of external changes
          *
+         * @param {EventFacade} e   event facade object passed by the notifier
          * @api
          */
         this.notify = function(e) {
-            if (_checkCapacity() && _locked) {
+            if (_checkCapacity() && _locked && !_lockforced) {
                 _me.unlock();
             }
         }
