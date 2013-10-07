@@ -67,6 +67,7 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
         var _me = this,
                 _start = true,
                 _data = [],
+                _freezedDrops = [],
                 /* AJAX event handlers */
                 _ajaxStart,
                 _ajaxSuccess,
@@ -123,9 +124,10 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
                 }).plug(Y.Plugin.DDNodeScroll, {
                     node: v.get('parentNode')
                 }).plug(Y.Plugin.DDWinScroll);
+                dd.on('drag:mouseDown', _onmousedown);
+                dd.on('drag:end', _ondragend);
             });
         }
-        ;
 
         /**
          * drop nodes initialization
@@ -216,8 +218,10 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
          * @param {CustomEvent} e   event object
          */
         function _onupdate(e) {
-            _recalc(e);
-            _updateRegs(e);
+            if (e.drag) {
+                _recalc(e);            
+                _updateRegs(e);
+            }
         }
 
         /**
@@ -245,6 +249,62 @@ YUI.add('moodle-mod_alternative-dragdrop', function(Y) {
         function _releaseData() {
             delete _data['onstart'];
             delete _data['onend'];
+        }
+
+        /**
+         * check whether a drag object with the same user id already exists in
+         * a given drop target
+         * 
+         * @param {LimitedDrop}     drop    the drop target to search in
+         * @param {RemovableDrag}   drag    the current drag object
+         * @param {String}          user    user id
+         * @returns {Boolean}       returns true if a drag object with the same 
+         *                          user id is found, else returns false
+         */
+        function _alreadyExist(drop, drag, user) {
+            var dragnode = drag.get('node'),
+                    dropnode = drop.get('node'),
+                    selector = '.' + _me.get('draggableClass') + '[data-userid="' + user + '"]',
+                    searchnode = dropnode.one(selector);
+            return searchnode && (dragnode !== searchnode);
+        }
+
+        /**
+         * mouse down event handler
+         * used to prevent registration doublons
+         * 
+         * @param {CustomEvent} e   event object
+         */
+        function _onmousedown(e) {
+            var drag = this,
+                dragnode = drag.get('node'),
+                    user = dragnode.getData('userid'),
+                    selector = '#' + _me.get('constraintNodeId') + ' .' + _me.get('dropableClass');
+            _freezedDrops = [];
+            Y.all(selector).each(function(dn) {
+                var drop = Y.DD.DDM.getDrop(dn);
+                if (_alreadyExist(drop, drag, user)) {
+                    _freezedDrops.push({
+                        oldlock: drop.isLocked(),
+                        drop: drop
+                    });
+                    drop.lock();                    
+                }
+            });
+        }
+        
+        /**
+         * drag end event handler
+         * 
+         * @param {CustomEvent} e   event object
+         */
+        function _ondragend(e) {
+            Y.Array.each(_freezedDrops, function(fd) {
+                if (!fd.oldlock) {
+                    fd.drop.unlock();                    
+                }                
+            });
+            _freezedDrops = [];
         }
 
         /**

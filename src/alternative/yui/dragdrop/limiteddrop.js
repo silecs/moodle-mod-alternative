@@ -116,7 +116,8 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
         var _me = this,
                 _registered = [],
                 _drag = false,
-                _locked = false;
+                _locked = false,
+                _lockforced = false;
 
         /**
          * check target capacity
@@ -254,6 +255,7 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
         function _ondropfull(e) {
             if (!_locked) {
                 _me.lock();
+                _lockforced = false;
             }
         }
 
@@ -268,7 +270,7 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
             _drag = true;
 
             if (drop === _me) {
-                if (_checkCapacity() && _locked) {
+                if (_checkCapacity() && _locked && !_lockforced) {
                     _me.unlock();
                 }
                 _me.fire(LD.EVENTS.UPDATE, {
@@ -349,6 +351,12 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
             });
             Y.DD.DDM._deactivateTargets();
             _locked = true;
+            _lockforced = true;
+            _me.fire(LD.EVENTS.UPDATE, {
+                drop: _me,
+                drag: null,
+                cause: 'lock'
+            });
         };
 
         /**
@@ -363,6 +371,12 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
             });
             Y.DD.DDM._activateTargets();
             _locked = false;
+            _lockforced = false;
+            _me.fire(LD.EVENTS.UPDATE, {
+                drop: _me,
+                drag: null,
+                cause: 'unlock'
+            });
         };
 
         /**
@@ -374,6 +388,16 @@ YUI.add('evidev-yui-dd-limiteddrop', function(Y) {
         this.isFull = function() {
             var limit = this.get('limit');
             return limit > 0 && _count() >= limit;
+        };
+
+        /**
+         * check if the drop target is locked
+         *
+         * @returns {Boolean}   returns true if its limit is reached, else returns false
+         * @api
+         */
+        this.isLocked = function() {
+            return _locked;
         };
 
         /**
